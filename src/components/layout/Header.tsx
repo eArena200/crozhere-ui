@@ -5,12 +5,13 @@ import { usePathname } from "next/navigation";
 import { useReducer } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { NAV_ITEMS } from "@/lib/types/navigation";
+import { getNavTabsForRole } from "@/lib/types/navigation";
 import { cn } from "@/lib/utils";
 import LocationSelector from "@/components/LocationSelector";
 import Button from "@/components/ui/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import BottomNavBar from "./BottomNavBar";
 
 const LoginDialog = dynamic(() => import('@/components/LoginDialog'), { ssr: false });
 
@@ -41,13 +42,44 @@ export default function Header() {
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
   const authState = useSelector((state: RootState) => state.auth);
-  const role = authState.user.role;
   const userLoggedIn = authState.loggedIn;
+  const userRole = authState.user.role;
 
-  const items = NAV_ITEMS.filter((item) => item.showOn.includes(role));
+  const renderNavLinks = () => (
+    <div className="hidden lg:flex items-center gap-4">
+      {getNavTabsForRole(userRole).map((item) => (
+        <Link
+          key={item.name}
+          href={item.href}
+          className={cn(
+            "text-sm font-medium hover:text-blue-600 transition",
+            pathname === item.href ? "text-blue-600 font-semibold" : "text-gray-700"
+          )}
+        >
+          {item.name}
+        </Link>
+      ))}
+    </div>
+  );
+
+  const renderGuestControls = () => (
+    <>
+      <div className="flex items-center gap-4">
+        <div className="block lg:hidden">
+          <LocationSelector />
+        </div>
+        <div className="hidden lg:flex items-center gap-4">
+          <LocationSelector />
+          <Button onClick={() => dispatch({ type: 'OPEN_LOGIN' })}>
+            Login
+          </Button>
+        </div>
+      </div>
+    </>
+  );
 
   return (
-    <header className="w-full bg-white border-b px-4 sm:px-6 py-3 shadow-sm flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b px-4 sm:px-6 py-3 shadow-sm flex items-center justify-between">
       <div className="flex items-center gap-2">
         <Image
           src="/assets/logo.png"
@@ -61,39 +93,7 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-4">
-        {userLoggedIn && (
-          <div className="hidden lg:flex items-center gap-4">
-            {items.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  "text-sm font-medium hover:text-blue-600 transition",
-                  pathname === item.href ? "text-blue-600 font-semibold" : "text-gray-700"
-                )}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
-        )}
-
-        {!userLoggedIn && (
-          <>
-            <div className="hidden lg:block">
-              <LocationSelector />
-            </div>
-            <Button onClick={() => dispatch({ type: 'OPEN_LOGIN' })} className="hidden lg:inline-flex">
-              Login
-            </Button>
-          </>
-        )}
-
-        {!userLoggedIn && (
-          <div className="lg:hidden">
-            <LocationSelector />
-          </div>
-        )}
+        {userLoggedIn ? renderNavLinks() : renderGuestControls()}
       </div>
 
       <LoginDialog open={state.loginOpen} onClose={() => dispatch({ type: 'CLOSE_LOGIN' })} />

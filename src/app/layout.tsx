@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={`${inter.className} min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
         <Providers>
           <Header />
-          <main className="flex-1 overflow-auto p-4 sm:p-6">
+          <main className="flex-1 overflow-auto pt-16 pb-16">
             {children}
           </main>
           <Footer />
