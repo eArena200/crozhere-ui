@@ -4,8 +4,8 @@ import ArenaList from "@/components/ArenaList";
 export default function Home() {
   return (
     <main>
-      <Hero />
-      <ArenaList />
+      {/* <Hero />
+      <ArenaList /> */}
     </main>
   );
 }

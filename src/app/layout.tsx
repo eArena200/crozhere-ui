@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import BottomNavBar from "@/components/layout/BottomNavBar";
 import { Providers } from "@/redux/provider";
-import NavBar from "@/components/NavBar";
-import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "CrozHere",
-  description: "Modern React application with Next.js",
+  description: "Gaming Arena Booking Platform",
 };
 
 export default function RootLayout({
@@ -19,12 +21,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen flex flex-col`}>
-        <NavBar />
+      <body className={`${inter.className} min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
         <Providers>
-          <main className="flex-1 flex flex-col">{children}</main>
+          <Header />
+          <main className="flex-1 overflow-auto p-4 sm:p-6">
+            {children}
+          </main>
+          <Footer />
+          <BottomNavBar />
         </Providers>
-        <Footer />
       </body>
     </html>
   );

@@ -1,5 +1,7 @@
 "use client";
-import { useState } from 'react';
+
+import { useReducer } from 'react';
+import { LocateFixed } from "lucide-react";
 
 const LOCATIONS = [
   'Mumbai',
@@ -12,35 +14,76 @@ const LOCATIONS = [
   'Ahmedabad',
 ];
 
-export default function LocationSelector() {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const [selected, setSelected] = useState('Select Location');
-  const [loading, setLoading] = useState(false);
+export interface LocationSelectorProps {
+  defaultValue?: string;
+  onSelect?: (location: string) => void;
+}
+
+interface State {
+  open: boolean;
+  search: string;
+  selected: string;
+  loading: boolean;
+}
+
+const initialState: State = {
+  open: false,
+  search: '',
+  selected: 'Select Location',
+  loading: false,
+};
+
+type Action =
+  | { type: 'SET_OPEN'; payload: boolean }
+  | { type: 'SET_SEARCH'; payload: string }
+  | { type: 'SET_SELECTED'; payload: string }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'RESET' };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'SET_OPEN':
+      return { ...state, open: action.payload };
+    case 'SET_SEARCH':
+      return { ...state, search: action.payload };
+    case 'SET_SELECTED':
+      return { ...state, selected: action.payload, open: false, search: '' };
+    case 'SET_LOADING':
+      return { ...state, loading: action.payload };
+    case 'RESET':
+      return initialState;
+    default:
+      return state;
+  }
+}
+
+export default function LocationSelector({ defaultValue: defaultLocation = 'Select Location', onSelect }: LocationSelectorProps) {
+  const [state, dispatch] = useReducer(reducer, {
+    ...initialState,
+    selected: defaultLocation,
+  });
 
   const filtered = LOCATIONS.filter((loc) =>
-    loc.toLowerCase().includes(search.toLowerCase())
+    loc.toLowerCase().includes(state.search.toLowerCase())
   );
 
   const handleSelect = (loc: string) => {
-    setSelected(loc);
-    setOpen(false);
-    setSearch('');
+    dispatch({ type: 'SET_SELECTED', payload: loc });
+    onSelect?.(loc);
   };
 
   const handleGeo = () => {
     if (!navigator.geolocation) return alert('Geolocation not supported');
-    setLoading(true);
+    dispatch({ type: 'SET_LOADING', payload: true });
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        // Placeholder: In real app, use a reverse geocoding API
-        setSelected('Your Location');
-        setLoading(false);
-        setOpen(false);
+      () => {
+        dispatch({ type: 'SET_SELECTED', payload: 'Your Location' });
+        dispatch({ type: 'SET_LOADING', payload: false });
+        onSelect?.('Your Location');
       },
-      (err) => {
+      () => {
         alert('Could not get location');
-        setLoading(false);
+        dispatch({ type: 'SET_LOADING', payload: false });
       }
     );
   };
@@ -49,30 +92,32 @@ export default function LocationSelector() {
     <div className="relative">
       <button
         className="flex items-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-200 transition min-w-[150px]"
-        onClick={() => setOpen((o) => !o)}
+        onClick={() => dispatch({ type: 'SET_OPEN', payload: !state.open })}
         type="button"
       >
-        <span className="truncate mr-2">{selected}</span>
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+        <span className="truncate mr-2">{state.selected}</span>
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
       </button>
-      {open && (
+      {state.open && (
         <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
           <div className="flex items-center px-3 py-2 border-b">
             <input
               type="text"
               className="w-full px-2 py-1 border rounded text-gray-700 focus:outline-none"
               placeholder="Search location..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              value={state.search}
+              onChange={(e) => dispatch({ type: 'SET_SEARCH', payload: e.target.value })}
               autoFocus
             />
             <button
-              className="ml-2 p-1 rounded hover:bg-gray-100"
+              className="ml-2 p-1 rounded hover:bg-gray-100 text-blue-600 disabled:text-gray-300"
               title="Use my location"
               onClick={handleGeo}
-              disabled={loading}
+              disabled={state.loading}
             >
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+              <LocateFixed size={20} />
             </button>
           </div>
           <ul className="max-h-60 overflow-y-auto">
@@ -93,4 +138,4 @@ export default function LocationSelector() {
       )}
     </div>
   );
-} 
+}
