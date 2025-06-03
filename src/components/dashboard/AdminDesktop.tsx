@@ -1,9 +1,18 @@
-import React from 'react'
+import React from 'react';
+import ClubLayout from '../club/ClubLayout';
+import UpcomingBookings from './UpcomingBookings';
 
-function AdminDesktop() {
+export default function AdminDesktop() {
   return (
-    <div>AdminDesktop</div>
-  )
+    <>
+      <div className="flex bg-white h-full w-full px-2 py-4 gap-2">
+          <div className="w-4/5 h-[90vh]" >
+              <ClubLayout />
+          </div>
+          <div className="w-1/5 h-[90vh]">
+              <UpcomingBookings />
+          </div>
+      </div>
+    </>
+  );
 }
-
-export default AdminDesktop;

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useReducer } from "react";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import { getNavTabsForRole } from "@/lib/types/navigation";
 import { cn } from "@/lib/utils";
 import LocationSelector from "@/components/LocationSelector";
@@ -46,33 +45,30 @@ export default function DesktopHeader() {
   const userRole = authState.user.role;
 
   const renderNavLinks = () => (
-    <div className="items-center gap-4">
-      {getNavTabsForRole(userRole).map((item) => (
-        <Link
-          key={item.name}
-          href={item.href}
-          className={cn(
-            "text-sm font-medium hover:text-blue-600 transition",
-            pathname === item.href ? "text-blue-600 font-semibold" : "text-gray-700"
-          )}
-        >
-          {item.name}
-        </Link>
-      ))}
-    </div>
-  );
+  <div className="flex justify-between gap-4">
+    {getNavTabsForRole(userRole).map((item) => (
+      <Link
+        key={item.name}
+        href={item.href}
+        className={cn(
+          "text-sm font-medium hover:text-blue-600 transition",
+          pathname === item.href ? "text-blue-600 font-semibold" : "text-gray-700"
+        )}
+      >
+        {item.name}
+      </Link>
+    ))}
+  </div>
+);
+
 
   const renderGuestControls = () => (
-    <>
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-4">
-          <LocationSelector />
-          <Button onClick={() => dispatch({ type: 'OPEN_LOGIN' })}>
-            Login
-          </Button>
-        </div>
-      </div>
-    </>
+    <div className="flex items-center gap-4">
+      <LocationSelector />
+      <Button onClick={() => dispatch({ type: 'OPEN_LOGIN' })}>
+        Login
+      </Button>
+    </div>
   );
 
   return (

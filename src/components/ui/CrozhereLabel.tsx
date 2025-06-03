@@ -1,10 +1,9 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import Logo from './Logo';
 
 interface CrozhereLabelProps {
-    showLogo?: boolean
+    showLogo?: boolean;
     size?: 'sm' | 'md' | 'lg';
     variant?: 'square' | 'rounded_square' | 'rounded';
     link?: boolean;
