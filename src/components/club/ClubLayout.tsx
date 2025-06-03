@@ -22,7 +22,7 @@ export default function ClubLayout() {
           ))}
         </select>
       </div>
-      <div className="flex-1 w-full">
+      <div className="flex-1 overflow-auto">
         <ZoneLayout zoneName={selectedZone} />
       </div>
     </div>
