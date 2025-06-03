@@ -11,7 +11,7 @@ import LocationSelector from "@/components/LocationSelector";
 import Button from "@/components/ui/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import BottomNavBar from "./BottomNavBar";
+import CrozhereLabel from "../ui/CrozhereLabel";
 
 const LoginDialog = dynamic(() => import('@/components/LoginDialog'), { ssr: false });
 
@@ -38,7 +38,7 @@ function reducer(state: HeaderState, action: HeaderAction): HeaderState {
   }
 }
 
-export default function Header() {
+export default function DesktopHeader() {
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
   const authState = useSelector((state: RootState) => state.auth);
@@ -46,7 +46,7 @@ export default function Header() {
   const userRole = authState.user.role;
 
   const renderNavLinks = () => (
-    <div className="hidden lg:flex items-center gap-4">
+    <div className="items-center gap-4">
       {getNavTabsForRole(userRole).map((item) => (
         <Link
           key={item.name}
@@ -65,10 +65,7 @@ export default function Header() {
   const renderGuestControls = () => (
     <>
       <div className="flex items-center gap-4">
-        <div className="block lg:hidden">
-          <LocationSelector />
-        </div>
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="flex items-center gap-4">
           <LocationSelector />
           <Button onClick={() => dispatch({ type: 'OPEN_LOGIN' })}>
             Login
@@ -79,23 +76,11 @@ export default function Header() {
   );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b px-4 sm:px-6 py-3 shadow-sm flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <Image
-          src="/assets/logo.png"
-          alt="CrozHere Logo"
-          width={32}
-          height={32}
-          className="rounded-sm"
-          priority
-        />
-        <span className="text-xl font-bold text-blue-600">CrozHere</span>
-      </div>
-
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b px-4 py-3 shadow-sm flex items-center justify-between">
+      <CrozhereLabel size="md"/>
       <div className="flex items-center gap-4">
         {userLoggedIn ? renderNavLinks() : renderGuestControls()}
       </div>
-
       <LoginDialog open={state.loginOpen} onClose={() => dispatch({ type: 'CLOSE_LOGIN' })} />
     </header>
   );

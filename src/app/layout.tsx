@@ -1,34 +1,27 @@
-import type { Metadata } from "next";
+'use client';
+
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import BottomNavBar from "@/components/layout/BottomNavBar";
 import { Providers } from "@/redux/provider";
+import { DeviceTypes, useDeviceType } from "../lib/hooks/useDeviceType";
+import MobileLayout from "@/components/layout/MobileLayout";
+import DesktopLayout from "@/components/layout/DesktopLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "CrozHere",
-  description: "Gaming Arena Booking Platform",
-};
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const deviceType = useDeviceType();
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen flex flex-col bg-gray-50 text-gray-900`}>
+      <body className={`${inter.className} bg-gray-50 text-gray-900 min-h-screen`}>
         <Providers>
-          <Header />
-          <main className="flex-1 overflow-auto pt-16 pb-16">
-            {children}
-          </main>
-          <Footer />
-          <BottomNavBar />
+          {deviceType.type === DeviceTypes.MOBILE ? (
+            <MobileLayout>{children}</MobileLayout>
+          ) : (
+            <DesktopLayout>{children}</DesktopLayout>
+          )}
         </Providers>
       </body>
     </html>

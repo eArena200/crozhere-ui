@@ -17,7 +17,7 @@ const ICONS: Record<string, JSX.Element> = {
   Profile: <User size={20} />,
 };
 
-export default function BottomNavBar() {
+export default function MobileNavBar() {
   const pathname = usePathname();
   const userRole: UserRole = useSelector((state: RootState) => state.auth.user.role);
 
