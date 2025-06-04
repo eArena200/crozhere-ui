@@ -1,6 +1,6 @@
 import React from 'react';
 import BookingListItem from './BookingListItem';
-import { StationType } from '@/lib/types/station-type';
+import { StationType } from '@/lib/types/station';
 
 interface Booking {
   id: string;
@@ -34,7 +34,7 @@ export default function UpcomingBookings() {
   return (
     <div className="bg-white border-2 border-gray-300 rounded shadow h-full w-full flex flex-col">
 
-      <div className="h-12 bg-blue-400 rounded-t px-4 flex items-center justify-center">
+      <div className="bg-blue-500 rounded-t p-2 flex items-center justify-center">
         <h2 className="text-md font-bold text-white">Upcoming Bookings</h2>
       </div>
 

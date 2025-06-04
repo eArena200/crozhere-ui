@@ -1,7 +1,7 @@
 import React from 'react';
 import { User, Phone } from 'lucide-react';
 import Logo from '../ui/Logo';
-import { StationType } from '@/lib/types/station-type';
+import { StationType } from '@/lib/types/station';
 import { getDayTimeLabel } from '@/lib/utils';
 
 const stationLogos: Record<StationType, string> = {

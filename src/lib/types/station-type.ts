@@ -1,1 +1,0 @@
-export type StationType = "SNOOKER" | "POOL" | "PC" | "PS4" | "XBOX";

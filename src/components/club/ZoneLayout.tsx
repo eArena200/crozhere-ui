@@ -30,8 +30,8 @@ function ZoneLayout({ zoneName }: ZoneLayoutProps) {
   const groups = mockStationGroups[zoneName] ?? [];
 
   return (
-    <div className="w-full h-full overflow-auto rounded-md bg-green-100 p-2">
-      <div className="relative w-[1200px] h-[800px] bg-green-300">
+    <div className="w-full h-full overflow-auto rounded-md bg-gray-100 p-2">
+      <div className="relative w-[1400px] h-[800px] bg-gray-300 border-2">
         {groups.length > 0 ? (
           groups.map((group) => (
             <StationGroupLayout
