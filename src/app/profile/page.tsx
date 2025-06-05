@@ -1,52 +1,59 @@
 'use client';
 
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/redux/store';
-import { logoutAction } from '@/redux/slices/auth/authSlice';
+import { useState } from 'react';
+import { useDeviceType, DeviceTypes } from '@/lib/hooks/useDeviceType';
+import ClubAdminProfileMobile from '@/components/profile/ClubAdminProfileMobile';
+import ClubAdminProfileDesktop from '@/components/profile/ClubAdminProfileDesktop';
+import PlayerProfileMobile from '@/components/profile/PlayerProfileMobile';
+import PlayerProfileDesktop from '@/components/profile/PlayerProfileDesktop';
 import Button from '@/components/ui/Button';
-import Image from 'next/image';
+import { useSelector } from 'react-redux';
+import { selectAuthUser } from '@/redux/slices/auth/authSlice';
+import LoginDialog from '@/components/ui/LoginDialog';
 
 export default function ProfilePage() {
-  const { user } = useSelector((state: RootState) => state.auth);
-  const dispatchRedux = useDispatch();
+  const { type } = useDeviceType();
+  const user = useSelector(selectAuthUser);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
-  const handleLogout = () => {
-    dispatchRedux(logoutAction());
-  };
+  if (user.role === 'CLUB_ADMIN') {
+    return type === DeviceTypes.MOBILE ? <ClubAdminProfileMobile /> : <ClubAdminProfileDesktop />;
+  }
 
+  if (user.role === 'PLAYER') {
+    return type === DeviceTypes.DESKTOP ? <PlayerProfileMobile /> : <PlayerProfileDesktop />;
+  }
+
+  return renderGuestProfile({
+    onLoginClick: () => setIsLoginOpen(true),
+    isLoginOpen,
+    onClose: () => setIsLoginOpen(false),
+  });
+}
+
+function renderGuestProfile({
+  onLoginClick,
+  isLoginOpen,
+  onClose
+}: {
+  onLoginClick: () => void;
+  isLoginOpen: boolean;
+  onClose: () => void;
+}) {
   return (
-    <div className="min-h-screen w-full bg-white flex justify-center items-start pt-10">
-      <div className="p-4 max-w-md w-full text-center space-y-6">
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-20 h-20 rounded-full overflow-hidden border border-gray-300">
-            <Image
-              src="/assets/player_avatar.png"
-              alt="User Avatar"
-              width={80}
-              height={80}
-              className="object-cover"
-            />
-          </div>
-          <div>
-            <p className="text-lg font-semibold text-gray-900">@userHandle</p>
-            <p className="text-sm text-gray-600">{'Name'}</p>
-          </div>
-        </div>
-
-        <div className="text-left space-y-2 text-sm text-gray-800">
-          <p><strong>📞 Phone:</strong> 9876543210</p>
-          <p><strong>✉️ Email:</strong> user@email.com</p>
-        </div>
-
-        <Button
-          onClick={handleLogout}
-          variant="danger"
-          className="w-full mt-4"
-        >
-          Logout
-        </Button>
+    <div className="bg-white flex flex-col w-full min-h-screen justify-center items-center p-4">
+      <div className="text-black p-4">
+        Seems like you don't have an account.
       </div>
+      <Button 
+        variant="primary"
+        onClick={onLoginClick}
+      >
+        Login/Register
+      </Button>
+      {isLoginOpen && (
+        <LoginDialog onClose={onClose} open={isLoginOpen} />
+      )}
     </div>
   );
-
 }

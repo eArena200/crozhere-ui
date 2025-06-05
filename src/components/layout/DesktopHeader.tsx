@@ -66,7 +66,7 @@ export default function DesktopHeader() {
     <div className="flex items-center gap-4">
       <LocationSelector />
       <Button onClick={() => dispatch({ type: 'OPEN_LOGIN' })}>
-        Login
+        Login/Register
       </Button>
     </div>
   );

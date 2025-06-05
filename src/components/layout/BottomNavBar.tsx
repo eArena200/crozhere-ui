@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, LayoutDashboard, Calendar, Settings, User } from "lucide-react";
+import { Home, LayoutDashboard, Calendar, Settings, User, Store } from "lucide-react";
 import { getNavTabsForRole } from "@/lib/types/navigation";
 import { UserRole } from "@/lib/types/auth";
 import { RootState } from "@/redux/store";
@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 const ICONS: Record<string, JSX.Element> = {
   Home: <Home size={20} />,
   Dashboard: <LayoutDashboard size={20} />,
+  Clubs: <Store size={20} />,
   Bookings: <Calendar size={20} />,
   Settings: <Settings size={20} />,
   Profile: <User size={20} />,
