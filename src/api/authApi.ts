@@ -1,11 +1,24 @@
 import { UserRole } from "@/lib/types/auth";
 
+export interface VerifyAuthRequest {
+  phone: string;
+  otp: string;
+  role: UserRole;
+}
+
 export interface VerifyAuthResponse {
   jwt: string;
   userId: number;
   playerId?: number;
   clubAdminId?: number;
   role: UserRole;
+}
+
+export interface AuthServiceException {
+  error: string;
+  type: string;
+  message: string;
+  timestamp: string;
 }
 
 const INIT_AUTH_ENDPOINT = "http://localhost:8080/auth/init";
@@ -42,26 +55,27 @@ export async function sendOtp(phone: string) {
 }
 
 
-export async function verifyOtp(phone: string, otp: string, role: UserRole): Promise<VerifyAuthResponse> {
-  const res = await fetch(VERIFY_AUTH_ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ phone, otp, role}),
-  });
+export async function verifyOtp(verifyAuthRequest: VerifyAuthRequest)
+  :Promise<VerifyAuthResponse> {
+    const res = await fetch(VERIFY_AUTH_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(verifyAuthRequest),
+    });
 
-  const contentType = res.headers.get("content-type");
-  let result: any;
+    const contentType = res.headers.get("content-type");
+    let result: any;
 
-  if (contentType?.includes("application/json")) {
-    result = await res.json();
-  } else {
-    const text = await res.text();
-    result = text || null;
-  }
+    if (contentType?.includes("application/json")) {
+      result = await res.json();
+    } else {
+      const text = await res.text();
+      result = text || null;
+    }
 
-  if (!res.ok) {
-    throw new Error(result?.message || "Invalid OTP");
-  }
+    if (!res.ok) {
+      throw new Error(result?.message || "Invalid OTP");
+    }
 
-  return result;
+    return result;
 }

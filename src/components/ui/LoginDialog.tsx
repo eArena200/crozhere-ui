@@ -1,10 +1,10 @@
 "use client";
 import { useReducer } from "react";
-import { useDispatch } from "react-redux";
-import { sendOtp, verifyOtp } from "@/api/authApi";
-import { loginAction } from "@/redux/slices/auth/authSlice";
-import Button from "./ui/Button";
-import { VerifyAuthResponse } from "../api/authApi";
+import { useDispatchRedux } from "@/redux/store";
+import { useRouter } from "next/navigation";
+import { sendOtp, VerifyAuthRequest, verifyOtp } from "@/api/authApi";
+import Button from "./Button";
+import { loginWithOtp } from "@/redux/slices/auth/authSlice";
 
 type LoginOrRegisterRole = "PLAYER" | "CLUB_ADMIN";
 
@@ -54,9 +54,12 @@ export interface LoginDialogProps {
 }
 
 export default function LoginDialog({ open, onClose }: LoginDialogProps) {
+  
   const PHONE_REGEX = /^\d{10}$/
 
-  const dispatchRedux = useDispatch();
+  const router = useRouter();
+  const dispatchRedux = useDispatchRedux();
+
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleSendOtp = async () => {
@@ -79,23 +82,37 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
 
   const handleVerifyOtp = async () => {
     dispatch({ type: "SET_ERROR", payload: "" });
+
     if (state.otp.length !== 6) {
       dispatch({ type: "SET_ERROR", payload: "Please enter a 6-digit OTP" });
       return;
     }
 
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    const verifyAuthRequest: VerifyAuthRequest = {
+      phone: state.phone,
+      otp: state.otp,
+      role: state.loginAs
+    };
+
     try {
-      dispatch({ type: "SET_LOADING", payload: true });
-      const verifyAuthResponse: VerifyAuthResponse = await verifyOtp(state.phone, state.otp, state.loginAs);
-      dispatchRedux(loginAction(verifyAuthResponse));
-      onClose();
-    } catch {
-      dispatch({ type: "SET_ERROR", payload: "Invalid OTP" });
+      const resultAction = await dispatchRedux(loginWithOtp(verifyAuthRequest));
+      
+      if (loginWithOtp.fulfilled.match(resultAction)) {
+        router.push("/");
+        onClose();
+        dispatch({ type: "RESET" });
+      } else {
+        const errorPayload = resultAction.payload || "Invalid OTP";
+        dispatch({ type: "SET_ERROR", payload: typeof errorPayload === 'string' ? errorPayload : errorPayload.message || "Login failed" });
+      }
+    } catch (err) {
+      dispatch({ type: "SET_ERROR", payload: "An unexpected error occurred" });
     } finally {
       dispatch({ type: "SET_LOADING", payload: false });
     }
   };
-
   if (!open) return null;
 
   return (

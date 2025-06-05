@@ -9,8 +9,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { name: "Home", href: "/", showOn: ["PLAYER", "CLUB_ADMIN", "GUEST"] },
   { name: "Dashboard", href: "/dashboard", showOn: ["CLUB_ADMIN"] },
-  { name: "Bookings", href: "/bookings", showOn: ["PLAYER", "CLUB_ADMIN", "GUEST"] },
-  { name: "Settings", href: "/settings", showOn: ["CLUB_ADMIN"] },
+  { name: "Clubs", href: "/clubs", showOn: ["CLUB_ADMIN"] },
   { name: "Profile", href: "/profile", showOn: ["PLAYER", "CLUB_ADMIN", "GUEST"] },
 ];
 

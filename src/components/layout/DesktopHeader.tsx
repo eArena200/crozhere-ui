@@ -6,13 +6,13 @@ import { useReducer } from "react";
 import dynamic from "next/dynamic";
 import { getNavTabsForRole } from "@/lib/types/navigation";
 import { cn } from "@/lib/utils";
-import LocationSelector from "@/components/LocationSelector";
+import LocationSelector from "@/components/ui/LocationSelector";
 import Button from "@/components/ui/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import CrozhereLabel from "../ui/CrozhereLabel";
 
-const LoginDialog = dynamic(() => import('@/components/LoginDialog'), { ssr: false });
+const LoginDialog = dynamic(() => import('@/components/ui/LoginDialog'), { ssr: false });
 
 interface HeaderState {
   loginOpen: boolean;

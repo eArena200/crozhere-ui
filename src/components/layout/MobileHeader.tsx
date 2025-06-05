@@ -2,10 +2,10 @@
 
 import { useReducer } from "react";
 import dynamic from "next/dynamic";
-import LocationSelector from "@/components/LocationSelector";
+import LocationSelector from "@/components/ui/LocationSelector";
 import CrozhereLabel from "../ui/CrozhereLabel";
 
-const LoginDialog = dynamic(() => import('@/components/LoginDialog'), { ssr: false });
+const LoginDialog = dynamic(() => import('@/components/ui/LoginDialog'), { ssr: false });
 
 interface HeaderState {
   loginOpen: boolean;

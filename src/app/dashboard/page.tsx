@@ -1,11 +1,13 @@
 'use client';
 
 import { useDeviceType, DeviceTypes } from '@/lib/hooks/useDeviceType';
-import AdminDesktop from '@/components/dashboard/AdminDesktop';
-import AdminMobile from '@/components/dashboard/AdminMobile';
+import DashboardDesktop from '@/components/dashboard/DashboardDesktop';
+import DashboardMobile from '@/components/dashboard/DashboardMobile';
 
-export default function Dashboard() {
+function Dashboard() {
   const { type } = useDeviceType();
 
-  return type === DeviceTypes.MOBILE ? <AdminMobile /> : <AdminDesktop />;
+  return type === DeviceTypes.MOBILE ? <DashboardMobile /> : <DashboardDesktop />;
 }
+
+export default Dashboard;

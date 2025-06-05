@@ -1,6 +1,6 @@
-import BottomNavBar from "./BottomNavBar";
-import MobileHeader from "./MobileHeader";
-import MobileFooter from "./MobileFooter";
+import BottomNavBar from "./layout/BottomNavBar";
+import MobileHeader from "./layout/MobileHeader";
+import MobileFooter from "./layout/MobileFooter";
 
 export default function MobileLayout({ children }: { children: React.ReactNode }) {
   return (

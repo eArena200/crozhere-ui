@@ -1,8 +1,7 @@
 import React from 'react';
-import ClubLayout from '../club/ClubLayout';
+import ClubLayout from '../clublayout/ClubLayout';
 import UpcomingBookings from './UpcomingBookings';
 import ClubDashboard from './ClubDashboard';
-import TestClubApi from './TestClubApi';
 
 export default function AdminDesktop() {
   const clubName = "Lord Of Gaming";
@@ -20,7 +19,6 @@ export default function AdminDesktop() {
           <div className="w-1/5 h-[80vh]">
               <UpcomingBookings />
           </div>
-          <TestClubApi/>
       </div> 
     </>
   );

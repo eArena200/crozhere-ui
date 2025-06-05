@@ -5,8 +5,8 @@ import "./globals.css";
 
 import { Providers } from "@/redux/provider";
 import { DeviceTypes, useDeviceType } from "../lib/hooks/useDeviceType";
-import MobileLayout from "@/components/layout/MobileLayout";
-import DesktopLayout from "@/components/layout/DesktopLayout";
+import MobileLayout from "@/components/MobileLayout";
+import DesktopLayout from "@/components/DesktopLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
