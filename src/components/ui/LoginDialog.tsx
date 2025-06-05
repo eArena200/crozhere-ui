@@ -2,9 +2,10 @@
 import { useReducer } from "react";
 import { useDispatchRedux } from "@/redux/store";
 import { useRouter } from "next/navigation";
-import { sendOtp, VerifyAuthRequest, verifyOtp } from "@/api/authApi";
+import { VerifyAuthRequest } from "@/api/authApi";
 import Button from "./Button";
-import { loginWithOtp } from "@/redux/slices/auth/authSlice";
+import { loginWithOtpAction, selectAuthIsLoading, sendOtpAction } from "@/redux/slices/auth/authSlice";
+import { useSelector } from "react-redux";
 
 type LoginOrRegisterRole = "PLAYER" | "CLUB_ADMIN";
 
@@ -13,7 +14,6 @@ interface LoginState {
   phone: string;
   otp: string;
   otpSent: boolean;
-  loading: boolean;
   error: string;
 }
 
@@ -22,7 +22,6 @@ type LoginAction =
   | { type: "SET_PHONE"; payload: string }
   | { type: "SET_OTP"; payload: string }
   | { type: "SET_OTP_SENT"; payload: boolean }
-  | { type: "SET_LOADING"; payload: boolean }
   | { type: "SET_ERROR"; payload: string }
   | { type: "RESET" };
 
@@ -31,7 +30,6 @@ const initialState: LoginState = {
   phone: "",
   otp: "",
   otpSent: false,
-  loading: false,
   error: "",
 };
 
@@ -41,7 +39,6 @@ function reducer(state: LoginState, action: LoginAction): LoginState {
     case "SET_PHONE": return { ...state, phone: action.payload };
     case "SET_OTP": return { ...state, otp: action.payload };
     case "SET_OTP_SENT": return { ...state, otpSent: action.payload };
-    case "SET_LOADING": return { ...state, loading: action.payload };
     case "SET_ERROR": return { ...state, error: action.payload };
     case "RESET": return initialState;
     default: return state;
@@ -56,11 +53,11 @@ export interface LoginDialogProps {
 export default function LoginDialog({ open, onClose }: LoginDialogProps) {
   
   const PHONE_REGEX = /^\d{10}$/
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const router = useRouter();
   const dispatchRedux = useDispatchRedux();
-
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const isLoading = useSelector(selectAuthIsLoading);
 
   const handleSendOtp = async () => {
     dispatch({ type: "SET_ERROR", payload: "" });
@@ -70,13 +67,15 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
     }
 
     try {
-      dispatch({ type: "SET_LOADING", payload: true });
-      await sendOtp(state.phone);
-      dispatch({ type: "SET_OTP_SENT", payload: true });
+      const res = await dispatchRedux(sendOtpAction(state.phone));
+      if (sendOtpAction.fulfilled.match(res)){
+        dispatch({ type: "SET_OTP_SENT", payload: true });
+      } else {
+        const errorPayload = res.payload || "Failed to send OTP";
+        dispatch({ type: "SET_ERROR", payload: typeof errorPayload === 'string' ? errorPayload : errorPayload.message || "Failed to send OTP" });
+      }
     } catch {
       dispatch({ type: "SET_ERROR", payload: "Failed to send OTP" });
-    } finally {
-      dispatch({ type: "SET_LOADING", payload: false });
     }
   };
 
@@ -88,8 +87,6 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
       return;
     }
 
-    dispatch({ type: "SET_LOADING", payload: true });
-
     const verifyAuthRequest: VerifyAuthRequest = {
       phone: state.phone,
       otp: state.otp,
@@ -97,9 +94,9 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
     };
 
     try {
-      const resultAction = await dispatchRedux(loginWithOtp(verifyAuthRequest));
+      const resultAction = await dispatchRedux(loginWithOtpAction(verifyAuthRequest));
       
-      if (loginWithOtp.fulfilled.match(resultAction)) {
+      if (loginWithOtpAction.fulfilled.match(resultAction)) {
         router.push("/");
         onClose();
         dispatch({ type: "RESET" });
@@ -109,10 +106,9 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
       }
     } catch (err) {
       dispatch({ type: "SET_ERROR", payload: "An unexpected error occurred" });
-    } finally {
-      dispatch({ type: "SET_LOADING", payload: false });
     }
   };
+
   if (!open) return null;
 
   return (
@@ -168,10 +164,10 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
 
           <Button
             onClick={handleSendOtp}
-            disabled={state.loading || state.otpSent}
+            disabled={isLoading || state.otpSent}
             className="w-full mb-2"
           >
-            {state.loading && !state.otpSent ? 'Sending OTP...' : 'Send OTP'}
+            {'Send OTP'}
           </Button>
         </div>
 
@@ -187,11 +183,11 @@ export default function LoginDialog({ open, onClose }: LoginDialogProps) {
             />
             <Button
               onClick={handleVerifyOtp}
-              disabled={state.loading}
+              disabled={isLoading}
               variant="primary"
               className="w-full mb-2 bg-green-600 hover:bg-green-700"
             >
-              {state.loading ? 'Verifying...' : 'Verify OTP'}
+              {'Verify OTP'}
             </Button>
           </div>
         )}

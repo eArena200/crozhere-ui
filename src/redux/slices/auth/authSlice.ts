@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AuthUser } from "@/lib/types/auth";
-import { AuthServiceException, VerifyAuthRequest, VerifyAuthResponse, verifyOtp } from '@/api/authApi';
+import { AuthServiceException, VerifyAuthRequest, VerifyAuthResponse, verifyOtp, sendOtp } from '@/api/authApi';
 import { loadClubAdminById } from "./clubAdminSlice";
 import { RootState } from "@/redux/store";
 import { loadPlayerById } from "./playerSlice";
@@ -15,7 +15,29 @@ export interface AuthState {
 }
 
 // THUNKS
-export const loginWithOtp = createAsyncThunk<
+export const sendOtpAction = createAsyncThunk<
+  void, string, {
+    rejectValue: AuthServiceException;
+  }>(
+    'auth/sendOtp',
+    async (phone: string, {dispatch, rejectWithValue}) => {
+      try{
+        await sendOtp(phone);
+      } catch(err: any){
+        if(err.response?.data) {
+          return rejectWithValue(err.response?.data)
+        } 
+        return rejectWithValue({
+            error: "LOGIN_THUNK_EXCEPTION",
+            type: "SEND_OTP",
+            message: "Failed to send OTP",
+            timestamp: new Date().toISOString(),
+        });
+      }
+    }
+  )
+
+export const loginWithOtpAction = createAsyncThunk<
   VerifyAuthResponse, VerifyAuthRequest, {
    rejectValue: AuthServiceException; 
   }>(
@@ -40,7 +62,7 @@ export const loginWithOtp = createAsyncThunk<
         return rejectWithValue({
             error: "LOGIN_THUNK_EXCEPTION",
             type: "LOAD_BY_OTP",
-            message: "login with otp failed",
+            message: "OTP verification failed",
             timestamp: new Date().toISOString(),
         });
       }
@@ -61,20 +83,6 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginAction(state: AuthState, 
-      action: PayloadAction<VerifyAuthResponse>) {
-      const payload = action.payload;
-      
-      state.loggedIn = true;
-      state.jwt = payload.jwt;
-      state.user = {
-        id: payload.userId,
-        role: payload.role,
-        playerId: payload.playerId,
-        clubAdminId: payload.clubAdminId
-      };
-    },
-
     logoutAction(state: AuthState) {
       state.loggedIn = false;
       state.jwt = '';
@@ -85,11 +93,24 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginWithOtp.pending, (state) => {
+      .addCase(sendOtpAction.pending, (state) => {
         state.isLoading = true;
         state.error = undefined;
       })
-      .addCase(loginWithOtp.fulfilled, (state, action: PayloadAction<VerifyAuthResponse>) => {
+      .addCase(sendOtpAction.fulfilled, (state, action: PayloadAction<void>) => {
+        state.isLoading = false;
+        state.error = undefined;
+      })
+      .addCase(sendOtpAction.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+
+      .addCase(loginWithOtpAction.pending, (state) => {
+        state.isLoading = true;
+        state.error = undefined;
+      })
+      .addCase(loginWithOtpAction.fulfilled, (state, action: PayloadAction<VerifyAuthResponse>) => {
         state.isLoading = false;
         state.loggedIn = true;
         state.jwt = action.payload.jwt;
@@ -101,7 +122,7 @@ const authSlice = createSlice({
         };
         state.error = undefined;
       })
-      .addCase(loginWithOtp.rejected, (state, action) => {
+      .addCase(loginWithOtpAction.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });
