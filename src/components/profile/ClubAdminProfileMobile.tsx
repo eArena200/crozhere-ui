@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { User, Mail, Phone, Pencil } from 'lucide-react';
 import { useSelector } from 'react-redux';
-
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-
 import { useDispatchRedux } from '@/redux/store';
+import { UpdateClubAdminRequest } from '@/api/clubAdminApi';
 import {
   selectClubAdminState,
   selectClubAdminIsLoading,
   selectClubAdminError,
   loadClubAdminById,
+  updateClubAdmin
 } from '@/redux/slices/auth/clubAdminSlice';
 import { logoutAction, selectAuthUser } from '@/redux/slices/auth/authSlice';
 
@@ -62,17 +62,24 @@ function ClubAdminProfileMobile() {
   };
 
   const handleSave = () => {
-    console.log("Saved mobile form:", formData);
-    setIsEditing(false);
-    // Optionally dispatch update thunk here
-  };
+      if (clubAdmin?.clubAdminId) {
+        const updateRequest: UpdateClubAdminRequest = {
+          name: formData.name,
+          email: formData.email,
+        };
+        dispatchRedux(updateClubAdmin({
+          clubAdminId: clubAdmin.clubAdminId,
+          updateClubAdminRequest: updateRequest,
+        }));
+      }
+      setIsEditing(false);
+    };
 
   const handleChangePicture = () => {
     console.log("Change picture clicked");
   };
 
   const handleLogout = () => {
-    console.log("Logout clicked");
     dispatchRedux(logoutAction());
   };
 

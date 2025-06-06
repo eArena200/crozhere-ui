@@ -1,4 +1,4 @@
-import { fetchPlayerById, PlayerResponse, PlayerServiceException } from "@/api/playerApi";
+import { fetchPlayerById, PlayerResponse, PlayerServiceException, updatePlayerById, UpdatePlayerRequest } from "@/api/playerApi";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
 
@@ -37,6 +37,31 @@ PlayerResponse, number,{
     
 );
 
+export const updatePlayer = createAsyncThunk<
+    PlayerResponse,
+    { playerId: number, updatePlayerRequest: UpdatePlayerRequest },
+    { rejectValue: PlayerServiceException }>(
+
+    "player/updatePlayer",
+    async ({playerId, updatePlayerRequest}, { rejectWithValue }) => {
+        try {
+            const response = await updatePlayerById(playerId, updatePlayerRequest);
+            return response;
+        } catch (err: any) {
+            if(err.response?.data){
+                return rejectWithValue(err.response.data);
+            }
+
+            return rejectWithValue({
+                error: "PLAYER_THUNK_EXCEPTION",
+                type: "UPDATE_PLAYER",
+                message: "Load player by ID failed",
+                timestamp: new Date().toISOString(),
+            });
+        }
+    }
+);
+
 
 
 // SLICE
@@ -67,7 +92,27 @@ const playerSlice = createSlice({
             .addCase(loadPlayerById.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload;
-            });
+            })
+
+
+            .addCase(updatePlayer.pending, (state) => {
+                state.isLoading = true;
+                state.error = undefined;
+            })
+            .addCase(updatePlayer.fulfilled, (state, action) => {
+                state.isLoading = false;
+                const { id, username, name, email, phone } = action.payload;
+                state.playerId = id;
+                state.username = username;
+                state.name = name;
+                state.email = email;
+                state.phone = phone;
+                state.error = undefined;
+            })
+            .addCase(updatePlayer.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
     },
 });
 

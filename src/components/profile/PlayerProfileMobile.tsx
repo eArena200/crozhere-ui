@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { User, Mail, Phone, Pencil, Swords } from 'lucide-react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import { useDispatchRedux } from "@/redux/store";
@@ -10,8 +10,10 @@ import {
   selectPlayerIsLoading,
   selectPlayerError,
   loadPlayerById,
+  updatePlayer
 } from '@/redux/slices/auth/playerSlice';
 import { logoutAction, selectAuthUser } from '@/redux/slices/auth/authSlice';
+import { UpdatePlayerRequest } from '@/api/playerApi';
 
 function PlayerProfileMobile() {
     const dispatchRedux = useDispatchRedux();
@@ -37,43 +39,52 @@ function PlayerProfileMobile() {
     }, [dispatchRedux, player.playerId, playerId]);
 
     useEffect(() => {
-    if (player.playerId) {
-        setFormData({
-        name: player.name || '',
-        username: player.username || '',
-        email: player.email || '',
-        phone: player.phone || '',
-        });
-    }
+        if (player.playerId) {
+            setFormData({
+            name: player.name || '',
+            username: player.username || '',
+            email: player.email || '',
+            phone: player.phone || '',
+            });
+        }
     }, [player]);
 
     const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+        setFormData(prev => ({ ...prev, [field]: value }));
     };
 
     const handleCancel = () => {
-    if (player.playerId) {
-        setFormData({
-        name: player.name || '',
-        username: player.username || '',
-        email: player.email || '',
-        phone: player.phone || '',
-        });
-    }
-    setIsEditing(false);
+        if (player.playerId) {
+            setFormData({
+            name: player.name || '',
+            username: player.username || '',
+            email: player.email || '',
+            phone: player.phone || '',
+            });
+        }
+        setIsEditing(false);
     };
 
     const handleSave = () => {
-    console.log('Saved form data:', formData);
-    setIsEditing(false);
+        if (playerId) {
+          const updateRequest: UpdatePlayerRequest = {
+            name: formData.name,
+            username: formData.username,
+            email: formData.email
+          };
+          dispatchRedux(updatePlayer({
+            playerId: playerId,
+            updatePlayerRequest: updateRequest,
+          }));
+        }
+        setIsEditing(false);
     };
 
     const handleChangePicture = () => {
-    console.log('Change picture clicked');
+        console.log('Change picture clicked');
     };
 
     const handleLogout = () => {
-        console.log('Logout clicked');
         dispatchRedux(logoutAction());
     };
 

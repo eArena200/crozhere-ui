@@ -2,21 +2,21 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { User, Mail, Phone, Swords } from 'lucide-react';
-
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-
 import { useDispatchRedux } from '@/redux/store';
 import {
   selectPlayerState,
   selectPlayerIsLoading,
   selectPlayerError,
   loadPlayerById,
+  updatePlayer,
 } from '@/redux/slices/auth/playerSlice';
 import {
     logoutAction,
   selectAuthUser
 } from '@/redux/slices/auth/authSlice';
+import { UpdatePlayerRequest } from '@/api/playerApi';
 
 function PlayerProfileDesktop() {
   const dispatchRedux = useDispatchRedux();
@@ -69,7 +69,17 @@ function PlayerProfileDesktop() {
   };
 
   const handleSave = () => {
-    console.log('Saved data:', formData);
+    if (playerId) {
+      const updateRequest: UpdatePlayerRequest = {
+        name: formData.name,
+        username: formData.username,
+        email: formData.email
+      };
+      dispatchRedux(updatePlayer({
+        playerId: playerId,
+        updatePlayerRequest: updateRequest,
+      }));
+    }
     setEditMode(false);
   };
 
@@ -78,7 +88,6 @@ function PlayerProfileDesktop() {
   };
 
   const handleLogout = () => {
-    console.log('Logout clicked');
     dispatchRedux(logoutAction());
   };
 

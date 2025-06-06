@@ -1,6 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchClubAdminById } from "@/api/clubAdminApi";
-import { ClubAdminResponse, ClubAdminServiceException } from "@/api/clubAdminApi";
+import { fetchClubAdminById, updateClubAdminById } from "@/api/clubAdminApi";
+import { 
+  ClubAdminResponse, 
+  ClubAdminServiceException, 
+  UpdateClubAdminRequest 
+} from "@/api/clubAdminApi";
 import { RootState } from "@/redux/store";
 
 
@@ -37,6 +41,29 @@ export const loadClubAdminById = createAsyncThunk<
     }
 );
 
+export const updateClubAdmin = createAsyncThunk<
+  ClubAdminResponse, 
+  { clubAdminId: number, updateClubAdminRequest: UpdateClubAdminRequest }, 
+  { rejectValue: ClubAdminServiceException }>(
+    "clubAdmin/updateClubAdmin",
+    async ({ clubAdminId, updateClubAdminRequest }, { rejectWithValue }) => {
+      try {
+        const response = await updateClubAdminById(clubAdminId, updateClubAdminRequest);
+        return response;
+      } catch (err: any) {
+        if (err.response?.data){
+          return rejectWithValue(err.response.data);
+        }
+        return rejectWithValue({
+          error: "CLUB_ADMIN_THUNK_EXCEPTION",
+          type: "UPDATE_PLAYER",
+          message: "Load club-admin by ID failed",
+          timestamp: new Date().toISOString()
+        });
+      }
+    }
+  );
+
 // SLICE
 const initialState: ClubAdminState = {
     isLoading: false
@@ -63,7 +90,25 @@ const clubAdminSlice = createSlice({
         .addCase(loadClubAdminById.rejected, (state, action) => {
           state.isLoading = false;
           state.error = action.payload;
-        });
+        })
+
+
+        .addCase(updateClubAdmin.pending, (state) => {
+          state.isLoading = true;
+          state.error = undefined;
+        })
+        .addCase(updateClubAdmin.fulfilled, (state, action) => {
+          state.isLoading = false;
+          const { id, name, email, phone } = action.payload;
+          state.clubAdminId = id;
+          state.name = name;
+          state.email = email;
+          state.phone = phone;
+        })
+        .addCase(updateClubAdmin.rejected, (state, action) => {
+          state.isLoading = false;
+          state.error = action.payload;
+        })
     },
 });
 

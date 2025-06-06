@@ -7,11 +7,13 @@ import Input from '../ui/Input';
 import Button from '../ui/Button';
 
 import { useDispatchRedux } from '@/redux/store';
+import { UpdateClubAdminRequest } from '@/api/clubAdminApi';
 import {
   selectClubAdminState,
   selectClubAdminIsLoading,
   selectClubAdminError,
   loadClubAdminById,
+  updateClubAdmin,
 } from '@/redux/slices/auth/clubAdminSlice';
 import { logoutAction, selectAuthUser } from '@/redux/slices/auth/authSlice';
 
@@ -64,9 +66,17 @@ function ClubAdminProfileDesktop() {
   };
 
   const handleSave = () => {
-    console.log('Saved data:', formData);
+    if (clubAdmin?.clubAdminId) {
+      const updateRequest: UpdateClubAdminRequest = {
+        name: formData.name,
+        email: formData.email,
+      };
+      dispatchRedux(updateClubAdmin({
+        clubAdminId: clubAdmin.clubAdminId,
+        updateClubAdminRequest: updateRequest,
+      }));
+    }
     setEditMode(false);
-    // Optionally dispatch an updateClubAdminById thunk here
   };
 
   const handleChangePicture = () => {
@@ -74,7 +84,6 @@ function ClubAdminProfileDesktop() {
   };
 
   const handleLogout = () => {
-    console.log('Logout clicked');
     dispatchRedux(logoutAction());
   };
 
