@@ -14,6 +14,7 @@ import {
   loadPlayerById,
 } from '@/redux/slices/auth/playerSlice';
 import {
+    logoutAction,
   selectAuthUser
 } from '@/redux/slices/auth/authSlice';
 
@@ -70,7 +71,6 @@ function PlayerProfileDesktop() {
   const handleSave = () => {
     console.log('Saved data:', formData);
     setEditMode(false);
-    // Optionally dispatch an update action
   };
 
   const handleChangePicture = () => {
@@ -79,6 +79,7 @@ function PlayerProfileDesktop() {
 
   const handleLogout = () => {
     console.log('Logout clicked');
+    dispatchRedux(logoutAction());
   };
 
   if (isLoading) {

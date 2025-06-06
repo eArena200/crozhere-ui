@@ -13,7 +13,7 @@ import {
   selectClubAdminError,
   loadClubAdminById,
 } from '@/redux/slices/auth/clubAdminSlice';
-import { selectAuthUser } from '@/redux/slices/auth/authSlice';
+import { logoutAction, selectAuthUser } from '@/redux/slices/auth/authSlice';
 
 function ClubAdminProfileDesktop() {
   const dispatchRedux = useDispatchRedux();
@@ -75,6 +75,7 @@ function ClubAdminProfileDesktop() {
 
   const handleLogout = () => {
     console.log('Logout clicked');
+    dispatchRedux(logoutAction());
   };
 
   if (isLoading) {

@@ -11,7 +11,7 @@ import {
   selectPlayerError,
   loadPlayerById,
 } from '@/redux/slices/auth/playerSlice';
-import { selectAuthUser } from '@/redux/slices/auth/authSlice';
+import { logoutAction, selectAuthUser } from '@/redux/slices/auth/authSlice';
 
 function PlayerProfileMobile() {
     const dispatchRedux = useDispatchRedux();
@@ -73,7 +73,8 @@ function PlayerProfileMobile() {
     };
 
     const handleLogout = () => {
-    console.log('Logout clicked');
+        console.log('Logout clicked');
+        dispatchRedux(logoutAction());
     };
 
     if (isLoading) {

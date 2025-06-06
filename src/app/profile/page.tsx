@@ -21,7 +21,7 @@ export default function ProfilePage() {
   }
 
   if (user.role === 'PLAYER') {
-    return type === DeviceTypes.DESKTOP ? <PlayerProfileMobile /> : <PlayerProfileDesktop />;
+    return type === DeviceTypes.MOBILE ? <PlayerProfileMobile /> : <PlayerProfileDesktop />;
   }
 
   return renderGuestProfile({
@@ -43,7 +43,7 @@ function renderGuestProfile({
   return (
     <div className="bg-white flex flex-col w-full min-h-screen justify-center items-center p-4">
       <div className="text-black p-4">
-        Seems like you don't have an account.
+        Login or Register to see your profile.
       </div>
       <Button 
         variant="primary"

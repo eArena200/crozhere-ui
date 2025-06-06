@@ -3,8 +3,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AuthUser } from "@/lib/types/auth";
 import { AuthServiceException, VerifyAuthRequest, VerifyAuthResponse, verifyOtp, sendOtp } from '@/api/authApi';
 import { loadClubAdminById } from "./clubAdminSlice";
-import { RootState } from "@/redux/store";
+import { RootState, persistor } from "@/redux/store";
 import { loadPlayerById } from "./playerSlice";
+
 
 export interface AuthState {
   isLoading: boolean;
@@ -69,6 +70,14 @@ export const loginWithOtpAction = createAsyncThunk<
     }
 );
 
+export const logoutAction = createAsyncThunk(
+  'auth/logoutAction',
+  async (_, { dispatch }) => {
+    dispatch(logout());
+    await persistor.purge();
+  }
+);
+
 
 // SLICE
 const initialState: AuthState = {
@@ -83,7 +92,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logoutAction(state: AuthState) {
+    logout(state: AuthState) {
       state.loggedIn = false;
       state.jwt = '';
       state.user = {
@@ -137,7 +146,5 @@ export const selectAuthUser = (state: RootState) => state.auth.user;
 export const selectAuthIsLoading = (state: RootState) => state.auth.isLoading;
 export const selectIsUserLoggedIn = (state: RootState) => state.auth.loggedIn;
 
-
-
-export const { logoutAction } = authSlice.actions;
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;
