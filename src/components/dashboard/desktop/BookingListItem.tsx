@@ -1,6 +1,6 @@
 import React from 'react';
 import { User, Phone } from 'lucide-react';
-import Logo from '../ui/Logo';
+import Logo from '@/components/ui/Logo';
 import { StationType } from '@/lib/types/station';
 import { getDayTimeLabel } from '@/lib/utils';
 

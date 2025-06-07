@@ -3,8 +3,8 @@
 import React from 'react';
 import { useState } from 'react';
 import { useDeviceType, DeviceTypes } from '@/lib/hooks/useDeviceType';
-import PlayerProfileMobile from '@/components/profile/PlayerProfileMobile';
-import PlayerProfileDesktop from '@/components/profile/PlayerProfileDesktop';
+import PlayerProfileMobile from '@/components/profile/player/PlayerProfileMobile';
+import PlayerProfileDesktop from '@/components/profile/player/PlayerProfileDesktop';
 import Button from '@/components/ui/Button';
 import { useSelector } from 'react-redux';
 import { selectAuthUser } from '@/redux/slices/auth/authSlice';

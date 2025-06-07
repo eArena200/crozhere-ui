@@ -10,7 +10,7 @@ import LocationSelector from "@/components/ui/LocationSelector";
 import Button from "@/components/ui/Button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import CrozhereLabel from "../ui/CrozhereLabel";
+import CrozhereLabel from "../../ui/CrozhereLabel";
 
 const LoginDialog = dynamic(() => import('@/components/ui/LoginDialog'), { ssr: false });
 

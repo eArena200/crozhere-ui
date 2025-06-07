@@ -1,5 +1,5 @@
-import DesktopHeader from "./layout/DesktopHeader";
-import DesktopFooter from "./layout/DesktopFooter";
+import DesktopHeader from "@/components/layout/desktop/DesktopHeader";
+import DesktopFooter from "@/components/layout/desktop/DesktopFooter";
 
 export default function DesktopLayout({ children }: { children: React.ReactNode }) {
   return (

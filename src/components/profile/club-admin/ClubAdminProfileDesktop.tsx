@@ -3,8 +3,8 @@ import Image from 'next/image';
 import { User, Mail, Phone } from 'lucide-react';
 import { useSelector } from 'react-redux';
 
-import Input from '../ui/Input';
-import Button from '../ui/Button';
+import Input from '@/components/ui/Input';
+import Button from '@/components/ui/Button';
 
 import { useDispatchRedux } from '@/redux/store';
 import { UpdateClubAdminRequest } from '@/api/clubAdminApi';

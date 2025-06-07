@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { User, Mail, Phone, Swords } from 'lucide-react';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
+import Input from '@/components/ui/Input';
+import Button from '@/components/ui/Button';
 import { useDispatchRedux } from '@/redux/store';
 import {
   selectPlayerState,

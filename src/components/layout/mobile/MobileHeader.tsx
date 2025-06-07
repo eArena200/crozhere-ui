@@ -3,7 +3,7 @@
 import { useReducer } from "react";
 import dynamic from "next/dynamic";
 import LocationSelector from "@/components/ui/LocationSelector";
-import CrozhereLabel from "../ui/CrozhereLabel";
+import CrozhereLabel from "../../ui/CrozhereLabel";
 
 const LoginDialog = dynamic(() => import('@/components/ui/LoginDialog'), { ssr: false });
 
