@@ -1,27 +1,24 @@
 'use client';
 
+import React from 'react';
 import { useState } from 'react';
 import { useDeviceType, DeviceTypes } from '@/lib/hooks/useDeviceType';
 import ClubAdminProfileMobile from '@/components/profile/ClubAdminProfileMobile';
 import ClubAdminProfileDesktop from '@/components/profile/ClubAdminProfileDesktop';
-import PlayerProfileMobile from '@/components/profile/PlayerProfileMobile';
-import PlayerProfileDesktop from '@/components/profile/PlayerProfileDesktop';
 import Button from '@/components/ui/Button';
 import { useSelector } from 'react-redux';
 import { selectAuthUser } from '@/redux/slices/auth/authSlice';
 import LoginDialog from '@/components/ui/LoginDialog';
 
-export default function ProfilePage() {
+function AdminProfile() {
   const { type } = useDeviceType();
   const user = useSelector(selectAuthUser);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-
+  
   if (user.role === 'CLUB_ADMIN') {
-    return type === DeviceTypes.MOBILE ? <ClubAdminProfileMobile /> : <ClubAdminProfileDesktop />;
-  }
-
-  if (user.role === 'PLAYER') {
-    return type === DeviceTypes.MOBILE ? <PlayerProfileMobile /> : <PlayerProfileDesktop />;
+    return (type === DeviceTypes.MOBILE)
+            ? <ClubAdminProfileMobile /> 
+            : <ClubAdminProfileDesktop />;
   }
 
   return renderGuestProfile({
@@ -57,3 +54,5 @@ function renderGuestProfile({
     </div>
   );
 }
+
+export default AdminProfile;

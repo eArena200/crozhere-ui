@@ -3,16 +3,33 @@ import { UserRole } from "./auth";
 export interface NavItem {
   name: string;
   href: string;
-  showOn: UserRole[];
 }
 
-export const NAV_ITEMS: NavItem[] = [
-  { name: "Home", href: "/", showOn: ["PLAYER", "CLUB_ADMIN", "GUEST"] },
-  { name: "Dashboard", href: "/dashboard", showOn: ["CLUB_ADMIN"] },
-  { name: "Clubs", href: "/clubs", showOn: ["CLUB_ADMIN"] },
-  { name: "Profile", href: "/profile", showOn: ["PLAYER", "CLUB_ADMIN", "GUEST"] },
+export const CLUB_ADMIN_NAV_ITEMS: NavItem[] = [
+  { name: "Home", href: "/" },
+  { name: "Dashboard", href: "/admin/dashboard  "},
+  { name: "Clubs", href: "/admin/clubs"},
+  { name: "Profile", href: "/admin/profile"},
+];
+
+export const PLAYER_NAV_ITEMS: NavItem[] = [
+  { name: "Home", href: "/"},
+  { name: "Bookings", href: "/player/bookings"},
+  { name: "Profile", href: "/player/profile"},
+];
+
+export const GUEST_NAV_ITEMS: NavItem[] = [
+
 ];
 
 export function getNavTabsForRole(role: UserRole) : NavItem[]{
-  return NAV_ITEMS.filter((item) => item.showOn.includes(role));
+  if(role === 'CLUB_ADMIN'){
+    return CLUB_ADMIN_NAV_ITEMS;
+  }
+
+  if(role === 'PLAYER'){
+    return PLAYER_NAV_ITEMS;
+  }
+
+  return GUEST_NAV_ITEMS;
 }

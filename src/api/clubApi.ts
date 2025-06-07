@@ -39,119 +39,144 @@ export interface StationResponse {
   isActive: boolean;
 }
 
+function handleApiError(errorBody: any, fallbackType: string, fallbackMessage: string) {
+  if (errorBody && errorBody.error && errorBody.message) {
+    return {
+      error: errorBody.error,
+      type: errorBody.type || fallbackType,
+      message: errorBody.message,
+      timestamp: errorBody.timestamp || new Date().toISOString(),
+    };
+  }
+  return {
+    error: "CLUB_API_ERROR",
+    type: fallbackType,
+    message: fallbackMessage,
+    timestamp: new Date().toISOString(),
+  };
+}
 
-// Club APIs
 export async function createClub(data: CreateClubRequest): Promise<ClubResponse> {
-    const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
+  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 
-    if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err || "Failed to create club");
-    }
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "CREATE_CLUB", "Failed to create club");
+  }
 
-    return res.json();
+  return res.json();
 }
 
 export async function getAllClubs(clubAdminId?: number): Promise<ClubResponse[]> {
-    const url = new URL(`${CLUBSERVICE_ENDPOINT}/clubs`);
-    if (clubAdminId) {
-        url.searchParams.append("clubAdminId", clubAdminId.toString());
-    }
+  const url = new URL(`${CLUBSERVICE_ENDPOINT}/clubs`);
+  if (clubAdminId) {
+    url.searchParams.append("clubAdminId", clubAdminId.toString());
+  }
 
-    const res = await fetch(url.toString());
+  const res = await fetch(url.toString());
 
-    if (!res.ok) {
-        throw new Error("Failed to fetch clubs");
-    }
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_ALL_CLUBS", "Failed to fetch clubs");
+  }
 
-    return res.json();
+  return res.json();
 }
 
 export async function getClubById(clubId: number): Promise<ClubResponse> {
-    const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`);
-    if (!res.ok) throw new Error("Failed to get club");
-    return res.json();
+  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`);
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_CLUB_BY_ID", `Failed to get club with id: ${clubId}`);
+  }
+  return res.json();
 }
 
 export async function updateClub(clubId: number, data: UpdateClubRequest): Promise<ClubResponse> {
-    const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
+  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 
-    if (!res.ok) {
-        throw new Error("Failed to update club");
-    }
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "UPDATE_CLUB", `Failed to update club with id: ${clubId}`);
+  }
 
-    return res.json();
+  return res.json();
 }
 
 export async function deleteClub(clubId: number): Promise<void> {
-    const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`, {
-        method: "DELETE",
-    });
+  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`, {
+    method: "DELETE",
+  });
 
-    if (!res.ok) {
-        throw new Error("Failed to delete club");
-    }
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "DELETE_CLUB", `Failed to delete club with id: ${clubId}`);
+  }
 }
 
-// Station APIs
 export async function addStation(data: AddStationRequest): Promise<StationResponse> {
-    const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
+  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 
-    if (!res.ok) {
-        const err = await res.text();
-        throw new Error(err || "Failed to add station");
-    }
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "ADD_STATION", "Failed to add station");
+  }
 
-    return res.json();
+  return res.json();
 }
 
 export async function getStationById(stationId: number): Promise<StationResponse> {
-    const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`);
-    if (!res.ok) throw new Error("Failed to get station");
-    return res.json();
+  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`);
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_STATION_BY_ID", `Failed to get station with id: ${stationId}`);
+  }
+  return res.json();
 }
 
-export async function updateStation(
-    stationId: number,
-    data: UpdateStationRequest
-): Promise<StationResponse> {
-    const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-    });
+export async function updateStation(stationId: number, data: UpdateStationRequest): Promise<StationResponse> {
+  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 
-    if (!res.ok) {
-        throw new Error("Failed to update station");
-    }
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "UPDATE_STATION", `Failed to update station with id: ${stationId}`);
+  }
 
-    return res.json();
+  return res.json();
 }
 
 export async function deleteStation(stationId: number): Promise<void> {
-    const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`, {
-        method: "DELETE",
-    });
+  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`, {
+    method: "DELETE",
+  });
 
-    if (!res.ok) {
-        throw new Error("Failed to delete station");
-    }
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "DELETE_STATION", `Failed to delete station with id: ${stationId}`);
+  }
 }
 
 export async function getStationsByClubId(clubId: number): Promise<StationResponse[]> {
-    const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations?clubId=${clubId}`);
-    if (!res.ok) throw new Error("Failed to fetch stations");
-    return res.json();
+  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations?clubId=${clubId}`);
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_STATIONS_BY_CLUB", `Failed to fetch stations for clubId: ${clubId}`);
+  }
+  return res.json();
 }
