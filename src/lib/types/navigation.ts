@@ -7,7 +7,7 @@ export interface NavItem {
 
 export const CLUB_ADMIN_NAV_ITEMS: NavItem[] = [
   { name: "Home", href: "/" },
-  { name: "Dashboard", href: "/admin/dashboard  "},
+  { name: "Dashboard", href: "/admin/dashboard"},
   { name: "Clubs", href: "/admin/clubs"},
   { name: "Profile", href: "/admin/profile"},
 ];
