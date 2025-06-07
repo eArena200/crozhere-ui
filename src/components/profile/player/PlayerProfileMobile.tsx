@@ -18,6 +18,7 @@ import { UpdatePlayerRequest } from '@/api/playerApi';
 function PlayerProfileMobile() {
     const dispatchRedux = useDispatchRedux();
     const user = useSelector(selectAuthUser);
+    //TODO: Load the playerId from pathName itself
     const playerId = user?.playerId;
     const player = useSelector(selectPlayerState);
     const isLoading = useSelector(selectPlayerIsLoading);

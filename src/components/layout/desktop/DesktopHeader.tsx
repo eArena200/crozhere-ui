@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 import LocationSelector from "@/components/ui/LocationSelector";
 import Button from "@/components/ui/Button";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import CrozhereLabel from "../../ui/CrozhereLabel";
+import { selectAuthState, selectAuthUser } from "@/redux/slices/auth/authSlice";
 
 const LoginDialog = dynamic(() => import('@/components/ui/LoginDialog'), { ssr: false });
 
@@ -40,13 +40,15 @@ function reducer(state: HeaderState, action: HeaderAction): HeaderState {
 export default function DesktopHeader() {
   const pathname = usePathname();
   const [state, dispatch] = useReducer(reducer, initialState);
-  const authState = useSelector((state: RootState) => state.auth);
+  const authState = useSelector(selectAuthState);
   const userLoggedIn = authState.loggedIn;
   const userRole = authState.user.role;
+  const clubAdminId = authState.user.clubAdminId;
+  const playerId = authState.user.playerId;
 
   const renderNavLinks = () => (
   <div className="flex justify-between gap-4">
-    {getNavTabsForRole(userRole).map((item) => (
+    {getNavTabsForRole(userRole, clubAdminId, playerId).map((item) => (
       <Link
         key={item.name}
         href={item.href}

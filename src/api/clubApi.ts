@@ -87,6 +87,20 @@ export async function getAllClubs(clubAdminId?: number): Promise<ClubResponse[]>
   return res.json();
 }
 
+export async function getClubsForAdminId(clubAdminId: number): Promise<ClubResponse[]> {
+  const url = new URL(`${CLUBSERVICE_ENDPOINT}/clubs`);
+  url.searchParams.append("clubAdminId", clubAdminId.toString());
+  
+  const res = await fetch(url.toString());
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_ALL_CLUBS", "Failed to fetch clubs");
+  }
+
+  return res.json();
+}
+
 export async function getClubById(clubId: number): Promise<ClubResponse> {
   const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`);
   if (!res.ok) {

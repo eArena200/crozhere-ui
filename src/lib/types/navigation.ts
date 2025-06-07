@@ -5,31 +5,23 @@ export interface NavItem {
   href: string;
 }
 
-export const CLUB_ADMIN_NAV_ITEMS: NavItem[] = [
-  { name: "Home", href: "/" },
-  { name: "Dashboard", href: "/admin/dashboard"},
-  { name: "Clubs", href: "/admin/clubs"},
-  { name: "Profile", href: "/admin/profile"},
-];
-
-export const PLAYER_NAV_ITEMS: NavItem[] = [
-  { name: "Home", href: "/"},
-  { name: "Bookings", href: "/player/bookings"},
-  { name: "Profile", href: "/player/profile"},
-];
-
-export const GUEST_NAV_ITEMS: NavItem[] = [
-
-];
-
-export function getNavTabsForRole(role: UserRole) : NavItem[]{
-  if(role === 'CLUB_ADMIN'){
-    return CLUB_ADMIN_NAV_ITEMS;
+export function getNavTabsForRole(role: UserRole, adminId?: number, playerId?: number) : NavItem[]{
+  if (role === 'CLUB_ADMIN' && adminId) {
+    return [
+      { name: "Home", href: `/` },
+      { name: "Dashboard", href: `/admin/${adminId}/dashboard` },
+      { name: "Clubs", href: `/admin/${adminId}/clubs` },
+      { name: "Profile", href: `/admin/${adminId}/profile` },
+    ];
   }
 
-  if(role === 'PLAYER'){
-    return PLAYER_NAV_ITEMS;
+  if(role === 'PLAYER' && playerId){
+    return [
+      { name: "Home", href: `/` },
+      { name: "Bookings", href: `/player/${playerId}/bookings` },
+      { name: "Profile", href: `/player/${playerId}/profile` },
+    ];
   }
 
-  return GUEST_NAV_ITEMS;
+  return [];
 }
