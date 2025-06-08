@@ -8,8 +8,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Button from '@/components/ui/Button';
 import { StationType } from '@/lib/types/station';
+import { StationResponse } from '@/api/clubApi';
 
-const addStationSchema = z.object({
+const editStationSchema = z.object({
   stationName: z.string().min(1, 'Station name is required'),
   stationType: z.enum(['SNOOKER', 'POOL', 'PC', 'PS4', 'XBOX'] as const),
   isActive: z.boolean(),
@@ -28,38 +29,37 @@ const addStationSchema = z.object({
   path: ["closeTime"]
 });
 
-type AddStationFormData = z.infer<typeof addStationSchema>;
+type EditStationFormData = z.infer<typeof editStationSchema>;
 
-interface AddStationProps {
+interface EditStationDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (stationData: AddStationFormData) => void;
+  onSave: (stationData: EditStationFormData) => void;
+  station: StationResponse;
 }
 
-function AddStation({ isOpen, onClose, onSave }: AddStationProps) {
+function EditStationDialog({ isOpen, onClose, onSave, station }: EditStationDialogProps) {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
     watch,
-  } = useForm<AddStationFormData>({
-    resolver: zodResolver(addStationSchema),
+  } = useForm<EditStationFormData>({
+    resolver: zodResolver(editStationSchema),
     defaultValues: {
-      stationName: '',
-      stationType: 'PC',
-      isActive: true,
-      openTime: '09:00',
-      closeTime: '21:00',
-      pricePerHour: 0,
+      stationName: station.stationName,
+      stationType: station.stationType,
+      isActive: station.isActive,
+      openTime: '09:00', // These should come from the station data
+      closeTime: '21:00', // These should come from the station data
+      pricePerHour: 0, // This should come from the station data
     },
   });
 
   const stationType = watch('stationType');
 
-  const onSubmit = (data: AddStationFormData) => {
+  const onSubmit = (data: EditStationFormData) => {
     onSave(data);
-    reset();
     onClose();
   };
 
@@ -83,7 +83,7 @@ function AddStation({ isOpen, onClose, onSave }: AddStationProps) {
         <Dialog.Panel className="mx-auto max-w-md w-full rounded-2xl bg-white shadow-xl">
           <div className="flex-shrink-0 flex items-center justify-between p-6 border-b">
             <Dialog.Title className="text-xl font-semibold text-gray-900">
-              Add New Station
+              Edit Station
             </Dialog.Title>
             <button
               onClick={onClose}
@@ -102,7 +102,7 @@ function AddStation({ isOpen, onClose, onSave }: AddStationProps) {
                 type="text"
                 id="stationName"
                 {...register('stationName')}
-                className="pl-10 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-500"
+                className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-500"
                 placeholder="Enter station name"
               />
               {errors.stationName && (
@@ -230,7 +230,7 @@ function AddStation({ isOpen, onClose, onSave }: AddStationProps) {
                 variant="primary"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Adding...' : 'Add Station'}
+                {isSubmitting ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
           </form>
@@ -240,4 +240,4 @@ function AddStation({ isOpen, onClose, onSave }: AddStationProps) {
   );
 }
 
-export default AddStation;
+export default EditStationDialog; 

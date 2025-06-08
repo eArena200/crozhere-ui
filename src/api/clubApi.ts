@@ -5,6 +5,11 @@ const CLUBSERVICE_ENDPOINT = "http://localhost:8080";
 export interface CreateClubRequest {
   name: string;
   clubAdminId: number;
+  logo?: string;
+  coverImage?: string;
+  location?: string;
+  openTime?: string;
+  closeTime?: string;
 }
 
 export interface UpdateClubRequest {
@@ -16,6 +21,11 @@ export interface ClubResponse {
   clubAdminId: number;
   clubLayoutId: string;
   name: string;
+  logo?: string;
+  coverImage?: string;
+  location?: string;
+  openTime?: string;
+  closeTime?: string;
 }
 
 export interface AddStationRequest {

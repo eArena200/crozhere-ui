@@ -6,6 +6,7 @@ export interface ClubState {
   clubs: ClubResponse[];
   loading: boolean;
   error?: string;
+  selectedClubId?: number;
 }
 
 const initialState: ClubState = {
@@ -28,7 +29,11 @@ export const fetchClubsForAdmin = createAsyncThunk<
 const clubSlice = createSlice({
   name: "clubs",
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedClub: (state, action: PayloadAction<number | undefined>) => {
+      state.selectedClubId = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchClubsForAdmin.pending, (state) => {
@@ -38,6 +43,10 @@ const clubSlice = createSlice({
       .addCase(fetchClubsForAdmin.fulfilled, (state, action) => {
         state.loading = false;
         state.clubs = action.payload;
+        // Set the first club as selected if none is selected
+        if (!state.selectedClubId && action.payload.length > 0) {
+          state.selectedClubId = action.payload[0].clubId;
+        }
       })
       .addCase(fetchClubsForAdmin.rejected, (state, action) => {
         state.loading = false;
@@ -46,6 +55,9 @@ const clubSlice = createSlice({
   },
 });
 
+export const { setSelectedClub } = clubSlice.actions;
 export const selectClubState = (state: RootState) => state.club;
+export const selectSelectedClub = (state: RootState) => 
+  state.club.clubs.find(club => club.clubId === state.club.selectedClubId);
 
 export default clubSlice.reducer;

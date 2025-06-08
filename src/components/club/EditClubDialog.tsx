@@ -6,12 +6,10 @@ import { X, Clock, MapPin, Building2, Navigation, Image as ImageIcon, Upload } f
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useDispatchRedux } from '@/redux/store';
-import { createClub } from '@/api/clubApi';
-import { fetchClubsForAdmin } from '@/redux/slices/club/clubSlice';
+import { ClubResponse } from '@/api/clubApi';
 import Button from '@/components/ui/Button';
 
-const createClubSchema = z.object({
+const editClubSchema = z.object({
   name: z.string().min(1, 'Club name is required'),
   logo: z.string().optional(),
   coverImage: z.string().optional(),
@@ -36,16 +34,16 @@ const createClubSchema = z.object({
   path: ["closeTime"]
 });
 
-type CreateClubFormData = z.infer<typeof createClubSchema>;
+type EditClubFormData = z.infer<typeof editClubSchema>;
 
-interface Props {
+interface EditClubDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  clubAdminId: number;
+  onSave: (data: EditClubFormData) => void;
+  club: ClubResponse;
 }
 
-export default function CreateClubDialog({ isOpen, onClose, clubAdminId }: Props) {
-  const dispatchRedux = useDispatchRedux();
+function EditClubDialog({ isOpen, onClose, onSave, club }: EditClubDialogProps) {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
 
@@ -55,12 +53,13 @@ export default function CreateClubDialog({ isOpen, onClose, clubAdminId }: Props
     formState: { errors, isSubmitting },
     reset,
     setValue,
-  } = useForm<CreateClubFormData>({
-    resolver: zodResolver(createClubSchema),
+    watch,
+  } = useForm<EditClubFormData>({
+    resolver: zodResolver(editClubSchema),
     defaultValues: {
-      name: '',
-      logo: '',
-      coverImage: '',
+      name: club.name,
+      logo: club.logo || '',
+      coverImage: club.coverImage || '',
       address: {
         street: '',
         city: '',
@@ -91,7 +90,7 @@ export default function CreateClubDialog({ isOpen, onClose, clubAdminId }: Props
         }
       };
       reader.readAsDataURL(file);
-  }
+    }
   };
 
   const handleGetLocation = () => {
@@ -108,22 +107,13 @@ export default function CreateClubDialog({ isOpen, onClose, clubAdminId }: Props
     }
   };
 
-  const onSubmit = async (data: CreateClubFormData) => {
+  const onSubmit = async (data: EditClubFormData) => {
     try {
-      await createClub({ 
-        name: data.name, 
-        clubAdminId,
-        logo: data.logo,
-        coverImage: data.coverImage,
-        location: `${data.address.street}, ${data.address.city}, ${data.address.state} - ${data.address.pincode}`,
-        openTime: data.openTime,
-        closeTime: data.closeTime
-      });
-      await dispatchRedux(fetchClubsForAdmin(clubAdminId));
+      await onSave(data);
       reset();
       onClose();
     } catch (error) {
-      console.error('Failed to create club:', error);
+      console.error('Failed to save club:', error);
     }
   };
 
@@ -135,7 +125,7 @@ export default function CreateClubDialog({ isOpen, onClose, clubAdminId }: Props
         <Dialog.Panel className="mx-auto max-w-2xl w-full rounded-2xl bg-white shadow-xl flex flex-col max-h-[90vh] overflow-hidden">
           <div className="flex-shrink-0 flex items-center justify-between p-6 border-b">
             <Dialog.Title className="text-xl font-semibold text-gray-900">
-              Register New Club
+              Edit Club Details
             </Dialog.Title>
             <button
               onClick={onClose}
@@ -282,7 +272,7 @@ export default function CreateClubDialog({ isOpen, onClose, clubAdminId }: Props
                         type="text"
                         id="city"
                         {...register('address.city')}
-                        className="pl-10 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-500"
+                        className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-500"
                         placeholder="Enter city"
                       />
                       {errors.address?.city && (
@@ -298,7 +288,7 @@ export default function CreateClubDialog({ isOpen, onClose, clubAdminId }: Props
                         type="text"
                         id="state"
                         {...register('address.state')}
-                        className="pl-10 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-500"
+                        className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-500 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-500"
                         placeholder="Enter state"
                       />
                       {errors.address?.state && (
@@ -369,24 +359,26 @@ export default function CreateClubDialog({ isOpen, onClose, clubAdminId }: Props
             </div>
 
             <div className="flex-shrink-0 flex justify-end space-x-3 p-6 border-t bg-gray-50">
-            <Button 
+              <Button
                 type="button"
-              variant="secondary" 
+                variant="secondary"
                 onClick={onClose}
-            >
-              Cancel
-            </Button>
-            <Button
+              >
+                Cancel
+              </Button>
+              <Button
                 type="submit"
-              variant="primary"
+                variant="primary"
                 disabled={isSubmitting}
-            >
-                {isSubmitting ? 'Creating...' : 'Create Club'}
-            </Button>
-          </div>
+              >
+                {isSubmitting ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
           </form>
         </Dialog.Panel>
       </div>
     </Dialog>
   );
 }
+
+export default EditClubDialog; 

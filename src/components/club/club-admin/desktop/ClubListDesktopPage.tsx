@@ -9,6 +9,7 @@ import CreateClubDialog from '@/components/club/CreateClubDialog';
 import Button from '@/components/ui/Button';
 import ClubList from '@/components/club/ClubList';
 import ClubDetails from '../../ClubDetails';
+import { Building2, Plus } from 'lucide-react';
 
 function ClubListDesktopPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,32 +27,46 @@ function ClubListDesktopPage() {
   if (!adminId) return <div>Unauthorized</div>;
 
   return (
-    <div className="flex flex-col bg-white w-full min-h-screen text-black shadow-md">
-      <div className="flex items-center justify-between w-full py-2 px-4 bg-white">
-        <h1 className="text-2xl font-bold p-2">Manage Clubs</h1>
+    <div className="flex flex-col bg-gray-50 w-full h-screen overflow-hidden">
+      {/* Header - Fixed */}
+      <div className="flex-shrink-0 flex items-center justify-between w-full px-8 py-5 bg-white border-b border-gray-200">
+        <div className="flex items-center space-x-4">
+          <div className="p-2.5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm">
+            <Building2 className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Manage Clubs</h1>
+            <p className="text-sm text-gray-500 mt-0.5">View and manage your gaming clubs</p>
+          </div>
+        </div>
         <Button 
           variant="primary"
           onClick={() => setIsDialogOpen(true)}
+          className="flex items-center space-x-2 px-4 py-2.5 shadow-sm hover:shadow-md transition-shadow duration-200"
         >
-          Register New Club
+          <Plus className="w-4 h-4" />
+          <span>Register New Club</span>
         </Button>
       </div>
 
-      <div className='flex flex-row w-full h-full bg-white px-2 py-2'>
-        <div className='flex flex-col w-1/5 max-h-[80vh] mr-2 border-2 border-gray-400 rounded-md'>
-            <div className='p-2 font-semibold text-white bg-blue-600 text-center shadow rounded-t-sm'> 
-                CLUBS 
-            </div>
+      {/* Main Content - Fixed height with ClubDetails scrollable */}
+      <div className="flex-1 p-6 overflow-hidden">
+        <div className="flex gap-6 h-full">
+          {/* Club List Section - Fixed */}
+          <div className="w-1/4 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <ClubList />
-        </div>
-        <div className='flex flex-col w-4/5 px-4 border-2 border-gray-400 rounded-md'>
-            <ClubDetails/>
+          </div>
+
+          {/* Club Details Section - Scrollable */}
+          <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="h-full overflow-y-auto">
+              <ClubDetails />
+            </div>
+          </div>
         </div>
       </div>
 
-
-      
-
+      {/* Create Club Dialog */}
       <CreateClubDialog
         isOpen={isDialogOpen}
         onClose={() => setIsDialogOpen(false)}
