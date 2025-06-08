@@ -1,6 +1,10 @@
+'use client';
+
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 export default function Hero() {
+  const router = useRouter();
   return (
     <section className="relative flex flex-col items-center justify-center text-center h-[60vh] min-h-[400px] w-full overflow-hidden">
       {/* Background Image */}
@@ -24,12 +28,12 @@ export default function Hero() {
           Reserve your spot at the best game arena in town. Play, compete, and connect!
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="#book"
+          <button
+            onClick={() => router.push('/player/club/search')}
             className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition text-center"
           >
             Book Now
-          </a>
+          </button>
           <a
             href="#register-arena"
             className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition text-center"

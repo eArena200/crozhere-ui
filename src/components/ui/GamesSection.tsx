@@ -4,6 +4,7 @@ import { Game } from "@/lib/types/games";
 import GameCard from "./GameCard";
 import Button from "./Button";
 import { cn } from "@/lib/utils";
+import { useRouter } from 'next/navigation';
 
 interface GamesSectionProps {
   className?: string;
@@ -74,6 +75,8 @@ const mockGames: Game[] = [
 ];
 
 export default function GamesSection({ className }: GamesSectionProps) {
+  const router = useRouter();
+
   const handleGameClick = (game: Game) => {
     // TODO: Navigate to game booking or club selection page
     console.log("Game clicked:", game.name);
@@ -109,7 +112,7 @@ export default function GamesSection({ className }: GamesSectionProps) {
           <Button 
             variant="primary" 
             className="px-8 py-3"
-            onClick={() => console.log("View all games clicked")}
+            onClick={() => router.push('/player/club/search')}
           >
             View All Games
           </Button>  

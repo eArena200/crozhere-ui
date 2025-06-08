@@ -19,7 +19,9 @@ export const PLAYER_NAV_ITEMS: NavItem[] = [
 ];
 
 export const GUEST_NAV_ITEMS: NavItem[] = [
-
+  { name: "Home", href: "/"},
+  { name: "Bookings", href: "/player/bookings"},
+  { name: "Profile", href: "/player/profile"},
 ];
 
 export function getNavTabsForRole(role: UserRole) : NavItem[]{
