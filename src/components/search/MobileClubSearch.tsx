@@ -5,7 +5,7 @@ import { Search, Filter, X } from 'lucide-react';
 import { Club, SearchFilters } from '@/lib/types/club';
 import { StationType } from '@/lib/types/station';
 import ClubCard from '@/components/ui/ClubCard';
-import MobileClubDetailsDialog from '@/components/ui/MobileClubDetailsDialog';
+import MobileClubDetailsDialog from '@/components/search/dialog/MobileClubDetailsDialog';
 import { cn } from '@/lib/utils';
 
 interface MobileClubSearchProps {

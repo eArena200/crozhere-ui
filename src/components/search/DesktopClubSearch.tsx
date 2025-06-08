@@ -5,7 +5,7 @@ import { Search, Filter, MapPin, Star, Clock, Gamepad2, X, SlidersHorizontal } f
 import { Club, SearchFilters } from '@/lib/types/club';
 import { StationType } from '@/lib/types/station';
 import ClubCard from '@/components/ui/ClubCard';
-import DesktopClubDetailsDialog from '@/components/ui/DesktopClubDetailsDialog';
+import DesktopClubDetailsDialog from '@/components/search/dialog/DesktopClubDetailsDialog';
 import Button from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 

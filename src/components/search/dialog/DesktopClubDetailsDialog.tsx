@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { X, Star, MapPin, Clock, Phone, Gamepad2, Wifi, Car, Coffee, Users } from 'lucide-react';
 import Image from 'next/image';
 import { Club } from '@/lib/types/club';
-import Button from './Button';
+import Button from '@/components/ui/Button';
 
 interface DesktopClubDetailsDialogProps {
   club: Club | null;
