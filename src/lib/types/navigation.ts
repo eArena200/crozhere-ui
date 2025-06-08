@@ -23,5 +23,9 @@ export function getNavTabsForRole(role: UserRole, adminId?: number, playerId?: n
     ];
   }
 
-  return [];
+  return [
+    { name: "Home", href: `/` },
+    { name: "Bookings", href: `/player/${playerId}/bookings` },
+    { name: "Profile", href: `/player/${playerId}/profile` },
+  ];
 }
