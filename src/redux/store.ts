@@ -4,6 +4,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from "./slices/auth/authSlice";
 import clubReducer from "./slices/club/clubSlice";
+import stationReducer from "./slices/club/stationSlice";
 import clubAdminReducer from "./slices/auth/clubAdminSlice";
 import playerReducer from "./slices/auth/playerSlice";
 import {
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   auth: authReducer,
   clubAdmin: clubAdminReducer,
   player: playerReducer,
-  club: clubReducer
+  club: clubReducer,
+  stations: stationReducer,
 });
 
 const persistConfig = {
