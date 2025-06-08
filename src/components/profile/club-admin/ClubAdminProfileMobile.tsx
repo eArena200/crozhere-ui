@@ -18,6 +18,7 @@ import { logoutAction, selectAuthUser } from '@/redux/slices/auth/authSlice';
 function ClubAdminProfileMobile() {
   const dispatchRedux = useDispatchRedux();
   const user = useSelector(selectAuthUser);
+  //TODO: Load the clubAdminId from pathName itself
   const clubAdminId = user?.clubAdminId;
 
   const clubAdmin = useSelector(selectClubAdminState);
@@ -175,7 +176,7 @@ function ClubAdminProfileMobile() {
         ) : (
           <div className="pt-6">
             <Button
-              variant="secondary"
+              variant="primary"
               className="w-full"
               onClick={handleLogout}
             >
