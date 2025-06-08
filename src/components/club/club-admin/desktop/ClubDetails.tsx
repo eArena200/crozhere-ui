@@ -8,9 +8,9 @@ import { AppDispatch } from '@/redux/store';
 import { fetchStationsByClubId, selectStationState } from '@/redux/slices/club/stationSlice';
 import { StationResponse } from '@/api/clubApi';
 import { StationType } from '@/lib/types/station';
-import StationCard from '@/components/club/StationCard';
-import AddStation from '@/components/club/AddStation';
-import EditClubDialog from '@/components/club/EditClubDialog';
+import StationCard from '@/components/club/club-admin/desktop/StationCard';
+import AddStation from '@/components/club/club-admin/desktop/AddStation';
+import EditClubDialog from '@/components/club/club-admin/desktop/EditClubDialog';
 import { Building2, Clock, MapPin, Shield, Plus, Pencil, CheckCircle2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 

@@ -5,10 +5,10 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
 import { fetchClubsForAdmin } from '@/redux/slices/club/clubSlice';
-import CreateClubDialog from '@/components/club/CreateClubDialog';
+import CreateClubDialog from '@/components/club/club-admin/desktop/CreateClubDialog';
 import Button from '@/components/ui/Button';
-import ClubList from '@/components/club/ClubList';
-import ClubDetails from '../../ClubDetails';
+import ClubList from '@/components/club/club-admin/desktop/ClubList';
+import ClubDetails from './ClubDetails';
 import { Building2, Plus } from 'lucide-react';
 
 function ClubListDesktopPage() {
