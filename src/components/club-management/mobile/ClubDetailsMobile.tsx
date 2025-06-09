@@ -114,7 +114,7 @@ function ClubDetailsMobile({ clubId }: ClubDetailsMobileProps) {
   }
 
   return (
-    <div className="mt-2 space-y-6 -mx-4">
+    <div className="space-y-6">
       {/* Club Details Card */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden border-2 border-gray-200">
         {/* Cover Image Section */}
@@ -188,7 +188,7 @@ function ClubDetailsMobile({ clubId }: ClubDetailsMobileProps) {
       {/* Stations Card */}
       <div className="bg-white rounded-lg shadow-sm overflow-hidden border-2 border-gray-200">
         <div className="p-2">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4 p-2">
             <div>
               <h3 className="text-lg font-semibold text-gray-900">Stations</h3>
               <p className="text-sm text-gray-500 mt-1">Manage your club's stations</p>

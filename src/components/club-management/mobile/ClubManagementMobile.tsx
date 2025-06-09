@@ -38,7 +38,7 @@ function ClubManagementMobile() {
   };
 
   return (
-    <div className="flex flex-col bg-white w-full min-h-screen text-black p-4">
+    <div className="flex flex-col bg-white w-full min-h-screen text-black p-2">
       <ClubListMobileHeader
         clubList={clubManagementState.clubList}
         selectedClubId={selectedClubId}
