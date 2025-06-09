@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { StationResponse } from '@/api/clubApi';
 import { StationType } from '@/lib/types/station';
 import { Pencil, Trash2, Power, Clock, IndianRupee } from 'lucide-react';
-import EditStationDialog from './EditStationDialog';
+import EditStationDialog from '@/components/club-management/EditStationDialog';
 
 interface StationCardProps {
   station: StationResponse;

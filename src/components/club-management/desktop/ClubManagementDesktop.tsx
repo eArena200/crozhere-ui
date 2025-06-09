@@ -5,13 +5,14 @@ import { useDispatch } from 'react-redux';
 import { useParams } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
 import { fetchClubsForAdmin } from '@/redux/slices/club/clubSlice';
-import CreateClubDialog from '@/components/club/club-admin/desktop/CreateClubDialog';
+import CreateClubDialog from '@/components/club-management/CreateClubDialog';
 import Button from '@/components/ui/Button';
-import ClubList from '@/components/club/club-admin/desktop/ClubList';
+import ClubList from '@/components/club-management/desktop/ClubList';
 import ClubDetails from './ClubDetails';
 import { Building2, Plus } from 'lucide-react';
+import { ClubFormData } from '../CreateOrEditClubForm';
 
-function ClubListDesktopPage() {
+function ClubManagementDesktop() {
   const dispatch = useDispatch<AppDispatch>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -25,6 +26,10 @@ function ClubListDesktopPage() {
   }, [adminId, dispatch]);
 
   if (!adminId) return <div>Unauthorized</div>;
+
+  const handleCreateClub = (clubData: ClubFormData) => {
+    //TODO: Add create club api logic here.
+  }
 
   return (
     <div className="flex flex-col bg-gray-50 w-full h-screen overflow-hidden">
@@ -69,11 +74,11 @@ function ClubListDesktopPage() {
       {/* Create Club Dialog */}
       <CreateClubDialog
         isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        clubAdminId={adminId}
+        onClose={() => setIsDialogOpen(false)} 
+        onSubmit={handleCreateClub}
       />
     </div>
   );
 }
 
-export default ClubListDesktopPage;
+export default ClubManagementDesktop;

@@ -8,11 +8,11 @@ import { AppDispatch } from '@/redux/store';
 import { fetchStationsByClubId, selectStationState } from '@/redux/slices/club/stationSlice';
 import { StationResponse } from '@/api/clubApi';
 import { StationType } from '@/lib/types/station';
-import StationCard from '@/components/club/club-admin/desktop/StationCard';
-import AddStation from '@/components/club/club-admin/desktop/AddStation';
-import EditClubDialog from '@/components/club/club-admin/desktop/EditClubDialog';
-import { Building2, Clock, MapPin, Shield, Plus, Pencil, CheckCircle2 } from 'lucide-react';
+import StationCard from '@/components/club-management/desktop/StationCard';
+import { Building2, Clock, MapPin, Plus, Pencil, CheckCircle2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import AddStationDialog from '@/components/club-management/AddStationDialog';
+import { StationFormData } from '../AddOrEditStationForm';
 
 function ClubDetails() {
   const dispatch = useDispatch<AppDispatch>();
@@ -39,14 +39,7 @@ function ClubDetails() {
     }
   }, [uniqueStationTypes, selectedTab]);
 
-  const handleSaveStation = (stationData: {
-    stationName: string;
-    stationType: StationType;
-    isActive: boolean;
-    openTime: string;
-    closeTime: string;
-    pricePerHour: number;
-  }) => {
+  const handleSaveStation = (stationData: StationFormData) => {
     console.log('Saving new station:', stationData);
     if (selectedClub) {
       dispatch(fetchStationsByClubId(selectedClub.clubId));
@@ -72,28 +65,6 @@ function ClubDetails() {
     if (selectedClub) {
       dispatch(fetchStationsByClubId(selectedClub.clubId));
     }
-  };
-
-  const handleEditClub = (data: {
-    name: string;
-    logo?: string;
-    coverImage?: string;
-    address: {
-      street: string;
-      city: string;
-      state: string;
-      pincode: string;
-      coordinates?: {
-        latitude?: number;
-        longitude?: number;
-      };
-    };
-    openTime: string;
-    closeTime: string;
-  }) => {
-    console.log('Saving club changes:', data);
-    // TODO: Implement club update logic here
-    // e.g. dispatch(updateClub({ clubId: selectedClub.clubId, ...data }))
   };
 
   if (!selectedClub) {
@@ -241,20 +212,12 @@ function ClubDetails() {
         )}
       </div>
 
-      {/* Add Station Dialog */}
-      <AddStation
-        isOpen={isAddStationOpen}
-        onClose={() => setIsAddStationOpen(false)}
-        onSave={handleSaveStation}
+      <AddStationDialog 
+        isOpen={isAddStationOpen} 
+        onClose={() => setIsAddStationOpen(false)} 
+        onSubmit={handleSaveStation}        
       />
 
-      {/* Edit Club Dialog */}
-      <EditClubDialog
-        isOpen={isEditClubOpen}
-        onClose={() => setIsEditClubOpen(false)}
-        onSave={handleEditClub}
-        club={selectedClub}
-      />
     </div>
   );
 }

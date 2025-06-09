@@ -23,5 +23,10 @@ export function getNavTabsForRole(role: UserRole, adminId?: number, playerId?: n
     ];
   }
 
-  return [];
+  //TODO: Fix this with proper guest routes and pages
+  return [
+    { name: "Home", href: `/` },
+    { name: "Bookings", href: `/player/${playerId}/bookings` },
+    { name: "Profile", href: `/player/${playerId}/profile` },
+  ];
 }

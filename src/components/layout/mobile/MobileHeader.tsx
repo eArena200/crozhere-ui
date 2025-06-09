@@ -34,7 +34,7 @@ export default function MobileHeader() {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b px-6 py-3 shadow-sm flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-white border-b px-6 py-3 shadow-sm flex items-center justify-between">
       <CrozhereLabel size="md" />
       <LocationSelector />
       <LoginDialog open={state.loginOpen} onClose={() => dispatch({ type: 'CLOSE_LOGIN' })} />

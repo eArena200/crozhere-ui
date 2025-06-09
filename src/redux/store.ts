@@ -2,11 +2,13 @@ import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import authReducer from "./slices/auth/authSlice";
-import clubReducer from "./slices/club/clubSlice";
-import stationReducer from "./slices/club/stationSlice";
-import clubAdminReducer from "./slices/auth/clubAdminSlice";
-import playerReducer from "./slices/auth/playerSlice";
+import authReducer from "@/redux/slices/auth/authSlice";
+import clubReducer from "@/redux/slices/club/clubSlice";
+import stationReducer from "@/redux/slices/club/stationSlice";
+import clubAdminReducer from "@/redux/slices/auth/clubAdminSlice";
+import playerReducer from "@/redux/slices/auth/playerSlice";
+import clubManagementReducer from "@/redux/slices/club/clubManagementSlice";
+
 import {
   FLUSH,
   PAUSE,
@@ -23,6 +25,7 @@ const rootReducer = combineReducers({
   player: playerReducer,
   club: clubReducer,
   stations: stationReducer,
+  clubManagement: clubManagementReducer,
 });
 
 const persistConfig = {

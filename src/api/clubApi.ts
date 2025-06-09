@@ -49,6 +49,13 @@ export interface StationResponse {
   isActive: boolean;
 }
 
+export interface ClubServiceException {
+  error: string;
+  type: string;
+  message: string;
+  timestamp: string;
+}
+
 function handleApiError(errorBody: any, fallbackType: string, fallbackMessage: string) {
   if (errorBody && errorBody.error && errorBody.message) {
     return {
