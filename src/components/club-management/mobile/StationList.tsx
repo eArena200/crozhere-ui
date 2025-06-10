@@ -2,13 +2,13 @@
 
 import React from 'react';
 import StationListItem from '@/components/club-management/mobile/StationListItem';
-import { StationResponse } from '@/api/clubApi';
+import { StationDetailsResponse } from '@/api/clubApi';
 
 interface StationListProps {
-  stations: StationResponse[];
+  stations: StationDetailsResponse[];
   isLoading?: boolean;
   error?: string;
-  onEdit?: (station: StationResponse) => void;
+  onEdit?: (station: StationDetailsResponse) => void;
   onDelete?: (stationId: number) => void;
   onToggleStatus?: (stationId: number) => void;
 }

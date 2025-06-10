@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { StationResponse } from '@/api/clubApi';
+import { StationDetailsResponse } from '@/api/clubApi';
 import { StationType } from '@/lib/types/station';
 import { Pencil, Trash2, Power, Clock, IndianRupee } from 'lucide-react';
 import EditStationDialog from '@/components/club-management/EditStationDialog';
 
 interface StationListItemProps {
-  station: StationResponse;
-  onEdit?: (station: StationResponse) => void;
+  station: StationDetailsResponse;
+  onEdit?: (station: StationDetailsResponse) => void;
   onDelete?: (stationId: number) => void;
   onToggleStatus?: (stationId: number) => void;
 }

@@ -1,7 +1,8 @@
 import {
+  ClubDetailsResponse,
   ClubResponse,
   ClubServiceException,
-  StationResponse
+  StationDetailsResponse
 } from "@/api/clubApi";
 import {
   getClubsForAdminId,
@@ -23,8 +24,8 @@ export interface ClubMetaData {
 export interface ClubManagementState {
   clubList: ClubMetaData[];
   selectedClubId?: number;
-  selectedClubDetails?: ClubResponse;
-  selectedClubStations?: StationResponse[];
+  selectedClubDetails?: ClubDetailsResponse;
+  selectedClubStationsDetails?: StationDetailsResponse[];
 
   loadingClubList: boolean;
   loadingClubDetails: boolean;
@@ -32,7 +33,7 @@ export interface ClubManagementState {
 
   clubListError?: string;
   clubDetailsError?: string;
-  stationError?: string;
+  stationDetailsError?: string;
 }
 
 const initialState: ClubManagementState = {
@@ -76,15 +77,6 @@ export const fetchClubIdsForAdminId = createAsyncThunk<
   }
 );
 
-export const selectClubById = createAsyncThunk<void, number>(
-  "clubManagement/selectClubById",
-  async (clubId, { dispatch }) => {
-    dispatch(setSelectedClubId(clubId));
-    await dispatch(fetchClubDetailsById(clubId));
-    await dispatch(fetchStationsByClubId(clubId));
-  }
-);
-
 export const fetchClubDetailsById = createAsyncThunk<
   ClubResponse,
   number,
@@ -110,7 +102,7 @@ export const fetchClubDetailsById = createAsyncThunk<
 );
 
 export const fetchStationsByClubId = createAsyncThunk<
-  StationResponse[],
+  StationDetailsResponse[],
   number,
   { rejectValue: ClubServiceException }
 >(
@@ -174,15 +166,15 @@ const clubManagementSlice = createSlice({
 
       .addCase(fetchStationsByClubId.pending, (state) => {
         state.loadingStations = true;
-        state.stationError = undefined;
+        state.stationDetailsError = undefined;
       })
       .addCase(fetchStationsByClubId.fulfilled, (state, action) => {
         state.loadingStations = false;
-        state.selectedClubStations = action.payload;
+        state.selectedClubStationsDetails = action.payload;
       })
       .addCase(fetchStationsByClubId.rejected, (state, action) => {
         state.loadingStations = false;
-        state.stationError = action.payload?.message;
+        state.stationDetailsError = action.payload?.message;
       });
   }
 });
@@ -197,7 +189,7 @@ export const selectSelectedClubDetails = (state: RootState) =>
   state.clubManagement.selectedClubDetails;
 
 export const selectSelectedClubStationDetails = (state: RootState) =>
-  state.clubManagement.selectedClubStations;
+  state.clubManagement.selectedClubStationsDetails;
 
 // Loading
 export const selectLoadingClubList = (state: RootState) =>
@@ -217,7 +209,7 @@ export const selectClubDetailsError = (state: RootState) =>
   state.clubManagement.clubDetailsError;
 
 export const selectStationError = (state: RootState) =>
-  state.clubManagement.stationError;
+  state.clubManagement.stationDetailsError;
 
 // EXPORT
 export const { setSelectedClubId } = clubManagementSlice.actions;

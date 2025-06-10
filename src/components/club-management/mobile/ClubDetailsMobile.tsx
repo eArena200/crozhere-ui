@@ -18,7 +18,7 @@ import { Building2, MapPin, Clock, AlertCircle,
 import StationList from "./StationList";
 import Button from "@/components/ui/Button";
 import { StationType } from "@/lib/types/station";
-import { StationResponse } from "@/api/clubApi";
+import { StationDetailsResponse } from "@/api/clubApi";
 import AddStationDialog from "@/components/club-management/AddStationDialog";
 
 interface ClubDetailsMobileProps {
@@ -60,7 +60,7 @@ function ClubDetailsMobile({ clubId }: ClubDetailsMobileProps) {
     }
   }, [uniqueStationTypes, selectedTypes]);
 
-  const handleEditStation = (stationData: StationResponse) => {
+  const handleEditStation = (stationData: StationDetailsResponse) => {
     console.log('Editing station:', stationData);
   };
 

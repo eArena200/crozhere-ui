@@ -15,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-gray-50 text-gray-900 min-h-screen`}>
+      <body className={`${inter.className} bg-white text-gray-900 min-h-screen`}>
         <Providers>
           {deviceType.type === DeviceTypes.MOBILE ? (
             <MobileLayout>{children}</MobileLayout>

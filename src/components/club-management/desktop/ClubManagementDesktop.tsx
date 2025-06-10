@@ -1,31 +1,38 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useParams } from 'next/navigation';
-import { AppDispatch } from '@/redux/store';
-import { fetchClubsForAdmin } from '@/redux/slices/club/clubSlice';
+import { useDispatchRedux } from '@/redux/store';
 import CreateClubDialog from '@/components/club-management/CreateClubDialog';
 import Button from '@/components/ui/Button';
 import ClubList from '@/components/club-management/desktop/ClubList';
 import ClubDetails from './ClubDetails';
 import { Building2, Plus } from 'lucide-react';
 import { ClubFormData } from '../CreateOrEditClubForm';
+import { fetchClubIdsForAdminId } from '@/redux/slices/club/clubManagementSlice';
+import { useSelector } from 'react-redux';
+import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
 
 function ClubManagementDesktop() {
-  const dispatch = useDispatch<AppDispatch>();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const dispatchRedux = useDispatchRedux();
 
   const params = useParams();
-  const adminId = parseInt(params.adminId as string);
+  const paramAdminId = parseInt(params.adminId as string)
+  const authAdminId = useSelector(selectAuthClubAdminId);
 
   useEffect(() => {
-    if (adminId) {
-      dispatch(fetchClubsForAdmin(adminId));
+    if (paramAdminId === authAdminId) {
+      dispatchRedux(fetchClubIdsForAdminId(paramAdminId));
     }
-  }, [adminId, dispatch]);
+  }, [dispatchRedux, paramAdminId, authAdminId]);
 
-  if (!adminId) return <div>Unauthorized</div>;
+  if (!authAdminId || paramAdminId !== authAdminId) {
+    return (
+      <div>Unauthorized</div>
+    );
+  }
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleCreateClub = (clubData: ClubFormData) => {
     //TODO: Add create club api logic here.

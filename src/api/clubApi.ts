@@ -2,18 +2,35 @@ import { StationType } from "@/lib/types/station";
 
 const CLUBSERVICE_ENDPOINT = "http://localhost:8080";
 
+export interface ClubAddress {
+  street: string;
+  city: string;
+  state: string;
+  pincode: string;
+  location?: {
+    latitude: string;
+    longitude: string;
+  }
+}
+
 export interface CreateClubRequest {
   name: string;
   clubAdminId: number;
   logo?: string;
   coverImage?: string;
-  location?: string;
+  address?: ClubAddress;
   openTime?: string;
   closeTime?: string;
 }
 
 export interface UpdateClubRequest {
   name: string;
+  clubAdminId: number;
+  logo?: string;
+  coverImage?: string;
+  address?: ClubAddress;
+  openTime?: string;
+  closeTime?: string;
 }
 
 export interface ClubResponse {
@@ -21,9 +38,14 @@ export interface ClubResponse {
   clubAdminId: number;
   clubLayoutId: string;
   name: string;
+}
+
+export interface ClubDetailsResponse {
+  clubId: number;
+  name: string;
   logo?: string;
   coverImage?: string;
-  location?: string;
+  location?: ClubAddress;
   openTime?: string;
   closeTime?: string;
 }
@@ -39,7 +61,7 @@ export interface UpdateStationRequest {
   stationName: string;
 }
 
-export interface StationResponse {
+export interface StationDetailsResponse {
   stationId: number;
   clubId: number;
   stationName: string;
@@ -47,6 +69,7 @@ export interface StationResponse {
   stationGroupLayoutId: string;
   stationLayoutId: string;
   isActive: boolean;
+  pricePerHour?: number;
 }
 
 export interface ClubServiceException {
@@ -153,7 +176,7 @@ export async function deleteClub(clubId: number): Promise<void> {
   }
 }
 
-export async function addStation(data: AddStationRequest): Promise<StationResponse> {
+export async function addStation(data: AddStationRequest): Promise<StationDetailsResponse> {
   const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -168,7 +191,7 @@ export async function addStation(data: AddStationRequest): Promise<StationRespon
   return res.json();
 }
 
-export async function getStationById(stationId: number): Promise<StationResponse> {
+export async function getStationById(stationId: number): Promise<StationDetailsResponse> {
   const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`);
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);
@@ -177,7 +200,7 @@ export async function getStationById(stationId: number): Promise<StationResponse
   return res.json();
 }
 
-export async function updateStation(stationId: number, data: UpdateStationRequest): Promise<StationResponse> {
+export async function updateStation(stationId: number, data: UpdateStationRequest): Promise<StationDetailsResponse> {
   const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -203,7 +226,7 @@ export async function deleteStation(stationId: number): Promise<void> {
   }
 }
 
-export async function getStationsByClubId(clubId: number): Promise<StationResponse[]> {
+export async function getStationsByClubId(clubId: number): Promise<StationDetailsResponse[]> {
   const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations?clubId=${clubId}`);
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);

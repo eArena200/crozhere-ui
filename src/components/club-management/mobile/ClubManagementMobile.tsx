@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   selectClubManagementState,
   fetchClubIdsForAdminId,
-  selectClubById,
+  setSelectedClubId,
   selectSelectedClubId,
 } from '@/redux/slices/club/clubManagementSlice';
 import { useDispatchRedux } from '@/redux/store';
@@ -28,7 +28,7 @@ function ClubManagementMobile() {
   }, [dispatch, clubAdminId]);
 
   const handleClubSelect = (clubId: number) => {
-    dispatch(selectClubById(clubId));
+    dispatch(setSelectedClubId(clubId));
   };
 
   const handleAddClub = (clubData: ClubFormData) => {

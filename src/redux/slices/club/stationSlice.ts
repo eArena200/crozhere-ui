@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { getStationsByClubId } from '@/api/clubApi';
-import { StationResponse } from '@/api/clubApi';
+import { StationDetailsResponse } from '@/api/clubApi';
 
 interface StationState {
-  stations: StationResponse[];
+  stations: StationDetailsResponse[];
   loading: boolean;
   error: string | null;
 }
