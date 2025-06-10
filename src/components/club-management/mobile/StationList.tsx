@@ -2,7 +2,7 @@
 
 import React from 'react';
 import StationListItem from '@/components/club-management/mobile/StationListItem';
-import { StationDetailsResponse } from '@/api/clubApi';
+import { StationDetailsResponse } from '@/api/clubManagementApi';
 
 interface StationListProps {
   stations: StationDetailsResponse[];

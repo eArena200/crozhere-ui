@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { ClubResponse, getClubsForAdminId } from "@/api/clubApi";
+import { ClubResponse, getClubsForAdminId } from "@/api/clubManagementApi";
 import { RootState } from "@/redux/store";
 
 export interface ClubState {

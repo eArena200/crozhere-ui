@@ -18,7 +18,7 @@ import { Building2, MapPin, Clock, AlertCircle,
 import StationList from "./StationList";
 import Button from "@/components/ui/Button";
 import { StationType } from "@/lib/types/station";
-import { StationDetailsResponse } from "@/api/clubApi";
+import { StationDetailsResponse } from "@/api/clubManagementApi";
 import AddStationDialog from "@/components/club-management/AddStationDialog";
 
 interface ClubDetailsMobileProps {

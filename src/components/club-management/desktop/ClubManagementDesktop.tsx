@@ -4,14 +4,19 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useDispatchRedux } from '@/redux/store';
 import CreateClubDialog from '@/components/club-management/CreateClubDialog';
-import Button from '@/components/ui/Button';
-import ClubList from '@/components/club-management/desktop/ClubList';
 import ClubDetails from './ClubDetails';
-import { Building2, Plus } from 'lucide-react';
+import StationDetails from './StationDetails';
 import { ClubFormData } from '../CreateOrEditClubForm';
-import { fetchClubIdsForAdminId } from '@/redux/slices/club/clubManagementSlice';
+import { 
+  createNewClub,
+  fetchClubIdsForAdminId,
+  fetchStationsByClubId,
+  selectClubManagementState 
+} from '@/redux/slices/club/clubManagementSlice';
 import { useSelector } from 'react-redux';
 import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import CMDesktopHeader from './CMDesktopHeader';
+import { CreateClubRequest } from '@/api/clubManagementApi';
 
 function ClubManagementDesktop() {
   const dispatchRedux = useDispatchRedux();
@@ -19,6 +24,7 @@ function ClubManagementDesktop() {
   const params = useParams();
   const paramAdminId = parseInt(params.adminId as string)
   const authAdminId = useSelector(selectAuthClubAdminId);
+  const { selectedClubId } = useSelector(selectClubManagementState);
 
   useEffect(() => {
     if (paramAdminId === authAdminId) {
@@ -26,55 +32,36 @@ function ClubManagementDesktop() {
     }
   }, [dispatchRedux, paramAdminId, authAdminId]);
 
+  useEffect(() => {
+    if (selectedClubId) {
+      dispatchRedux(fetchStationsByClubId(selectedClubId));
+    }
+  }, [dispatchRedux, selectedClubId]);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   if (!authAdminId || paramAdminId !== authAdminId) {
+    // TODO: Add an unauthorized page
     return (
       <div>Unauthorized</div>
     );
   }
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   const handleCreateClub = (clubData: ClubFormData) => {
-    //TODO: Add create club api logic here.
+    dispatchRedux(createNewClub({
+      clubAdminId: authAdminId,
+      clubFormData: clubData
+    }));
   }
 
   return (
-    <div className="flex flex-col bg-gray-50 w-full h-screen overflow-hidden">
-      {/* Header - Fixed */}
-      <div className="flex-shrink-0 flex items-center justify-between w-full px-8 py-5 bg-white border-b border-gray-200">
-        <div className="flex items-center space-x-4">
-          <div className="p-2.5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm">
-            <Building2 className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Manage Clubs</h1>
-            <p className="text-sm text-gray-500 mt-0.5">View and manage your gaming clubs</p>
-          </div>
-        </div>
-        <Button 
-          variant="primary"
-          onClick={() => setIsDialogOpen(true)}
-          className="flex items-center space-x-2 px-4 py-2.5 shadow-sm hover:shadow-md transition-shadow duration-200"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Register New Club</span>
-        </Button>
-      </div>
+    <div className="flex flex-col bg-gray-50 w-full">
+      <CMDesktopHeader onClickCreateNewClub={() => setIsDialogOpen(true)} />
 
-      {/* Main Content - Fixed height with ClubDetails scrollable */}
-      <div className="flex-1 p-6 overflow-hidden">
-        <div className="flex gap-6 h-full">
-          {/* Club List Section - Fixed */}
-          <div className="w-1/4 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <ClubList />
-          </div>
-
-          {/* Club Details Section - Scrollable */}
-          <div className="flex-1 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-            <div className="h-full overflow-y-auto">
-              <ClubDetails />
-            </div>
-          </div>
+      <div className="flex flex-col w-full p-2 gap-2">
+        <div className="w-full">
+          <ClubDetails />
+          <StationDetails />
         </div>
       </div>
 

@@ -8,8 +8,8 @@ export interface ClubAddress {
   state: string;
   pincode: string;
   location?: {
-    latitude: string;
-    longitude: string;
+    latitude: number;
+    longitude: number;
   }
 }
 
@@ -21,16 +21,19 @@ export interface CreateClubRequest {
   address?: ClubAddress;
   openTime?: string;
   closeTime?: string;
+  primaryPhone?: string;
+  secondaryPhone?: string;
 }
 
 export interface UpdateClubRequest {
   name: string;
-  clubAdminId: number;
   logo?: string;
   coverImage?: string;
   address?: ClubAddress;
   openTime?: string;
   closeTime?: string;
+  primaryPhone?: string;
+  secondaryPhone?: string;
 }
 
 export interface ClubResponse {
@@ -48,6 +51,8 @@ export interface ClubDetailsResponse {
   location?: ClubAddress;
   openTime?: string;
   closeTime?: string;
+  primaryPhone?: string;
+  secondaryPhone?: string;
 }
 
 export interface AddStationRequest {
@@ -55,10 +60,16 @@ export interface AddStationRequest {
   stationName: string;
   stationType: StationType;
   stationGroupLayoutId: string;
+  openTime?: string;
+  closeTime?: string;
+  pricePerHour?: string;
 }
 
 export interface UpdateStationRequest {
   stationName: string;
+  openTime?: string;
+  closeTime?: string;
+  pricePerHour?: string;
 }
 
 export interface StationDetailsResponse {
@@ -111,22 +122,6 @@ export async function createClub(data: CreateClubRequest): Promise<ClubResponse>
   return res.json();
 }
 
-export async function getAllClubs(clubAdminId?: number): Promise<ClubResponse[]> {
-  const url = new URL(`${CLUBSERVICE_ENDPOINT}/clubs`);
-  if (clubAdminId) {
-    url.searchParams.append("clubAdminId", clubAdminId.toString());
-  }
-
-  const res = await fetch(url.toString());
-
-  if (!res.ok) {
-    const errBody = await res.json().catch(() => null);
-    throw handleApiError(errBody, "GET_ALL_CLUBS", "Failed to fetch clubs");
-  }
-
-  return res.json();
-}
-
 export async function getClubsForAdminId(clubAdminId: number): Promise<ClubResponse[]> {
   const url = new URL(`${CLUBSERVICE_ENDPOINT}/clubs`);
   url.searchParams.append("clubAdminId", clubAdminId.toString());
@@ -141,7 +136,7 @@ export async function getClubsForAdminId(clubAdminId: number): Promise<ClubRespo
   return res.json();
 }
 
-export async function getClubById(clubId: number): Promise<ClubResponse> {
+export async function getClubDetailsById(clubId: number): Promise<ClubResponse> {
   const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`);
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);

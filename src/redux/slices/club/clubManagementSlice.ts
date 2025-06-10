@@ -2,19 +2,24 @@ import {
   ClubDetailsResponse,
   ClubResponse,
   ClubServiceException,
-  StationDetailsResponse
-} from "@/api/clubApi";
+  CreateClubRequest,
+  StationDetailsResponse,
+  updateClub,
+  UpdateClubRequest
+} from "@/api/clubManagementApi";
 import {
   getClubsForAdminId,
-  getClubById,
-  getStationsByClubId
-} from "@/api/clubApi";
+  getClubDetailsById,
+  getStationsByClubId,
+  createClub
+} from "@/api/clubManagementApi";
 import {
   createAsyncThunk,
   createSlice,
   PayloadAction
 } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
+import { ClubFormData } from "@/components/club-management/CreateOrEditClubForm";
 
 export interface ClubMetaData {
   clubId: number;
@@ -34,16 +39,86 @@ export interface ClubManagementState {
   clubListError?: string;
   clubDetailsError?: string;
   stationDetailsError?: string;
+
+  createClubLoading: boolean;
+  createClubError?: string;
+
+  updateClubDetailsLoading: boolean;
+  updateClubDetailsError?: string;
 }
 
 const initialState: ClubManagementState = {
   clubList: [],
   loadingClubList: false,
   loadingClubDetails: false,
-  loadingStations: false
+  loadingStations: false,
+  createClubLoading: false,
+  updateClubDetailsLoading: false
 };
 
 // THUNKS
+export const createNewClub = createAsyncThunk<
+  ClubResponse, 
+  {
+    clubAdminId: number;
+    clubFormData: ClubFormData;
+  },
+  { rejectValue: ClubServiceException}
+>(
+  "clubManagement/createNewClub",
+  async ({clubAdminId, clubFormData}, { dispatch, rejectWithValue }) => {
+    try {
+      const createClubRequest: CreateClubRequest = {
+        clubAdminId: clubAdminId,
+        name: clubFormData.clubName
+      }
+      const response = await createClub(createClubRequest);
+      return response;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "CREATE_NEW_CLUB",
+        message: "Failed to create new club",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const updateClubDetails = createAsyncThunk<
+  ClubResponse, 
+  { 
+    clubId: number; 
+    updatedClubData: ClubFormData
+  },
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/updateClubDetails",
+  async ({clubId, updatedClubData}, { rejectWithValue }) => {
+    try {
+      const updateClubRequest: UpdateClubRequest = {
+        name: updatedClubData.clubName
+      }
+      const response = await updateClub(clubId, updateClubRequest);
+      return response;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "UPDATE_CLUB_DETAILS",
+        message: "Failed to create new club",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+
 export const fetchClubIdsForAdminId = createAsyncThunk<
   ClubMetaData[],
   number,
@@ -85,7 +160,7 @@ export const fetchClubDetailsById = createAsyncThunk<
   "clubManagement/fetchClubDetailsById",
   async (clubId, { rejectWithValue }) => {
     try {
-      const clubDetails = await getClubById(clubId);
+      const clubDetails = await getClubDetailsById(clubId);
       return clubDetails;
     } catch (err: any) {
       if (err.response?.data) {
@@ -136,6 +211,31 @@ const clubManagementSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(createNewClub.pending, (state) => {
+        state.createClubLoading = true;
+        state.createClubError = undefined;
+      })
+      .addCase(createNewClub.fulfilled, (state, action) => {
+        state.createClubLoading = false;
+        console.log(`CreatedClub: ${JSON.stringify(action.payload)}`);
+      })
+      .addCase(createNewClub.rejected, (state, action) => {
+        state.createClubLoading = false;
+        state.clubListError = action.payload?.message;
+      })
+
+      .addCase(updateClubDetails.pending, (state) => {
+        state.updateClubDetailsLoading = true;
+        state.updateClubDetailsError = undefined;
+      })
+      .addCase(updateClubDetails.fulfilled, (state, action) => {
+        state.updateClubDetailsLoading = false;
+        console.log(`UpdatedClub: ${JSON.stringify(action.payload)}`);
+      })
+      .addCase(updateClubDetails.rejected, (state, action) => {
+        state.updateClubDetailsLoading = false;
+        state.updateClubDetailsError = action.payload?.message;
+      })
       
       .addCase(fetchClubIdsForAdminId.pending, (state) => {
         state.loadingClubList = true;

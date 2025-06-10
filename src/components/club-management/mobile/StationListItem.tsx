@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { StationDetailsResponse } from '@/api/clubApi';
+import { StationDetailsResponse } from '@/api/clubManagementApi';
 import { StationType } from '@/lib/types/station';
 import { Pencil, Trash2, Power, Clock, IndianRupee } from 'lucide-react';
 import EditStationDialog from '@/components/club-management/EditStationDialog';
