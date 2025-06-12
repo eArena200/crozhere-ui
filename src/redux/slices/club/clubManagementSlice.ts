@@ -1,11 +1,17 @@
 import {
+  addStation,
+  AddStationRequest,
   ClubDetailsResponse,
   ClubResponse,
   ClubServiceException,
   CreateClubRequest,
+  deleteStationById,
   StationDetailsResponse,
+  toggleStationStatus,
   updateClub,
-  UpdateClubRequest
+  UpdateClubRequest,
+  updateStation,
+  UpdateStationRequest
 } from "@/api/clubManagementApi";
 import {
   getClubsForAdminId,
@@ -20,6 +26,7 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
 import { ClubFormData } from "@/components/club-management/CreateOrEditClubForm";
+import { StationFormData } from "@/components/club-management/StationForm";
 
 export interface ClubMetaData {
   clubId: number;
@@ -27,7 +34,7 @@ export interface ClubMetaData {
 }
 
 export interface ClubManagementState {
-  clubList: ClubMetaData[];
+  clubList: ClubResponse[];
   selectedClubId?: number;
   selectedClubDetails?: ClubDetailsResponse;
   selectedClubStationsDetails?: StationDetailsResponse[];
@@ -43,8 +50,20 @@ export interface ClubManagementState {
   createClubLoading: boolean;
   createClubError?: string;
 
-  updateClubDetailsLoading: boolean;
-  updateClubDetailsError?: string;
+  updateClubLoading: boolean;
+  updateClubError?: string;
+
+  addStationLoading: boolean;
+  addStationError?: string;
+
+  updateStationLoading: boolean;
+  updateStationError?: string;
+
+  toggleStationLoading: boolean;
+  toggleStationError?: string;
+
+  deleteStationLoading: boolean;
+  deleteStationError?: string;
 }
 
 const initialState: ClubManagementState = {
@@ -53,7 +72,11 @@ const initialState: ClubManagementState = {
   loadingClubDetails: false,
   loadingStations: false,
   createClubLoading: false,
-  updateClubDetailsLoading: false
+  updateClubLoading: false,
+  addStationLoading: false,
+  updateStationLoading: false,
+  deleteStationLoading: false,
+  toggleStationLoading: false
 };
 
 // THUNKS
@@ -70,7 +93,19 @@ export const createNewClub = createAsyncThunk<
     try {
       const createClubRequest: CreateClubRequest = {
         clubAdminId: clubAdminId,
-        name: clubFormData.clubName
+        clubName: clubFormData.clubName,
+        clubAddress: {
+          streetAddress: clubFormData.address.street,
+          city: clubFormData.address.city,
+          state: clubFormData.address.state,
+          pinCode: clubFormData.address.pincode
+        },
+        operatingHours: {
+          openTime: clubFormData.openTime,
+          closeTime: clubFormData.closeTime
+        },
+        primaryContact: clubFormData.primaryContact,
+        secondaryContact: clubFormData.secondaryContact
       }
       const response = await createClub(createClubRequest);
       return response;
@@ -89,18 +124,32 @@ export const createNewClub = createAsyncThunk<
 );
 
 export const updateClubDetails = createAsyncThunk<
-  ClubResponse, 
+  ClubDetailsResponse, 
   { 
-    clubId: number; 
+    clubId: number;
+    clubAdminId: number;
     updatedClubData: ClubFormData
   },
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/updateClubDetails",
-  async ({clubId, updatedClubData}, { rejectWithValue }) => {
+  async ({clubId, clubAdminId, updatedClubData}, { dispatch, rejectWithValue }) => {
     try {
       const updateClubRequest: UpdateClubRequest = {
-        name: updatedClubData.clubName
+        clubAdminId: clubAdminId,
+        clubName: updatedClubData.clubName,
+        clubAddress: {
+          streetAddress: updatedClubData.address.street,
+          city: updatedClubData.address.city,
+          state: updatedClubData.address.state,
+          pinCode: updatedClubData.address.pincode
+        },
+        operatingHours: {
+          openTime: updatedClubData.openTime,
+          closeTime: updatedClubData.closeTime
+        },
+        primaryContact: updatedClubData.primaryContact,
+        secondaryContact: updatedClubData.secondaryContact
       }
       const response = await updateClub(clubId, updateClubRequest);
       return response;
@@ -120,19 +169,14 @@ export const updateClubDetails = createAsyncThunk<
 
 
 export const fetchClubIdsForAdminId = createAsyncThunk<
-  ClubMetaData[],
+  ClubResponse[],
   number,
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/fetchClubIdsForAdminId",
   async (adminId, { dispatch, rejectWithValue }) => {
     try {
-      const clubsForAdminId = await getClubsForAdminId(adminId);
-      const clubList = clubsForAdminId.map((club) => ({
-        clubId: club.clubId,
-        clubName: club.name
-      }));
-
+      const clubList = await getClubsForAdminId(adminId);
       if (clubList.length > 0) {
         dispatch(setSelectedClubId(clubList[0].clubId));
       }
@@ -153,7 +197,7 @@ export const fetchClubIdsForAdminId = createAsyncThunk<
 );
 
 export const fetchClubDetailsById = createAsyncThunk<
-  ClubResponse,
+  ClubDetailsResponse,
   number,
   { rejectValue: ClubServiceException }
 >(
@@ -176,6 +220,7 @@ export const fetchClubDetailsById = createAsyncThunk<
   }
 );
 
+// STATION THUNKS
 export const fetchStationsByClubId = createAsyncThunk<
   StationDetailsResponse[],
   number,
@@ -200,6 +245,123 @@ export const fetchStationsByClubId = createAsyncThunk<
   }
 );
 
+export const addNewStation = createAsyncThunk<
+  StationDetailsResponse,
+  { clubAdminId: number, clubId: number, stationFormData: StationFormData},
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/addNewStation",
+  async({clubAdminId, clubId, stationFormData}, {dispatch, rejectWithValue}) => {
+    try {
+      const addStationRequest: AddStationRequest = {
+        clubId: clubId,
+        clubAdminId: clubAdminId,
+        stationName: stationFormData.stationName,
+        stationType: stationFormData.stationType,
+        operatingHours: {
+          openTime: stationFormData.openTime,
+          closeTime: stationFormData.closeTime
+        },
+        capacity: stationFormData.capacity
+      }
+      
+      const response = await addStation(addStationRequest);
+      return response;
+    } catch (err: any){
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "ADD_NEW_STATION",
+        message: "Failed to add new station",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const updateStationDetails = createAsyncThunk<
+  StationDetailsResponse,
+  { clubAdminId: number, stationId: number, stationFormData: StationFormData},
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/updateStationDetails",
+  async({clubAdminId, stationId, stationFormData}, {dispatch, rejectWithValue}) => {
+    try {
+      const UpdateStationRequest: UpdateStationRequest = {
+        clubAdminId: clubAdminId,
+        stationName: stationFormData.stationName,
+        operatingHours: {
+          openTime: stationFormData.openTime,
+          closeTime: stationFormData.closeTime
+        },
+        capacity:stationFormData.capacity
+      }
+      
+      const response = await updateStation(stationId, UpdateStationRequest);
+      return response;
+    } catch (err: any){
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "UPDATE_STATION_DETAILS",
+        message: "Failed to add new station",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const toggleStation = createAsyncThunk<
+  StationDetailsResponse,
+  number,
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/toggleStation",
+  async(stationId, {dispatch, rejectWithValue}) => {
+    try {
+      const response = await toggleStationStatus(stationId);
+      return response;
+    } catch (err: any){
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "TOGGLE_STATION_STATUS",
+        message: "Failed to toggle station status",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const deleteStation = createAsyncThunk<
+  void,
+  number,
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/deleteStation",
+  async(stationId, {dispatch, rejectWithValue}) => {
+    try {
+      await deleteStationById(stationId);
+    } catch (err: any){
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "DELETE_STATION",
+        message: "Failed to delete station",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
 // SLICE
 const clubManagementSlice = createSlice({
   name: "clubManagement",
@@ -217,6 +379,7 @@ const clubManagementSlice = createSlice({
       })
       .addCase(createNewClub.fulfilled, (state, action) => {
         state.createClubLoading = false;
+        // TODO: Remove this log
         console.log(`CreatedClub: ${JSON.stringify(action.payload)}`);
       })
       .addCase(createNewClub.rejected, (state, action) => {
@@ -225,16 +388,17 @@ const clubManagementSlice = createSlice({
       })
 
       .addCase(updateClubDetails.pending, (state) => {
-        state.updateClubDetailsLoading = true;
-        state.updateClubDetailsError = undefined;
+        state.updateClubLoading = true;
+        state.updateClubError = undefined;
       })
       .addCase(updateClubDetails.fulfilled, (state, action) => {
-        state.updateClubDetailsLoading = false;
+        state.updateClubLoading = false;
+        // TODO: Remove this log
         console.log(`UpdatedClub: ${JSON.stringify(action.payload)}`);
       })
       .addCase(updateClubDetails.rejected, (state, action) => {
-        state.updateClubDetailsLoading = false;
-        state.updateClubDetailsError = action.payload?.message;
+        state.updateClubLoading = false;
+        state.updateClubError = action.payload?.message;
       })
       
       .addCase(fetchClubIdsForAdminId.pending, (state) => {
@@ -262,6 +426,62 @@ const clubManagementSlice = createSlice({
       .addCase(fetchClubDetailsById.rejected, (state, action) => {
         state.loadingClubDetails = false;
         state.clubDetailsError = action.payload?.message;
+      })
+
+      .addCase(addNewStation.pending, (state) => {
+        state.addStationLoading = true;
+        state.addStationError = undefined;
+      })
+      .addCase(addNewStation.fulfilled, (state, action) => {
+        state.addStationLoading = false;
+        // TODO: Remove this log
+        console.log("Added New Station: " + JSON.stringify(action.payload));
+      })
+      .addCase(addNewStation.rejected, (state, action) => {
+        state.addStationLoading = false;
+        state.addStationError = action.payload?.message;
+      })
+
+      .addCase(updateStationDetails.pending, (state) => {
+        state.updateStationLoading = true;
+        state.updateStationError = undefined;
+      })
+      .addCase(updateStationDetails.fulfilled, (state, action) => {
+        state.updateStationLoading = false;
+        // TODO: Remove this log
+        console.log("Updated Station: " + JSON.stringify(action.payload));
+      })
+      .addCase(updateStationDetails.rejected, (state, action) => {
+        state.updateStationLoading = false;
+        state.updateStationError = action.payload?.message;
+      })
+
+      .addCase(toggleStation.pending, (state) => {
+        state.toggleStationLoading = true;
+        state.toggleStationError = undefined;
+      })
+      .addCase(toggleStation.fulfilled, (state, action) => {
+        state.toggleStationLoading = false;
+        // TODO: Remove this log
+        console.log("Toggled Station: " + JSON.stringify(action.payload));
+      })
+      .addCase(toggleStation.rejected, (state, action) => {
+        state.toggleStationLoading = false;
+        state.toggleStationError = action.payload?.message;
+      })
+
+      .addCase(deleteStation.pending, (state) => {
+        state.deleteStationLoading = true;
+        state.deleteStationError = undefined;
+      })
+      .addCase(deleteStation.fulfilled, (state) => {
+        state.deleteStationLoading = false;
+        // TODO: Remove this log
+        console.log("Deleted Station");
+      })
+      .addCase(deleteStation.rejected, (state, action) => {
+        state.deleteStationLoading = false;
+        state.deleteStationError = action.payload?.message;
       })
 
       .addCase(fetchStationsByClubId.pending, (state) => {

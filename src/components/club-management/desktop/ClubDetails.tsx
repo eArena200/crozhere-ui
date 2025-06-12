@@ -13,6 +13,7 @@ import {
 import EditClubDialog from '../EditClubDialog';
 import { ClubFormData } from '../CreateOrEditClubForm';
 import { ClubDetailsResponse } from '@/api/clubManagementApi';
+import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
 
 function ClubDetails() {
   const dispatchRedux = useDispatchRedux();
@@ -22,6 +23,8 @@ function ClubDetails() {
     selectedClubDetails,
     clubDetailsError,
   } = useSelector(selectClubManagementState);
+
+  const authClubAdminId = useSelector(selectAuthClubAdminId);
 
   const [isEditClubOpen, setIsEditClubOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -33,9 +36,10 @@ function ClubDetails() {
   }, [dispatchRedux, selectedClubId]);
 
   const handleUpdateClub = (updatedClubData: ClubFormData) => {
-    if(selectedClubId){
+    if(selectedClubId && authClubAdminId){
       dispatchRedux(updateClubDetails({
         clubId: selectedClubId,
+        clubAdminId: authClubAdminId,
         updatedClubData: updatedClubData
       }));
     }
@@ -72,13 +76,13 @@ function ClubDetails() {
   }
 
   return (
-    <div className="flex flex-col w-full bg-gray-50 rounded">
+    <div className="flex flex-col w-full bg-gray-100 rounded border-gray-300 border-2">
       {/* Club Header with Chevron */}
       <div 
         className="flex items-center justify-between p-4 bg-white rounded-t cursor-pointer hover:bg-gray-50"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <h2 className="text-lg font-semibold text-gray-900">Club Details</h2>
+        <h2 className="text-xl font-semibold text-gray-900">Club Details</h2>
         <ChevronDown 
           className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`}
         />
@@ -96,7 +100,7 @@ function ClubDetails() {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-100">
+              <div className="w-full h-full flex items-center justify-center bg-gray-400">
                 <Building2 className="h-12 w-12 text-gray-400" />
               </div>
             )}
@@ -115,8 +119,8 @@ function ClubDetails() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                      <Building2 className="h-12 w-12 text-gray-400" />
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                      <Building2 className="h-12 w-12 text-gray-500" />
                     </div>
                   )}
                 </div>
@@ -125,13 +129,11 @@ function ClubDetails() {
               {/* Club Name and Status */}
               <div className="flex-1">
                 <div className="flex items-center space-x-2">
-                  <h2 className="text-2xl font-bold text-gray-900">{selectedClubDetails?.name}</h2>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium border border-blue-200 flex items-center">
+                  <h2 className="text-2xl font-bold text-gray-900">{selectedClubDetails?.clubName}</h2>
+                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium border border-blue-200 flex items-center">
                     <CheckCircle2 className="w-4 h-4 mr-1" />
                     Verified
                   </span>
-                </div>
-                <div className="flex items-center space-x-2 mt-1">
                   <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium border border-green-200">
                     Active
                   </span>
@@ -150,22 +152,22 @@ function ClubDetails() {
             </div>
 
             {/* Club Info Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-              <div className="flex items-center space-x-3 p-3 bg-gray-100 rounded-lg">
-                <MapPin className="w-5 h-5 text-gray-400" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
+              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-gray-200">
+                <MapPin className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Location</p>
-                  <p className="font-medium">
-                    {`${selectedClubDetails?.location?.city}, ${selectedClubDetails?.location?.state}`}
+                  <p className="font-medium text-gray-700">
+                    {`${selectedClubDetails?.clubAddress?.city}, ${selectedClubDetails?.clubAddress?.state}`}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-100 rounded-lg">
-                <Clock className="w-5 h-5 text-gray-400" />
+              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-gray-200">
+                <Clock className="w-5 h-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Operating Hours</p>
-                  <p className="font-medium">
-                    {`${selectedClubDetails?.openTime} - ${selectedClubDetails?.closeTime}`}
+                  <p className="font-medium text-gray-700">
+                    {`${selectedClubDetails?.operatingHours.openTime} - ${selectedClubDetails?.operatingHours.closeTime}`}
                   </p>
                 </div>
               </div>
@@ -189,21 +191,21 @@ function ClubDetails() {
 
 function getFormDataFromClubDetails(clubDetails: ClubDetailsResponse) : ClubFormData {
   return {
-    clubName: clubDetails.name,
+    clubName: clubDetails.clubName,
     address: {
-      street: clubDetails.location?.street,
-      city: clubDetails.location?.city,
-      state: clubDetails.location?.state,
-      pincode: clubDetails.location?.pincode,
+      street: clubDetails.clubAddress.streetAddress,
+      city: clubDetails.clubAddress.city,
+      state: clubDetails.clubAddress.state,
+      pincode: clubDetails.clubAddress.pinCode,
       coordinates: {
-        latitude: clubDetails.location?.location?.latitude,
-        longitude: clubDetails.location?.location?.longitude,
+        latitude: clubDetails.clubAddress.geoLocation?.latitude,
+        longitude: clubDetails.clubAddress.geoLocation?.longitude,
       }
     },
-    openTime: clubDetails.openTime,
-    closeTime: clubDetails.closeTime,
-    primaryContact: clubDetails.primaryPhone,
-    secondaryContact: clubDetails.secondaryPhone
+    openTime: clubDetails.operatingHours.openTime,
+    closeTime: clubDetails.operatingHours.closeTime,
+    primaryContact: clubDetails.primaryContact,
+    secondaryContact: clubDetails.secondaryContact
   };
 }
 

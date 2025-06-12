@@ -1,75 +1,76 @@
 import { StationType } from "@/lib/types/station";
 
-const CLUBSERVICE_ENDPOINT = "http://localhost:8080";
+const CLUB_SERVICE_ENDPOINT = "http://localhost:8080";
 
 export interface ClubAddress {
-  street: string;
+  streetAddress: string;
   city: string;
   state: string;
-  pincode: string;
-  location?: {
+  pinCode: string;
+  geoLocation?: {
     latitude: number;
     longitude: number;
   }
 }
 
+export interface OperatingHours {
+  openTime: string;
+  closeTime: string;
+}
+
 export interface CreateClubRequest {
-  name: string;
+  clubName: string;
   clubAdminId: number;
+  clubAddress: ClubAddress;
+  operatingHours: OperatingHours;
+  primaryContact: string;
+  secondaryContact?: string;
   logo?: string;
   coverImage?: string;
-  address?: ClubAddress;
-  openTime?: string;
-  closeTime?: string;
-  primaryPhone?: string;
-  secondaryPhone?: string;
 }
 
 export interface UpdateClubRequest {
-  name: string;
+  clubName?: string;
+  clubAdminId: number;
+  clubAddress?: ClubAddress;
+  operatingHours?: OperatingHours;
+  primaryContact?: string;
+  secondaryContact?: string;
   logo?: string;
   coverImage?: string;
-  address?: ClubAddress;
-  openTime?: string;
-  closeTime?: string;
-  primaryPhone?: string;
-  secondaryPhone?: string;
 }
 
 export interface ClubResponse {
   clubId: number;
   clubAdminId: number;
-  clubLayoutId: string;
-  name: string;
+  clubName: string;
 }
 
 export interface ClubDetailsResponse {
   clubId: number;
-  name: string;
+  clubName: string;
+  clubAddress: ClubAddress;
+  operatingHours: OperatingHours;
+  primaryContact: string;
+  secondaryContact?: string;
   logo?: string;
   coverImage?: string;
-  location?: ClubAddress;
-  openTime?: string;
-  closeTime?: string;
-  primaryPhone?: string;
-  secondaryPhone?: string;
 }
 
 export interface AddStationRequest {
   clubId: number;
+  clubAdminId: number;
   stationName: string;
   stationType: StationType;
-  stationGroupLayoutId: string;
-  openTime?: string;
-  closeTime?: string;
-  pricePerHour?: string;
+  operatingHours: OperatingHours;
+  capacity: number
 }
 
 export interface UpdateStationRequest {
-  stationName: string;
-  openTime?: string;
-  closeTime?: string;
-  pricePerHour?: string;
+  clubAdminId: number;
+  stationName?: string;
+  operatingHours?: OperatingHours;
+  capacity?: number;
 }
 
 export interface StationDetailsResponse {
@@ -77,10 +78,9 @@ export interface StationDetailsResponse {
   clubId: number;
   stationName: string;
   stationType: StationType;
-  stationGroupLayoutId: string;
-  stationLayoutId: string;
+  operatingHours: OperatingHours;
+  capacity: number;
   isActive: boolean;
-  pricePerHour?: number;
 }
 
 export interface ClubServiceException {
@@ -107,8 +107,10 @@ function handleApiError(errorBody: any, fallbackType: string, fallbackMessage: s
   };
 }
 
+
+// CLUB MANAGEMENT APIs
 export async function createClub(data: CreateClubRequest): Promise<ClubResponse> {
-  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs`, {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -123,21 +125,22 @@ export async function createClub(data: CreateClubRequest): Promise<ClubResponse>
 }
 
 export async function getClubsForAdminId(clubAdminId: number): Promise<ClubResponse[]> {
-  const url = new URL(`${CLUBSERVICE_ENDPOINT}/clubs`);
+  const url = new URL(`${CLUB_SERVICE_ENDPOINT}/manage/clubs`);
   url.searchParams.append("clubAdminId", clubAdminId.toString());
   
   const res = await fetch(url.toString());
 
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);
-    throw handleApiError(errBody, "GET_ALL_CLUBS", "Failed to fetch clubs");
+    throw handleApiError(errBody, "GET_CLUBS_FOR_ADMIN_ID",
+       `Failed to fetch clubs for clubAdminId ${clubAdminId}`);
   }
 
   return res.json();
 }
 
-export async function getClubDetailsById(clubId: number): Promise<ClubResponse> {
-  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`);
+export async function getClubDetailsById(clubId: number): Promise<ClubDetailsResponse> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}`);
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);
     throw handleApiError(errBody, "GET_CLUB_BY_ID", `Failed to get club with id: ${clubId}`);
@@ -145,8 +148,8 @@ export async function getClubDetailsById(clubId: number): Promise<ClubResponse> 
   return res.json();
 }
 
-export async function updateClub(clubId: number, data: UpdateClubRequest): Promise<ClubResponse> {
-  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`, {
+export async function updateClub(clubId: number, data: UpdateClubRequest): Promise<ClubDetailsResponse> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -160,19 +163,10 @@ export async function updateClub(clubId: number, data: UpdateClubRequest): Promi
   return res.json();
 }
 
-export async function deleteClub(clubId: number): Promise<void> {
-  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/${clubId}`, {
-    method: "DELETE",
-  });
 
-  if (!res.ok) {
-    const errBody = await res.json().catch(() => null);
-    throw handleApiError(errBody, "DELETE_CLUB", `Failed to delete club with id: ${clubId}`);
-  }
-}
-
+// STATION MANAGEMENT APIs
 export async function addStation(data: AddStationRequest): Promise<StationDetailsResponse> {
-  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations`, {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/stations`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -187,7 +181,7 @@ export async function addStation(data: AddStationRequest): Promise<StationDetail
 }
 
 export async function getStationById(stationId: number): Promise<StationDetailsResponse> {
-  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`);
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/stations/${stationId}`);
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);
     throw handleApiError(errBody, "GET_STATION_BY_ID", `Failed to get station with id: ${stationId}`);
@@ -196,7 +190,7 @@ export async function getStationById(stationId: number): Promise<StationDetailsR
 }
 
 export async function updateStation(stationId: number, data: UpdateStationRequest): Promise<StationDetailsResponse> {
-  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`, {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/stations/${stationId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -210,8 +204,22 @@ export async function updateStation(stationId: number, data: UpdateStationReques
   return res.json();
 }
 
-export async function deleteStation(stationId: number): Promise<void> {
-  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations/${stationId}`, {
+export async function toggleStationStatus(stationId: number): Promise<StationDetailsResponse> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/stations/${stationId}/toggle`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" }
+  });
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "TOGGLE_STATION_STATUS", `Failed to update station with id: ${stationId}`);
+  }
+
+  return res.json();
+}
+
+export async function deleteStationById(stationId: number): Promise<void> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/stations/${stationId}`, {
     method: "DELETE",
   });
 
@@ -222,7 +230,11 @@ export async function deleteStation(stationId: number): Promise<void> {
 }
 
 export async function getStationsByClubId(clubId: number): Promise<StationDetailsResponse[]> {
-  const res = await fetch(`${CLUBSERVICE_ENDPOINT}/clubs/stations?clubId=${clubId}`);
+  const url = new URL(`${CLUB_SERVICE_ENDPOINT}/manage/stations`);
+  url.searchParams.append("clubId", clubId.toString());
+  
+  const res = await fetch(url.toString());
+
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);
     throw handleApiError(errBody, "GET_STATIONS_BY_CLUB", `Failed to fetch stations for clubId: ${clubId}`);

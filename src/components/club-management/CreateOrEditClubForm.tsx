@@ -15,19 +15,19 @@ export const clubSchema = z.object({
   logo: z.string().optional(),
   coverImage: z.string().optional(),
   address: z.object({
-    street: z.string().min(1, 'Street address is required').optional(),
-    city: z.string().min(1, 'City is required').optional(),
-    state: z.string().min(1, 'State is required').optional(),
-    pincode: z.string().min(6, 'Pincode must be at least 6 characters').optional(),
+    street: z.string().min(1, 'Street address is required'),
+    city: z.string().min(1, 'City is required'),
+    state: z.string().min(1, 'State is required'),
+    pincode: z.string().min(6, 'Pincode must be at least 6 characters'),
     coordinates: z.object({
       latitude: z.number().optional(),
       longitude: z.number().optional(),
     }).optional(),
   }),
-  openTime: z.string().min(1, 'Open time is required').optional(),
-  closeTime: z.string().min(1, 'Close time is required').optional(),
+  openTime: z.string().min(1, 'Open time is required'),
+  closeTime: z.string().min(1, 'Close time is required'),
   primaryContact: z.string()
-    .regex(phoneRegex, 'Primary contact must be a valid 10-digit Indian phone number').optional(),
+    .regex(phoneRegex, 'Primary contact must be a valid 10-digit Indian phone number'),
   secondaryContact: z.string()
     .regex(phoneRegex, 'Secondary contact must be a valid 10-digit Indian phone number')
     .optional()
@@ -146,8 +146,11 @@ const CreateOrEditClubForm: React.FC<Props> = ({ isOpen, onClose, onSubmit, init
   };
 
   const handleCancel = () => {
-    onClose();
-  };
+  reset();
+  setLogoPreview(null);
+  setCoverPreview(null);
+  onClose();
+};
 
   const onSubmitForm = (data: ClubFormData) => {
     onSubmit(data);

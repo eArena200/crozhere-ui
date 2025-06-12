@@ -173,7 +173,7 @@ function ClubDetailsMobile({ clubId }: ClubDetailsMobileProps) {
               <div className="mt-2 space-y-2">
                 <div className="flex items-center text-gray-600">
                   <MapPin className="w-4 h-4 mr-2" />
-                  <span>{selectedClubDetails.location || "Location not specified"}</span>
+                  <span>{selectedClubDetails.clubAddress || "Location not specified"}</span>
                 </div>
                 <div className="flex items-center text-gray-600">
                   <Clock className="w-4 h-4 mr-2" />

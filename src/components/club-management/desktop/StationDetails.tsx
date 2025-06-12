@@ -7,23 +7,32 @@ import { StationType } from '@/lib/types/station';
 import StationDetailsCard from '@/components/club-management/desktop/StationDetailsCard';
 import { Plus } from 'lucide-react';
 import AddStationDialog from '@/components/club-management/AddStationDialog';
-import { StationFormData } from '../AddOrEditStationForm';
+import { StationFormData } from '../StationForm';
 import { useSelector } from 'react-redux';
-import { selectClubManagementState } from '@/redux/slices/club/clubManagementSlice';
+import { addNewStation, deleteStation, selectClubManagementState, selectSelectedClubId, toggleStation, updateStationDetails } from '@/redux/slices/club/clubManagementSlice';
+import { useDispatchRedux } from '@/redux/store';
+import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
 
 function StationDetails() {
+  const dispatchRedux = useDispatchRedux();
+
   const {
     loadingStations,
     selectedClubStationsDetails,
     stationDetailsError
   } = useSelector(selectClubManagementState);
 
+  const authAdminId = useSelector(selectAuthClubAdminId);
+  const clubId = useSelector(selectSelectedClubId);
+
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [isAddStationOpen, setIsAddStationOpen] = useState(false);
 
   const uniqueStationTypes: StationType[] = Array.from(
     new Set(selectedClubStationsDetails
-        ?.map((station: StationDetailsResponse) => station.stationType))
+        ?.map((station: StationDetailsResponse) => station.stationType)
+        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+      )
   );
 
   useEffect(() => {
@@ -32,20 +41,37 @@ function StationDetails() {
     }
   }, [uniqueStationTypes, selectedTab]);
 
-  const handleSaveStation = (stationData: StationFormData) => {
-    console.log('Saving new station:', stationData);
+  const handleAddStation = (stationData: StationFormData) => {
+    if(authAdminId && clubId){
+      console.log('Saving new station:', stationData);
+      dispatchRedux(
+        addNewStation({
+          clubAdminId: authAdminId,
+          clubId: clubId,
+          stationFormData: stationData
+        }));
+    }
   };
 
-  const handleEditStation = (stationData: StationDetailsResponse) => {
-    console.log('Editing station:', stationData);
+  const handleEditStation = (stationId: number, stationData: StationFormData) => {
+    if(authAdminId){
+      console.log('Editing station:', stationData);
+      dispatchRedux(updateStationDetails({
+        clubAdminId: authAdminId,
+        stationId: stationId,
+        stationFormData: stationData
+      }));
+    }
   };
 
   const handleDeleteStation = (stationId: number) => {
     console.log('Deleting station:', stationId);
+    dispatchRedux(deleteStation(stationId));
   };
 
   const handleToggleStationStatus = (stationId: number) => {
     console.log('Toggling station status:', stationId);
+    dispatchRedux(toggleStation(stationId));
   };
 
   if (loadingStations) {
@@ -84,13 +110,16 @@ function StationDetails() {
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         {selectedClubStationsDetails
                           ?.filter((station: StationDetailsResponse) => station.stationType === type)
+                          .sort((a, b) =>
+                            a.stationName.toLowerCase().localeCompare(b.stationName.toLowerCase())
+                          )
                           .map((station: StationDetailsResponse) => (
                             <StationDetailsCard 
                               key={station.stationId} 
-                              station={station}
-                              onEdit={handleEditStation}
-                              onDelete={handleDeleteStation}
-                              onToggleStatus={handleToggleStationStatus}
+                              stationDetails={station}
+                              handleEditStation={handleEditStation}
+                              handleDeleteStation={handleDeleteStation}
+                              onToggleStationStatus={handleToggleStationStatus}
                             />
                         ))}
                       </div>
@@ -106,7 +135,7 @@ function StationDetails() {
       <AddStationDialog 
         isOpen={isAddStationOpen} 
         onClose={() => setIsAddStationOpen(false)} 
-        onSubmit={handleSaveStation}        
+        onSubmit={handleAddStation}        
       />
     </div>
   );
