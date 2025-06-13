@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatchRedux } from '@/redux/store';
 import { Building2, Clock, MapPin, Pencil, CheckCircle2, ChevronDown } from 'lucide-react';
@@ -11,7 +11,7 @@ import {
   updateClubDetails
 } from '@/redux/slices/club/clubManagementSlice';
 import EditClubDialog from '../EditClubDialog';
-import { ClubFormData } from '../CreateOrEditClubForm';
+import { ClubFormData } from '../ClubForm';
 import { ClubDetailsResponse } from '@/api/clubManagementApi';
 import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
 
@@ -25,7 +25,6 @@ function ClubDetails() {
   } = useSelector(selectClubManagementState);
 
   const authClubAdminId = useSelector(selectAuthClubAdminId);
-
   const [isEditClubOpen, setIsEditClubOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -35,8 +34,12 @@ function ClubDetails() {
     }
   }, [dispatchRedux, selectedClubId]);
 
+  const initialFormData = useMemo(() => {
+    return selectedClubDetails ? getFormDataFromClubDetails(selectedClubDetails) : null;
+  }, [selectedClubDetails]);
+
   const handleUpdateClub = (updatedClubData: ClubFormData) => {
-    if(selectedClubId && authClubAdminId){
+    if(authClubAdminId && selectedClubId){
       dispatchRedux(updateClubDetails({
         clubId: selectedClubId,
         clubAdminId: authClubAdminId,
@@ -175,13 +178,12 @@ function ClubDetails() {
           </div>
         </div>
       )}
-
-      {selectedClubDetails && (
+      {initialFormData && (
         <EditClubDialog 
           isOpen={isEditClubOpen}
           onClose={() => setIsEditClubOpen(false)} 
-          onUpdate={handleUpdateClub} 
-          initialData={getFormDataFromClubDetails(selectedClubDetails)}      
+          onSubmit={handleUpdateClub} 
+          initialData={initialFormData}      
         />
       )}
     </div>

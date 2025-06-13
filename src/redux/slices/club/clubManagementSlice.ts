@@ -25,7 +25,7 @@ import {
   PayloadAction
 } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
-import { ClubFormData } from "@/components/club-management/CreateOrEditClubForm";
+import { ClubFormData } from "@/components/club-management/ClubForm";
 import { StationFormData } from "@/components/club-management/StationForm";
 
 export interface ClubMetaData {

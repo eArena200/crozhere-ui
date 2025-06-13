@@ -3,7 +3,7 @@
 import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { X } from 'lucide-react';
-import StationForm, { StationFormData } from './StationForm';
+import StationForm, { StationFormData } from '@/components/club-management/StationForm';
 import Button from '../ui/Button';
 
 interface AddStationDialogProps {
@@ -51,4 +51,4 @@ const AddStationDialog: React.FC<AddStationDialogProps> = ({ isOpen, onClose, on
   );
 };
 
-export default AddStationDialog;
+export default React.memo(AddStationDialog);

@@ -58,4 +58,4 @@ const EditStationDialog: React.FC<EditStationDialogProps> = ({
   );
 };
 
-export default EditStationDialog;
+export default React.memo(EditStationDialog);

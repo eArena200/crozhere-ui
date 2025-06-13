@@ -59,7 +59,6 @@ const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, on
     onSubmit(data);
     reset();
   };
-
   return (
     <form
       id="station-form"
@@ -150,4 +149,4 @@ const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, on
   );
 };
 
-export default StationForm;
+export default React.memo(StationForm);

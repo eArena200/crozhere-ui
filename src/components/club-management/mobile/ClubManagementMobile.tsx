@@ -12,7 +12,7 @@ import { useDispatchRedux } from '@/redux/store';
 import ClubListMobileHeader from '@/components/club-management/mobile/ClubListMobileHeader';
 import ClubDetailsMobile from '@/components/club-management/mobile/ClubDetailsMobile';
 import { selectClubAdminId } from '@/redux/slices/auth/clubAdminSlice';
-import CreateOrEditClubForm, { ClubFormData } from '../CreateOrEditClubForm';
+import CreateOrEditClubForm, { ClubFormData } from '../ClubForm';
 
 function ClubManagementMobile() {
   const dispatch = useDispatchRedux();
