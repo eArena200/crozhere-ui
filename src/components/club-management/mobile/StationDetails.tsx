@@ -1,24 +1,24 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Tabs, { Tab } from '@/components/ui/Tabs';
+import React, { useEffect, useState } from 'react';
+import StationListItem from '@/components/club-management/mobile/StationListItem';
 import { StationDetailsResponse } from '@/api/clubManagementApi';
 import { StationType } from '@/lib/types/station';
-import StationDetailsCard from '@/components/club-management/desktop/StationDetailsCard';
-import { Plus } from 'lucide-react';
-import AddStationDialog from '@/components/club-management/AddStationDialog';
-import { StationFormData } from '@/components/club-management/StationForm';
+import { useDispatchRedux } from '@/redux/store';
 import { useSelector } from 'react-redux';
 import { 
   addNewStation,
   deleteStation,
   selectClubManagementState,
   selectSelectedClubId,
-  toggleStation,
-  updateStationDetails 
+  toggleStation, 
+  updateStationDetails
 } from '@/redux/slices/club/clubManagementSlice';
-import { useDispatchRedux } from '@/redux/store';
+import { StationFormData } from '@/components/club-management/StationForm';
 import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { Plus } from 'lucide-react';
+import Tabs, { Tab } from '@/components/ui/Tabs';
+import AddStationDialog from '@/components/club-management/AddStationDialog';
 
 function StationDetails() {
   const dispatchRedux = useDispatchRedux();
@@ -31,7 +31,7 @@ function StationDetails() {
 
   const authAdminId = useSelector(selectAuthClubAdminId);
   const clubId = useSelector(selectSelectedClubId);
-
+  
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
   const [isAddStationOpen, setIsAddStationOpen] = useState(false);
 
@@ -49,6 +49,7 @@ function StationDetails() {
   }, [uniqueStationTypes, selectedTab]);
 
   const handleAddStation = (stationData: StationFormData) => {
+    console.log("Add Station Clicked", {authAdminId, clubId});
     if(authAdminId && clubId){
       console.log('Saving new station:', stationData);
       dispatchRedux(
@@ -81,11 +82,24 @@ function StationDetails() {
     dispatchRedux(toggleStation(stationId));
   };
 
+
   if (loadingStations) {
     return (
-      <div className="flex flex-col items-center justify-center h-48">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-        <p className="mt-4 text-sm text-gray-500">Loading Stations...</p>
+      <div className="space-y-3">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="p-4 bg-gray-50 rounded-lg animate-pulse">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gray-200 rounded-lg" />
+                <div className="space-y-2">
+                  <div className="h-4 w-32 bg-gray-200 rounded" />
+                  <div className="h-3 w-24 bg-gray-200 rounded" />
+                </div>
+              </div>
+              <div className="h-6 w-16 bg-gray-200 rounded-full" />
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -99,7 +113,7 @@ function StationDetails() {
   }
 
   return (
-    <div className="bg-white rounded shadow-md h-[calc(100vh-12rem)] flex flex-col">
+    <div className="bg-white rounded shadow-md h-[80vh] flex flex-col">
       <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Stations</h2>
@@ -115,29 +129,27 @@ function StationDetails() {
       </div>
 
       {selectedTab && (
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1">
           <div className="px-4 pt-4">
             <Tabs selected={selectedTab} onChange={setSelectedTab}>
               {uniqueStationTypes.map((type) => (
                 <Tab key={type} label={type} value={type}>
-                  <div className="h-[calc(100vh-16rem)] overflow-y-auto">
-                    <div className="p-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {selectedClubStationsDetails
-                          ?.filter((station: StationDetailsResponse) => station.stationType === type)
-                          .sort((a, b) =>
-                            a.stationName.toLowerCase().localeCompare(b.stationName.toLowerCase())
-                          )
-                          .map((station: StationDetailsResponse) => (
-                            <StationDetailsCard 
-                              key={station.stationId} 
-                              stationDetails={station}
-                              handleEditStation={handleEditStation}
-                              handleDeleteStation={handleDeleteStation}
-                              onToggleStationStatus={handleToggleStationStatus}
-                            />
-                        ))}
-                      </div>
+                  <div className="max-h-[60vh] overflow-y-auto">
+                    <div className="p-4 space-y-4">
+                      {selectedClubStationsDetails
+                        ?.filter((station: StationDetailsResponse) => station.stationType === type)
+                        .sort((a, b) =>
+                          a.stationName.toLowerCase().localeCompare(b.stationName.toLowerCase())
+                        )
+                        .map((station: StationDetailsResponse) => (
+                          <StationListItem 
+                            key={station.stationId} 
+                            stationDetails={station}
+                            handleEditStation={handleEditStation}
+                            handleDeleteStation={handleDeleteStation}
+                            onToggleStationStatus={handleToggleStationStatus}
+                          />
+                      ))}
                     </div>
                   </div>      
                 </Tab>

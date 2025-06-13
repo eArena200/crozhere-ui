@@ -2,10 +2,9 @@
 
 import React, { useState } from 'react';
 import { StationDetailsResponse } from '@/api/clubManagementApi';
-import { StationType } from '@/lib/types/station';
-import { Pencil, Trash2, Power, Clock, IndianRupee, Users } from 'lucide-react';
+import { Pencil, Trash2, Power, Clock, Users } from 'lucide-react';
 import EditStationDialog from '@/components/club-management/EditStationDialog';
-import { StationFormData } from '../StationForm';
+import { StationFormData } from '@/components/club-management/StationForm';
 
 interface StationCardProps {
   stationDetails: StationDetailsResponse;
@@ -118,4 +117,4 @@ function mapStationDetailsToStationFormData(stationDetails: StationDetailsRespon
     return stationFormData;
 }
 
-export default StationCard;
+export default React.memo(StationCard);

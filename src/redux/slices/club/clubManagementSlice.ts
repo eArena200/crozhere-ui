@@ -80,6 +80,65 @@ const initialState: ClubManagementState = {
 };
 
 // THUNKS
+export const fetchClubIdsForAdminId = createAsyncThunk<
+  ClubResponse[],
+  number,
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/fetchClubIdsForAdminId",
+  async (adminId, { dispatch, rejectWithValue }) => {
+    try {
+      const clubList = await getClubsForAdminId(adminId);
+      if (clubList.length > 0) {
+        dispatch(setSelectedClubAndFetchDetails(clubList[0].clubId));
+      }
+
+      return clubList;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "FETCH_CLUB_IDS_FOR_ADMIN_ID",
+        message: "Failed to fetch club list",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const setSelectedClubAndFetchDetails = createAsyncThunk<
+  void,
+  number,
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/setSelectedClubAndFetchDetails",
+  async (clubId, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setSelectedClubId(clubId));
+      await Promise.all([
+        dispatch(fetchClubDetailsById(clubId)).unwrap(),
+        dispatch(fetchStationsByClubId(clubId)).unwrap()
+      ]); 
+    } catch (err: any) {
+      if (err?.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "SET_SELECTED_CLUB_AND_FETCH_DETAILS",
+        message: "Failed to fetch club details or stations",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+
+
+// CLUB THUNKS
 export const createNewClub = createAsyncThunk<
   ClubResponse, 
   {
@@ -161,35 +220,6 @@ export const updateClubDetails = createAsyncThunk<
         error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
         type: "UPDATE_CLUB_DETAILS",
         message: "Failed to create new club",
-        timestamp: new Date().toISOString()
-      });
-    }
-  }
-);
-
-
-export const fetchClubIdsForAdminId = createAsyncThunk<
-  ClubResponse[],
-  number,
-  { rejectValue: ClubServiceException }
->(
-  "clubManagement/fetchClubIdsForAdminId",
-  async (adminId, { dispatch, rejectWithValue }) => {
-    try {
-      const clubList = await getClubsForAdminId(adminId);
-      if (clubList.length > 0) {
-        dispatch(setSelectedClubId(clubList[0].clubId));
-      }
-
-      return clubList;
-    } catch (err: any) {
-      if (err.response?.data) {
-        return rejectWithValue(err.response.data);
-      }
-      return rejectWithValue({
-        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
-        type: "FETCH_CLUB_IDS_FOR_ADMIN_ID",
-        message: "Failed to fetch club list",
         timestamp: new Date().toISOString()
       });
     }

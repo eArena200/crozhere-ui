@@ -1,56 +1,58 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
-  selectClubManagementState,
   fetchClubIdsForAdminId,
-  setSelectedClubId,
-  selectSelectedClubId,
+  createNewClub,
 } from '@/redux/slices/club/clubManagementSlice';
 import { useDispatchRedux } from '@/redux/store';
-import ClubListMobileHeader from '@/components/club-management/mobile/ClubListMobileHeader';
+import CMMobileHeader from '@/components/club-management/mobile/CMMobileHeader';
 import ClubDetailsMobile from '@/components/club-management/mobile/ClubDetailsMobile';
-import { selectClubAdminId } from '@/redux/slices/auth/clubAdminSlice';
-import CreateOrEditClubForm, { ClubFormData } from '../ClubForm';
+import { ClubFormData } from '@/components/club-management/ClubForm';
+import { useParams } from 'next/navigation';
+import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import CreateClubDialog from '@/components/club-management/CreateClubDialog';
+import StationDetails from '@/components/club-management/mobile/StationDetails';
 
 function ClubManagementMobile() {
-  const dispatch = useDispatchRedux();
-  const clubManagementState = useSelector(selectClubManagementState);
-  const selectedClubId = useSelector(selectSelectedClubId);
-  const clubAdminId = useSelector(selectClubAdminId);
-  const [isAddClubDialogOpen, setIsAddClubDialogOpen] = useState(false);
+  const dispatchRedux = useDispatchRedux();
+
+  const params = useParams();
+  const paramAdminId = parseInt(params.adminId as string);
+  const authAdminId = useSelector(selectAuthClubAdminId);
+
+  const [isCreateClubDialogOpen, setIsCreateClubDialogOpen] = useState(false);
 
   useEffect(() => {
-    if (clubAdminId !== undefined) {
-      dispatch(fetchClubIdsForAdminId(clubAdminId));
+    if (authAdminId && paramAdminId === authAdminId) {
+      dispatchRedux(fetchClubIdsForAdminId(authAdminId));
     }
-  }, [dispatch, clubAdminId]);
+  }, [dispatchRedux, paramAdminId, authAdminId]);
 
-  const handleClubSelect = (clubId: number) => {
-    dispatch(setSelectedClubId(clubId));
-  };
+  if (!authAdminId || paramAdminId !== authAdminId) {
+    // TODO: Add an unauthorized page
+    return (
+      <div>Unauthorized</div>
+    );
+  }
 
-  const handleAddClub = (clubData: ClubFormData) => {
-    console.log('Adding new club:', clubData);
-    // TODO: Implement club creation logic
-    setIsAddClubDialogOpen(false);
-  };
+  const handleCreateClub = (clubData: ClubFormData) => {
+    dispatchRedux(createNewClub({
+      clubAdminId: authAdminId,
+      clubFormData: clubData
+    }));
+  }
 
   return (
     <div className="flex flex-col bg-white w-full min-h-screen text-black p-2">
-      <ClubListMobileHeader
-        clubList={clubManagementState.clubList}
-        selectedClubId={selectedClubId}
-        onClubSelect={handleClubSelect}
-        onAddClub={() => setIsAddClubDialogOpen(true)}
-      />
-      {selectedClubId && <ClubDetailsMobile clubId={selectedClubId} />}
-
-      <CreateOrEditClubForm
-        isOpen={isAddClubDialogOpen}
-        onClose={() => setIsAddClubDialogOpen(false)}
-        onSubmit={handleAddClub}
+      <CMMobileHeader onClickCreateNewClub={() => setIsCreateClubDialogOpen(true)}/>
+      <ClubDetailsMobile />
+      <StationDetails />
+      <CreateClubDialog
+        isOpen={isCreateClubDialogOpen}
+        onClose={() => setIsCreateClubDialogOpen(false)}
+        onSubmit={handleCreateClub}
       />
     </div>
   );

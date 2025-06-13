@@ -1,24 +1,22 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatchRedux } from '@/redux/store';
 import { Building2, Clock, MapPin, Pencil, CheckCircle2, ChevronDown } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { 
-  fetchClubDetailsById,
   selectClubManagementState,
   updateClubDetails
 } from '@/redux/slices/club/clubManagementSlice';
-import EditClubDialog from '../EditClubDialog';
-import { ClubFormData } from '../ClubForm';
+import EditClubDialog from '@/components/club-management/EditClubDialog';
+import { ClubFormData } from '@/components/club-management/ClubForm';
 import { ClubDetailsResponse } from '@/api/clubManagementApi';
 import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
 
 function ClubDetails() {
   const dispatchRedux = useDispatchRedux();
   const {
-    selectedClubId,
     loadingClubDetails,
     selectedClubDetails,
     clubDetailsError,
@@ -28,27 +26,21 @@ function ClubDetails() {
   const [isEditClubOpen, setIsEditClubOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
 
-  useEffect(() => {
-    if (selectedClubId) {
-      dispatchRedux(fetchClubDetailsById(selectedClubId));
-    }
-  }, [dispatchRedux, selectedClubId]);
-
   const initialFormData = useMemo(() => {
     return selectedClubDetails ? getFormDataFromClubDetails(selectedClubDetails) : null;
   }, [selectedClubDetails]);
 
   const handleUpdateClub = (updatedClubData: ClubFormData) => {
-    if(authClubAdminId && selectedClubId){
+    if(authClubAdminId && selectedClubDetails){
       dispatchRedux(updateClubDetails({
-        clubId: selectedClubId,
+        clubId: selectedClubDetails.clubId,
         clubAdminId: authClubAdminId,
         updatedClubData: updatedClubData
       }));
     }
   }
 
-  if (!selectedClubId) {
+  if (!selectedClubDetails) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center p-8 bg-white rounded-lg shadow-md">

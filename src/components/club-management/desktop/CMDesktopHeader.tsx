@@ -4,7 +4,10 @@ import React from 'react';
 import { Building2, Plus, ChevronDown } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useSelector } from 'react-redux';
-import { selectClubManagementState, setSelectedClubId } from '@/redux/slices/club/clubManagementSlice';
+import { 
+  selectClubManagementState,
+  setSelectedClubAndFetchDetails
+} from '@/redux/slices/club/clubManagementSlice';
 import { useDispatchRedux } from '@/redux/store';
 
 interface CMDesktopHeaderProps {
@@ -16,7 +19,7 @@ function CMDesktopHeader({ onClickCreateNewClub }: CMDesktopHeaderProps) {
   const { clubList, selectedClubId } = useSelector(selectClubManagementState);
 
   const handleClubSelect = (clubId: number) => {
-    dispatchRedux(setSelectedClubId(clubId));
+    dispatchRedux(setSelectedClubAndFetchDetails(clubId));
   };
 
   return (

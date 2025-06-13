@@ -4,16 +4,16 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useDispatchRedux } from '@/redux/store';
 import CreateClubDialog from '@/components/club-management/CreateClubDialog';
-import ClubDetails from './ClubDetails';
-import StationDetails from './StationDetails';
-import { ClubFormData } from '../ClubForm';
+import ClubDetails from '@/components/club-management/desktop/ClubDetails';
+import StationDetails from '@/components/club-management/desktop/StationDetails';
+import { ClubFormData } from '@/components/club-management/ClubForm';
 import { 
   createNewClub,
   fetchClubIdsForAdminId
 } from '@/redux/slices/club/clubManagementSlice';
 import { useSelector } from 'react-redux';
 import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
-import CMDesktopHeader from './CMDesktopHeader';
+import CMDesktopHeader from '@/components/club-management/desktop/CMDesktopHeader';
 
 function ClubManagementDesktop() {
   const dispatchRedux = useDispatchRedux();
@@ -24,7 +24,7 @@ function ClubManagementDesktop() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   useEffect(() => {
-    if (paramAdminId === authAdminId) {
+    if (authAdminId && paramAdminId === authAdminId) {
       dispatchRedux(fetchClubIdsForAdminId(paramAdminId));
     }
   }, [dispatchRedux, paramAdminId, authAdminId]);
