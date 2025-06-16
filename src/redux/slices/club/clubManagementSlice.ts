@@ -219,7 +219,7 @@ export const updateClubDetails = createAsyncThunk<
       return rejectWithValue({
         error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
         type: "UPDATE_CLUB_DETAILS",
-        message: "Failed to create new club",
+        message: "Failed to update club",
         timestamp: new Date().toISOString()
       });
     }
@@ -338,7 +338,7 @@ export const updateStationDetails = createAsyncThunk<
       return rejectWithValue({
         error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
         type: "UPDATE_STATION_DETAILS",
-        message: "Failed to add new station",
+        message: "Failed to update station",
         timestamp: new Date().toISOString()
       });
     }
@@ -423,8 +423,15 @@ const clubManagementSlice = createSlice({
       })
       .addCase(updateClubDetails.fulfilled, (state, action) => {
         state.updateClubLoading = false;
-        // TODO: Remove this log
-        console.log(`UpdatedClub: ${JSON.stringify(action.payload)}`);
+        const updatedClub = action.payload;
+        state.selectedClubDetails = updatedClub;
+        const index = state.clubList.findIndex(club => club.clubId === updatedClub.clubId);
+        if (index !== -1) {
+          state.clubList[index] = {
+            ...state.clubList[index],
+            ...updatedClub,
+          };
+        }
       })
       .addCase(updateClubDetails.rejected, (state, action) => {
         state.updateClubLoading = false;
@@ -464,8 +471,8 @@ const clubManagementSlice = createSlice({
       })
       .addCase(addNewStation.fulfilled, (state, action) => {
         state.addStationLoading = false;
-        // TODO: Remove this log
-        console.log("Added New Station: " + JSON.stringify(action.payload));
+        const addedStation = action.payload;
+        state.selectedClubStationsDetails?.push(addedStation);
       })
       .addCase(addNewStation.rejected, (state, action) => {
         state.addStationLoading = false;
@@ -478,8 +485,16 @@ const clubManagementSlice = createSlice({
       })
       .addCase(updateStationDetails.fulfilled, (state, action) => {
         state.updateStationLoading = false;
-        // TODO: Remove this log
-        console.log("Updated Station: " + JSON.stringify(action.payload));
+        const updatedStationDetails = action.payload;
+        const index = state.selectedClubStationsDetails?.findIndex(
+          (station) => station.stationId === updatedStationDetails.stationId);
+        
+        if (index !== undefined && index !== -1 && state.selectedClubStationsDetails) {
+          state.selectedClubStationsDetails[index] = {
+            ...state.selectedClubStationsDetails[index],
+            ...updatedStationDetails,
+          };
+        }
       })
       .addCase(updateStationDetails.rejected, (state, action) => {
         state.updateStationLoading = false;
@@ -492,8 +507,16 @@ const clubManagementSlice = createSlice({
       })
       .addCase(toggleStation.fulfilled, (state, action) => {
         state.toggleStationLoading = false;
-        // TODO: Remove this log
-        console.log("Toggled Station: " + JSON.stringify(action.payload));
+        const updatedStationDetails = action.payload;
+        const index = state.selectedClubStationsDetails?.findIndex(
+          (station) => station.stationId === updatedStationDetails.stationId);
+        
+        if (index !== undefined && index !== -1 && state.selectedClubStationsDetails) {
+          state.selectedClubStationsDetails[index] = {
+            ...state.selectedClubStationsDetails[index],
+            ...updatedStationDetails,
+          };
+        }
       })
       .addCase(toggleStation.rejected, (state, action) => {
         state.toggleStationLoading = false;
@@ -504,10 +527,12 @@ const clubManagementSlice = createSlice({
         state.deleteStationLoading = true;
         state.deleteStationError = undefined;
       })
-      .addCase(deleteStation.fulfilled, (state) => {
+      .addCase(deleteStation.fulfilled, (state, action) => {
         state.deleteStationLoading = false;
-        // TODO: Remove this log
-        console.log("Deleted Station");
+        const deletedStationId = action.meta.arg;
+        state.selectedClubStationsDetails = state.selectedClubStationsDetails?.filter(
+          (station) => station.stationId !== deletedStationId
+        );
       })
       .addCase(deleteStation.rejected, (state, action) => {
         state.deleteStationLoading = false;

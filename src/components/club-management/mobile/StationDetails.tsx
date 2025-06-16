@@ -49,9 +49,7 @@ function StationDetails() {
   }, [uniqueStationTypes, selectedTab]);
 
   const handleAddStation = (stationData: StationFormData) => {
-    console.log("Add Station Clicked", {authAdminId, clubId});
     if(authAdminId && clubId){
-      console.log('Saving new station:', stationData);
       dispatchRedux(
         addNewStation({
           clubAdminId: authAdminId,
@@ -63,7 +61,6 @@ function StationDetails() {
 
   const handleEditStation = (stationId: number, stationData: StationFormData) => {
     if(authAdminId){
-      console.log('Editing station:', stationData);
       dispatchRedux(updateStationDetails({
         clubAdminId: authAdminId,
         stationId: stationId,
@@ -73,12 +70,10 @@ function StationDetails() {
   };
 
   const handleDeleteStation = (stationId: number) => {
-    console.log('Deleting station:', stationId);
     dispatchRedux(deleteStation(stationId));
   };
 
   const handleToggleStationStatus = (stationId: number) => {
-    console.log('Toggling station status:', stationId);
     dispatchRedux(toggleStation(stationId));
   };
 

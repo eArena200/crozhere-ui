@@ -2,31 +2,59 @@
 
 import React, { useState } from 'react';
 import { StationDetailsResponse } from '@/api/clubManagementApi';
-import { Pencil, Trash2, Power, Clock, Users } from 'lucide-react';
+import { Pencil, Trash2, Power, Clock, Users, Loader2 } from 'lucide-react';
 import EditStationDialog from '@/components/club-management/EditStationDialog';
 import { StationFormData } from '@/components/club-management/StationForm';
+import { useSelector } from 'react-redux';
+import { deleteStation, selectClubManagementState, toggleStation, updateStationDetails } from '@/redux/slices/club/clubManagementSlice';
+import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { useDispatchRedux } from '@/redux/store';
 
 interface StationCardProps {
   stationDetails: StationDetailsResponse;
-  handleEditStation: (stationId: number, stationFormData: StationFormData) => void;
-  handleDeleteStation: (stationId: number) => void;
-  onToggleStationStatus: (stationId: number) => void;
 }
 
-function StationCard({ stationDetails, handleEditStation, handleDeleteStation, onToggleStationStatus }: StationCardProps) {
+function StationCard({ 
+  stationDetails
+}: StationCardProps) {
+  const dispatchRedux = useDispatchRedux();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
+  const { 
+    updateStationLoading,
+    updateStationError
+  } = useSelector(selectClubManagementState);
+
+  const authAdminId = useSelector(selectAuthClubAdminId);
+
   const handleEdit = (stationFormData: StationFormData) => {
-    handleEditStation(stationDetails.stationId, stationFormData);
+    if (authAdminId) {
+      dispatchRedux(updateStationDetails({
+        clubAdminId: authAdminId,
+        stationId: stationDetails.stationId,
+        stationFormData,
+      }))
+      .unwrap()
+      .then(() => {
+        setIsEditDialogOpen(false);
+      })
+      .catch((err) => {
+        console.error('Update station failed:', err);
+      });
+    }
   }
 
   const handleDelete = (stationId: number) => {
-    handleDeleteStation(stationId);
+    if(authAdminId){
+      dispatchRedux(deleteStation(stationId))
+    }
   }
 
-  const handleToggle = (stationId: number) => {
-    onToggleStationStatus(stationId);
-  }
+  const handleToggle = async (stationId: number) => {
+    if(authAdminId){
+      dispatchRedux(toggleStation(stationId)).unwrap();
+    }
+  };
 
   return (
     <>
@@ -100,6 +128,8 @@ function StationCard({ stationDetails, handleEditStation, handleDeleteStation, o
         onClose={() => setIsEditDialogOpen(false)}
         onSubmit={handleEdit}
         initialData={mapStationDetailsToStationFormData(stationDetails)}
+        loading={updateStationLoading}
+        error={updateStationError}
       />
     </>
   );

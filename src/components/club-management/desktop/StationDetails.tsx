@@ -11,11 +11,8 @@ import { StationFormData } from '@/components/club-management/StationForm';
 import { useSelector } from 'react-redux';
 import { 
   addNewStation,
-  deleteStation,
   selectClubManagementState,
-  selectSelectedClubId,
-  toggleStation,
-  updateStationDetails 
+  selectSelectedClubId
 } from '@/redux/slices/club/clubManagementSlice';
 import { useDispatchRedux } from '@/redux/store';
 import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
@@ -26,7 +23,9 @@ function StationDetails() {
   const {
     loadingStations,
     selectedClubStationsDetails,
-    stationDetailsError
+    stationDetailsError,
+    addStationLoading,
+    addStationError
   } = useSelector(selectClubManagementState);
 
   const authAdminId = useSelector(selectAuthClubAdminId);
@@ -50,35 +49,20 @@ function StationDetails() {
 
   const handleAddStation = (stationData: StationFormData) => {
     if(authAdminId && clubId){
-      console.log('Saving new station:', stationData);
       dispatchRedux(
         addNewStation({
           clubAdminId: authAdminId,
           clubId: clubId,
           stationFormData: stationData
-        }));
+        }))
+        .unwrap()
+        .then(() => {
+          setIsAddStationOpen(false);
+        })
+        .catch((err) => {
+          console.error('Add Station failed: ', err);
+        })
     }
-  };
-
-  const handleEditStation = (stationId: number, stationData: StationFormData) => {
-    if(authAdminId){
-      console.log('Editing station:', stationData);
-      dispatchRedux(updateStationDetails({
-        clubAdminId: authAdminId,
-        stationId: stationId,
-        stationFormData: stationData
-      }));
-    }
-  };
-
-  const handleDeleteStation = (stationId: number) => {
-    console.log('Deleting station:', stationId);
-    dispatchRedux(deleteStation(stationId));
-  };
-
-  const handleToggleStationStatus = (stationId: number) => {
-    console.log('Toggling station status:', stationId);
-    dispatchRedux(toggleStation(stationId));
   };
 
   if (loadingStations) {
@@ -132,9 +116,6 @@ function StationDetails() {
                             <StationDetailsCard 
                               key={station.stationId} 
                               stationDetails={station}
-                              handleEditStation={handleEditStation}
-                              handleDeleteStation={handleDeleteStation}
-                              onToggleStationStatus={handleToggleStationStatus}
                             />
                         ))}
                       </div>
@@ -150,7 +131,9 @@ function StationDetails() {
       <AddStationDialog 
         isOpen={isAddStationOpen} 
         onClose={() => setIsAddStationOpen(false)} 
-        onSubmit={handleAddStation}        
+        onSubmit={handleAddStation}  
+        loading={addStationLoading}
+        error={addStationError}      
       />
     </div>
   );
