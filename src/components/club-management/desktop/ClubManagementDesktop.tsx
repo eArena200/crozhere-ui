@@ -14,6 +14,7 @@ import {
 import { useSelector } from 'react-redux';
 import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
 import CMDesktopHeader from '@/components/club-management/desktop/CMDesktopHeader';
+import RateCardDetails from '@/components/club-management/desktop/RateCardDetails';
 
 function ClubManagementDesktop() {
   const dispatchRedux = useDispatchRedux();
@@ -47,6 +48,7 @@ function ClubManagementDesktop() {
     <div className="flex flex-col bg-gray-50 w-full">
       <CMDesktopHeader onClickCreateNewClub={() => setIsDialogOpen(true)} />
       <ClubDetails />
+      <RateCardDetails />
       <StationDetails />
     
       <CreateClubDialog

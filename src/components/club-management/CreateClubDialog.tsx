@@ -4,7 +4,7 @@ import React from "react";
 import { Dialog } from '@headlessui/react';
 import ClubForm, { ClubFormData } from "@/components/club-management/ClubForm";
 import { X } from "lucide-react";
-import Button from "../ui/Button";
+import Button from "@/components/ui/Button";
 
 
 interface CreateClubDialogProps {
@@ -30,10 +30,7 @@ const CreateClubDialog: React.FC<CreateClubDialogProps> = ({isOpen, onClose, onS
           {/* Scrollable form content */}
           <div className="overflow-y-auto p-6 flex-1">
             <ClubForm
-              onSubmit={(data) => {
-                onSubmit(data);
-                onClose();
-              }}
+              onSubmit={onSubmit}
               onCancel={onClose}
             />
           </div>

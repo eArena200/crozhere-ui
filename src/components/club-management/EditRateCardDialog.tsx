@@ -1,19 +1,26 @@
 'use client';
 
 import React from "react";
-import ClubForm, { ClubFormData } from "@/components/club-management/ClubForm";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
 import Button from "@/components/ui/Button";
+import RateCardForm, { 
+    RateCardFormData 
+} from "@/components/club-management/RateCardForm";
 
-interface EditClubDialogProps {
+interface EditRateCardDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: ClubFormData) => void;
-  initialData: ClubFormData;
+  onSubmit: (data: RateCardFormData) => void;
+  initialData: RateCardFormData;
 }
 
-const EditClubDialog: React.FC<EditClubDialogProps> = ({isOpen, onClose, onSubmit, initialData}) => {
+const EditRateCardDialog: React.FC<EditRateCardDialogProps> = ({
+    isOpen, 
+    onClose, 
+    onSubmit, 
+    initialData
+}) => {
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -21,7 +28,7 @@ const EditClubDialog: React.FC<EditClubDialogProps> = ({isOpen, onClose, onSubmi
         <Dialog.Panel className="mx-auto w-full max-w-md rounded-2xl bg-white shadow-xl max-h-[90vh] flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between border-b p-6">
-            <Dialog.Title className="text-xl font-semibold text-gray-900">Edit Club</Dialog.Title>
+            <Dialog.Title className="text-xl font-semibold text-gray-900">Edit Rate-Card</Dialog.Title>
             <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
               <X className="h-5 w-5" />
             </button>
@@ -29,22 +36,17 @@ const EditClubDialog: React.FC<EditClubDialogProps> = ({isOpen, onClose, onSubmi
 
           {/* Scrollable content */}
           <div className="overflow-y-auto p-6 flex-1">
-            <ClubForm
-              isEditMode={true}
+            <RateCardForm
               initialData={initialData}
-              onSubmit={(data) => {
-                onSubmit(data);
-                onClose();
-              }}
-              onCancel={onClose}
+              onSubmit={onSubmit}
             />
           </div>
 
           {/* Footer */}
           <div className="border-t px-6 py-4 flex justify-end gap-3">
             <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-            <Button type="submit" form="club-form" variant="primary">
-              Update Club
+            <Button type="submit" form="rate-card-form" variant="primary">
+              Update RateCard
             </Button>
           </div>
         </Dialog.Panel>
@@ -53,4 +55,4 @@ const EditClubDialog: React.FC<EditClubDialogProps> = ({isOpen, onClose, onSubmi
   );
 }
 
-export default React.memo(EditClubDialog);
+export default React.memo(EditRateCardDialog);

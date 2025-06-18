@@ -1,15 +1,29 @@
 import {
+  addRateApi,
+  AddRateRequest,
   addStation,
   AddStationRequest,
   ClubDetailsResponse,
   ClubResponse,
   ClubServiceException,
   CreateClubRequest,
+  createRateCardApi,
+  CreateRateCardRequest,
+  deleteRateApi,
   deleteStationById,
+  getRateCardDetailsApi,
+  getRateCardsforClubIdApi,
+  RateCardDetailsResponse,
+  RateCardResponse,
+  RateResponse,
   StationDetailsResponse,
   toggleStationStatus,
   updateClub,
   UpdateClubRequest,
+  updateRateApi,
+  updateRateCardApi,
+  UpdateRateCardRequest,
+  UpdateRateRequest,
   updateStation,
   UpdateStationRequest
 } from "@/api/clubManagementApi";
@@ -27,6 +41,8 @@ import {
 import { RootState } from "@/redux/store";
 import { ClubFormData } from "@/components/club-management/ClubForm";
 import { StationFormData } from "@/components/club-management/StationForm";
+import { RateCardFormData } from "@/components/club-management/RateCardForm";
+import { RateFormData } from "@/components/club-management/RateForm";
 
 export interface ClubMetaData {
   clubId: number;
@@ -38,6 +54,10 @@ export interface ClubManagementState {
   selectedClubId?: number;
   selectedClubDetails?: ClubDetailsResponse;
   selectedClubStationsDetails?: StationDetailsResponse[];
+
+  rateCardList?: RateCardResponse[];
+  selectedRateCardId?: number;
+  selectedRateCardDetails?: RateCardDetailsResponse;
 
   loadingClubList: boolean;
   loadingClubDetails: boolean;
@@ -64,6 +84,27 @@ export interface ClubManagementState {
 
   deleteStationLoading: boolean;
   deleteStationError?: string;
+
+  rateCardListLoading: boolean;
+  rateCardListError?: string;
+
+  selectedRateCardDetailsLoading: boolean;
+  selectedRateCardDetailsError?: string;
+
+  createRateCardLoading: boolean;
+  createRateCardError?: string;
+
+  updateRateCardLoading: boolean;
+  updateRateCardError?: string;
+
+  addRateLoading: boolean;
+  addRateError?: string;
+
+  updateRateLoading: boolean;
+  updateRateError?: string;
+
+  deleteRateLoading: boolean;
+  deleteRateError?: string;
 }
 
 const initialState: ClubManagementState = {
@@ -76,7 +117,14 @@ const initialState: ClubManagementState = {
   addStationLoading: false,
   updateStationLoading: false,
   deleteStationLoading: false,
-  toggleStationLoading: false
+  toggleStationLoading: false,
+  rateCardListLoading: false,
+  selectedRateCardDetailsLoading: false,
+  createRateCardLoading: false,
+  updateRateCardLoading: false,
+  addRateLoading: false,
+  updateRateLoading: false,
+  deleteRateLoading: false
 };
 
 // THUNKS
@@ -119,8 +167,9 @@ export const setSelectedClubAndFetchDetails = createAsyncThunk<
       dispatch(setSelectedClubId(clubId));
       await Promise.all([
         dispatch(fetchClubDetailsById(clubId)).unwrap(),
-        dispatch(fetchStationsByClubId(clubId)).unwrap()
-      ]); 
+        dispatch(fetchStationsByClubId(clubId)).unwrap(),
+        dispatch(fetchRateCardsForClubId(clubId)).unwrap()
+      ]);
     } catch (err: any) {
       if (err?.response?.data) {
         return rejectWithValue(err.response.data);
@@ -136,6 +185,264 @@ export const setSelectedClubAndFetchDetails = createAsyncThunk<
   }
 );
 
+// RATE THUNKS
+export const fetchRateCardsForClubId = createAsyncThunk<
+  RateCardResponse[],
+  number,
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/fetchRateCardsForClubId",
+  async (clubId, { dispatch, rejectWithValue }) => {
+    try {
+      const rateCardList = await getRateCardsforClubIdApi(clubId);
+      if(rateCardList.length > 0){
+        dispatch(setSelectedRateCardAndFetchDetails(rateCardList[0]));
+      }
+
+      return rateCardList;
+    } catch (err: any){
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "FETCH_RATE_CARDS_FOR_CLUB_ID",
+        message: "Failed to fetch rate-card list",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const setSelectedRateCardAndFetchDetails = createAsyncThunk<
+  void,
+  RateCardResponse,
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/setSelectedRateCardAndFetchDetails",
+  async (rateCardResponse: RateCardResponse, {dispatch, rejectWithValue}) => {
+    try {
+      dispatch(setSelectedRateCardId(rateCardResponse.rateCardId));
+      await Promise.all([
+        dispatch(fetchRateCardDetails(rateCardResponse)).unwrap()
+      ]);
+    } catch (err: any) {
+      if (err?.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "SET_SELECTED_RATE_CARD_AND_FETCH_DETAILS",
+        message: "Failed to fetch rate-card details",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+
+export const fetchRateCardDetails = createAsyncThunk<
+  RateCardDetailsResponse,
+  RateCardResponse,
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/fetchRateCardDetails",
+  async (rateCardResponse, { rejectWithValue }) => {
+    try {
+      const rateCardDetailsResponse = await getRateCardDetailsApi(
+        rateCardResponse.clubId, rateCardResponse.rateCardId);
+      return rateCardDetailsResponse;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "FETCH_RATE_CARD_DETAILS",
+        message: "Failed to fetch club details",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const createRateCard = createAsyncThunk<
+  RateCardResponse,
+  {
+    clubId: number;
+    rateCardFormData: RateCardFormData;
+  },
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/createRateCard",
+  async ({ clubId, rateCardFormData }, { dispatch, rejectWithValue }) => {
+    try {
+      const request: CreateRateCardRequest = {
+        name: rateCardFormData.rateCardName
+      }
+      const response = createRateCardApi(clubId, request);
+      return response;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "CREATE_RATE_CARD",
+        message: "Failed to create new rate-card",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+
+export const updateRateCard = createAsyncThunk<
+ RateCardResponse,
+ {
+  clubId: number;
+  rateCardId: number;
+  data: RateCardFormData;
+ },
+ {
+  rejectValue: ClubServiceException
+ }
+>(
+  "clubManagement/updateRateCard",
+  async ({clubId, rateCardId, data}, {dispatch, rejectWithValue}) => {
+    try {
+      const request: UpdateRateCardRequest = {
+        name: data.rateCardName
+      }
+      const response = await updateRateCardApi(clubId, rateCardId, request);
+      return response;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "UPDATE_RATE_CARD",
+        message: "Failed to update rate-card",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+
+export const addRate = createAsyncThunk<
+ RateResponse,
+ {
+  clubId: number;
+  rateCardId: number;
+  data: RateFormData;
+ },
+ { rejectValue: ClubServiceException }
+>(
+  "clubManagement/addRate",
+  async ({ clubId, rateCardId, data }, { dispatch, rejectWithValue }) => {
+    try {
+      const request: AddRateRequest = {
+        rateName: data.rateName,
+        createChargeRequests: data.charges.map(charge => ({
+          chargeType: charge.chargeType,
+          chargeUnit: charge.chargeUnit,
+          amount: charge.amount,
+          startTime: charge.startTime,
+          endTime: charge.endTime,
+          minPlayers: charge.minPlayers,
+          maxPlayers: charge.maxPlayers
+        }))
+      }
+      console.log("AddRateRequest: ", JSON.stringify(request));
+
+      const response = addRateApi(clubId, rateCardId, request);
+      return response;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "ADD_RATE",
+        message: "Failed to add rate",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const updateRate = createAsyncThunk<
+RateResponse,
+ {
+  clubId: number;
+  rateCardId: number;
+  rateId: number;
+  data: RateFormData;
+ },
+ { rejectValue: ClubServiceException }
+>(
+  "clubManagement/updateRate",
+  async ({ clubId, rateCardId, rateId, data }, { dispatch, rejectWithValue }) => {
+    try {
+      const request: UpdateRateRequest = {
+        rateName: data.rateName,
+        updateChargeRequests: data.charges.map(charge => ({
+          chargeId: charge.chargeId,
+          chargeType: charge.chargeType,
+          chargeUnit: charge.chargeUnit,
+          amount: charge.amount,
+          startTime: charge.startTime,
+          endTime: charge.endTime,
+          minPlayers: charge.minPlayers,
+          maxPlayers: charge.maxPlayers
+        }))
+      }
+      console.log("UpdateRateRequest: ", JSON.stringify(request));
+      const response = await updateRateApi(clubId, rateCardId, rateId, request);
+      return response;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "UPDATE_RATE",
+        message: "Failed to update rate",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const deleteRate = createAsyncThunk<
+void,
+ {
+  clubId: number;
+  rateCardId: number;
+  rateId: number;
+ },
+ { rejectValue: ClubServiceException }
+>(
+  "clubManagement/deleteRate",
+  async ({ clubId, rateCardId, rateId }, { dispatch, rejectWithValue }) => {
+    try {
+      await deleteRateApi(clubId, rateCardId, rateId);
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "DELETE_RATE",
+        message: "Failed to delete rate",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
 
 
 // CLUB THUNKS
@@ -399,6 +706,9 @@ const clubManagementSlice = createSlice({
   reducers: {
     setSelectedClubId: (state, action: PayloadAction<number>) => {
       state.selectedClubId = action.payload;
+    },
+    setSelectedRateCardId: (state, action: PayloadAction<number>) => {
+      state.selectedRateCardId = action.payload;
     }
   },
   extraReducers: (builder) => {
@@ -463,6 +773,102 @@ const clubManagementSlice = createSlice({
       .addCase(fetchClubDetailsById.rejected, (state, action) => {
         state.loadingClubDetails = false;
         state.clubDetailsError = action.payload?.message;
+      })
+
+      .addCase(fetchRateCardsForClubId.pending, (state) => {
+        state.rateCardListLoading = true;
+        state.rateCardListError = undefined;
+      })
+      .addCase(fetchRateCardsForClubId.fulfilled, (state, action) => {
+        state.rateCardListLoading = false;
+        state.rateCardList = action.payload;
+      })
+      .addCase(fetchRateCardsForClubId.rejected, (state, action) => {
+        state.rateCardListLoading = false;
+        state.rateCardListError = action.payload?.message;
+      })
+      
+      .addCase(fetchRateCardDetails.pending, (state) => {
+        state.selectedRateCardDetailsLoading = true;
+        state.selectedRateCardDetailsError = undefined;
+      })
+      .addCase(fetchRateCardDetails.fulfilled, (state, action) => {
+        state.selectedRateCardDetailsLoading = false;
+        state.selectedRateCardDetails = action.payload;
+      })
+      .addCase(fetchRateCardDetails.rejected, (state, action) => {
+        state.selectedRateCardDetailsLoading = false;
+        state.selectedRateCardDetailsError = action.payload?.message;
+      })
+
+      .addCase(createRateCard.pending, (state) => {
+        state.createRateCardLoading = true;
+        state.createRateCardError = undefined;
+      })
+      .addCase(createRateCard.fulfilled, (state, action) => {
+        state.createRateCardLoading = false;
+        // TODO: Remove this log
+        console.log(`CreatedRateCard: ${JSON.stringify(action.payload)}`);
+      })
+      .addCase(createRateCard.rejected, (state, action) => {
+        state.createRateCardLoading = false;
+        state.createRateCardError = action.payload?.message;
+      })
+
+      .addCase(updateRateCard.pending, (state) => {
+        state.updateRateCardLoading = true;
+        state.updateRateCardError = undefined;
+      })
+      .addCase(updateRateCard.fulfilled, (state, action) => {
+        state.updateRateCardLoading = false;
+        // TODO: Remove this log
+        console.log(`UpdatedRateCard: ${JSON.stringify(action.payload)}`);
+      })
+      .addCase(updateRateCard.rejected, (state, action) => {
+        state.updateRateCardLoading = false;
+        state.updateRateCardError = action.payload?.message;
+      })
+
+      .addCase(addRate.pending, (state) => {
+        state.addRateLoading = true;
+        state.addRateError = undefined;
+      })
+      .addCase(addRate.fulfilled, (state, action) => {
+        state.addRateLoading = false;
+        // TODO: Remove this log
+        console.log(`AddedRate: ${JSON.stringify(action.payload)}`);
+      })
+      .addCase(addRate.rejected, (state, action) => {
+        state.addRateLoading = false;
+        state.addRateError = action.payload?.message;
+      })
+
+      .addCase(updateRate.pending, (state) => {
+        state.updateRateLoading = true;
+        state.updateRateError = undefined;
+      })
+      .addCase(updateRate.fulfilled, (state, action) => {
+        state.updateRateLoading = false;
+        // TODO: Remove this log
+        console.log(`UpdatedRate: ${JSON.stringify(action.payload)}`);
+      })
+      .addCase(updateRate.rejected, (state, action) => {
+        state.updateRateLoading = false;
+        state.updateRateError = action.payload?.message;
+      })
+
+      .addCase(deleteRate.pending, (state) => {
+        state.deleteRateLoading = true;
+        state.deleteRateError = undefined;
+      })
+      .addCase(deleteRate.fulfilled, (state, action) => {
+        state.deleteRateLoading = false;
+        // TODO: Remove this log
+        console.log(`Deleted Rate`);
+      })
+      .addCase(deleteRate.rejected, (state, action) => {
+        state.deleteRateLoading = false;
+        state.deleteRateError = action.payload?.message;
       })
 
       .addCase(addNewStation.pending, (state) => {
@@ -587,5 +993,8 @@ export const selectStationError = (state: RootState) =>
   state.clubManagement.stationDetailsError;
 
 // EXPORT
-export const { setSelectedClubId } = clubManagementSlice.actions;
+export const { 
+  setSelectedClubId, 
+  setSelectedRateCardId 
+} = clubManagementSlice.actions;
 export default clubManagementSlice.reducer;

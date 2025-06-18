@@ -1,3 +1,4 @@
+import { ChargeType, ChargeUnit } from "@/lib/types/rate";
 import { StationType } from "@/lib/types/station";
 
 const CLUB_SERVICE_ENDPOINT = "http://localhost:8080";
@@ -83,6 +84,77 @@ export interface StationDetailsResponse {
   isActive: boolean;
 }
 
+export interface CreateRateCardRequest {
+  name: string;
+}
+
+export interface UpdateRateCardRequest {
+  name: string;
+}
+
+export interface AddRateRequest {
+  rateName: string;
+  createChargeRequests: CreateChargeRequest[];
+}
+
+export interface UpdateRateRequest {
+  rateName: string;
+  updateChargeRequests: UpdateChargeRequest[];
+}
+
+export interface CreateChargeRequest {
+  chargeType: ChargeType;
+  chargeUnit: ChargeUnit;
+  amount: number;
+  startTime?: string | null;
+  endTime?: string | null;
+  minPlayers?: number | null;
+  maxPlayers?: number | null;
+}
+
+export interface UpdateChargeRequest {
+  chargeId?: number | null;
+  chargeType: ChargeType;
+  chargeUnit: ChargeUnit;
+  amount: number;
+  startTime?: string | null;
+  endTime?: string | null;
+  minPlayers?: number | null;
+  maxPlayers?: number | null;
+}
+
+export interface RateCardResponse {
+  rateCardId: number;
+  clubId: number;
+  name: string;
+}
+
+export interface RateCardDetailsResponse {
+  rateCardId: number;
+  clubId: number;
+  name: string;
+  rateList: RateResponse[];
+}
+
+export interface RateResponse {
+  rateId: number;
+  rateCardId: number;
+  name: string;
+  charges: ChargeResponse[];
+}
+
+export interface ChargeResponse {
+  chargeId: number;
+  rateId: number;
+  chargeType: ChargeType;
+  chargeUnit: ChargeUnit;
+  amount: number;
+  startTime: string | null;
+  endTime: string | null;
+  minPlayers: number | null;
+  maxPlayers: number | null;
+}
+
 export interface ClubServiceException {
   error: string;
   type: string;
@@ -163,6 +235,175 @@ export async function updateClub(clubId: number, data: UpdateClubRequest): Promi
   return res.json();
 }
 
+// RATE-CARD MANAGEMENT APIs
+export async function createRateCardApi(
+  clubId: number, 
+  request: CreateRateCardRequest
+): Promise<RateCardResponse> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "CREATE_RATE_CARD", "Failed to create rate-card");
+  }
+
+  return res.json();
+}
+
+export async function getRateCardsforClubIdApi(
+  clubId: number
+): Promise<RateCardResponse[]> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards`);
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_RATE_CARDS_FOR_CLUB", "Failed to fetch rate-cards for club");
+  }
+
+  return res.json();
+}
+
+export async function getRateCardDetailsApi(
+  clubId: number, 
+  rateCardId: number
+): Promise<RateCardDetailsResponse> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards/${rateCardId}`);
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_RATE_CARD_DETAILS", "Failed to fetch rate-card details");
+  }
+
+  return res.json();
+}
+
+
+export async function updateRateCardApi(
+  clubId: number,
+  rateCardId: number,
+  request: UpdateRateCardRequest
+): Promise<RateCardResponse> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards/${rateCardId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "UPDATE_RATE_CARD", "Failed to update rate-card");
+  }
+
+  return res.json();
+}
+
+export async function deleteRateCardApi(
+  clubId: number,
+  rateCardId: number
+): Promise<void> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards/${rateCardId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "DELETE_RATE_CARD", "Failed to delete rate-card");
+  }
+
+  return res.json();
+}
+
+// RATE MANAGEMENT APIs
+export async function addRateApi(
+  clubId: number,
+  rateCardId: number,
+  request: AddRateRequest
+): Promise<RateResponse> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards/${rateCardId}/rates`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "ADD_RATE", "Failed to add rate");
+  }
+
+  return res.json();
+}
+
+export async function getRatesForRateCardApi(
+  clubId: number,
+  rateCardId: number
+): Promise<RateResponse[]> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards/${rateCardId}/rates`);
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_RATES_FOR_RATE_CARD", "Failed to fetch rates for rate-card");
+  }
+
+  return res.json();
+}
+
+export async function getRateApi(
+  clubId: number,
+  rateCardId: number,
+  rateId: number
+): Promise<RateResponse> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards/${rateCardId}/rates/${rateId}`);
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_RATE", "Failed to fetch rate");
+  }
+
+  return res.json();
+}
+
+export async function updateRateApi(
+  clubId: number,
+  rateCardId: number,
+  rateId: number,
+  request: UpdateRateRequest
+): Promise<RateResponse> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards/${rateCardId}/rates/${rateId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "UPDATE_RATE", "Failed to update rate");
+  }
+
+  return res.json();
+}
+
+export async function deleteRateApi(
+  clubId: number,
+  rateCardId: number,
+  rateId: number
+): Promise<void> {
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards/${rateCardId}/rates/${rateId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "DELETE_RATE", "Failed to delete rate");
+  }
+
+  return res.json();
+}
 
 // STATION MANAGEMENT APIs
 export async function addStation(data: AddStationRequest): Promise<StationDetailsResponse> {
