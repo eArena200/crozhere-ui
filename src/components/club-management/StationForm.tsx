@@ -1,10 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { StationType, StationTypeOptions } from '@/lib/types/station';
+import { RateCardDetailsResponse } from '@/api/clubManagementApi';
+import { useSelector } from 'react-redux';
+import { selectClubManagementState } from '@/redux/slices/club/clubManagementSlice';
 
 export const stationSchema = z.object({
     stationName: z.string().min(1, 'Station name is required'),
@@ -15,6 +18,7 @@ export const stationSchema = z.object({
       .number()
       .min(1, 'Station capacity cannot be zero')
       .max(10, 'Capacity cannot exceed 10'),
+    rateId: z.number({ required_error: 'Rate is required' }),
   })
   .refine(
     (data) => {
@@ -38,6 +42,9 @@ interface StationFormProps {
 }
 
 const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, onCancel, initialData }) => {
+  const { rateCardList } = useSelector(selectClubManagementState);
+  const [selectedRateCardId, setSelectedRateCardId] = React.useState<number | ''>('');
+
   const {
     register,
     handleSubmit,
@@ -54,6 +61,10 @@ const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, on
       ...initialData,
     },
   });
+
+  React.useEffect(() => {
+    reset((prev) => ({ ...prev, rateId: -1 }));
+  }, [selectedRateCardId, reset]);
 
   const handleFormSubmit = (data: StationFormData) => {
     onSubmit(data);
@@ -127,6 +138,46 @@ const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, on
           </div>
         </div>
       </div>
+
+      {/* RateCard Dropdown */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Rate Card</label>
+        <select
+          value={selectedRateCardId}
+          onChange={(e) => setSelectedRateCardId(Number(e.target.value) || '')}
+          className="w-full px-3 py-2 border rounded-md text-gray-700 text-sm"
+        >
+          <option value="">Select Rate Card</option>
+          {rateCardList?.map((card: RateCardDetailsResponse) => (
+            <option key={card.rateCardId} value={card.rateCardId}>
+              {card.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Rate Dropdown (depends on selected RateCard) */}
+      {selectedRateCardId && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Rate</label>
+          <select
+            {...register('rateId', { valueAsNumber: true })}
+            className="w-full px-3 py-2 border rounded-md text-gray-700 text-sm"
+          >
+            <option value={-1}>Select Rate</option>
+            {rateCardList?.find((card) => card.rateCardId === selectedRateCardId)
+              ?.rateList.map((rate) => (
+                <option key={rate.rateId} value={rate.rateId}>
+                  {rate.name}
+                </option>
+              ))}
+          </select>
+          {errors.rateId && (
+            <p className="mt-1 text-sm text-red-600">{errors.rateId.message}</p>
+          )}
+        </div>
+      )}
+
 
       {/* Capacity */}
       <div>

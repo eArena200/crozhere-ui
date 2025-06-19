@@ -3,6 +3,7 @@ import {
   AddRateRequest,
   addStation,
   AddStationRequest,
+  ClubAddress,
   ClubDetailsResponse,
   ClubResponse,
   ClubServiceException,
@@ -13,6 +14,7 @@ import {
   deleteStationById,
   getRateCardDetailsApi,
   getRateCardsforClubIdApi,
+  OperatingHours,
   RateCardDetailsResponse,
   RateCardResponse,
   RateResponse,
@@ -49,13 +51,24 @@ export interface ClubMetaData {
   clubName: string;
 }
 
+export interface ClubDetailsState {
+  clubId: number;
+  clubName: string;
+  clubAddress: ClubAddress;
+  operatingHours: OperatingHours;
+  primaryContact: string;
+  secondaryContact?: string;
+  logo?: string;
+  coverImage?: string;
+}
+
 export interface ClubManagementState {
   clubList: ClubResponse[];
   selectedClubId?: number;
   selectedClubDetails?: ClubDetailsResponse;
   selectedClubStationsDetails?: StationDetailsResponse[];
 
-  rateCardList?: RateCardResponse[];
+  rateCardList?: RateCardDetailsResponse[];
   selectedRateCardId?: number;
   selectedRateCardDetails?: RateCardDetailsResponse;
 
@@ -187,7 +200,7 @@ export const setSelectedClubAndFetchDetails = createAsyncThunk<
 
 // RATE THUNKS
 export const fetchRateCardsForClubId = createAsyncThunk<
-  RateCardResponse[],
+  RateCardDetailsResponse[],
   number,
   { rejectValue: ClubServiceException }
 >(
@@ -216,11 +229,11 @@ export const fetchRateCardsForClubId = createAsyncThunk<
 
 export const setSelectedRateCardAndFetchDetails = createAsyncThunk<
   void,
-  RateCardResponse,
+  RateCardDetailsResponse,
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/setSelectedRateCardAndFetchDetails",
-  async (rateCardResponse: RateCardResponse, {dispatch, rejectWithValue}) => {
+  async (rateCardResponse: RateCardDetailsResponse, {dispatch, rejectWithValue}) => {
     try {
       dispatch(setSelectedRateCardId(rateCardResponse.rateCardId));
       await Promise.all([
@@ -599,6 +612,7 @@ export const addNewStation = createAsyncThunk<
           openTime: stationFormData.openTime,
           closeTime: stationFormData.closeTime
         },
+        rateId: stationFormData.rateId,
         capacity: stationFormData.capacity
       }
       
@@ -633,6 +647,7 @@ export const updateStationDetails = createAsyncThunk<
           openTime: stationFormData.openTime,
           closeTime: stationFormData.closeTime
         },
+        rateId: stationFormData.rateId,
         capacity:stationFormData.capacity
       }
       

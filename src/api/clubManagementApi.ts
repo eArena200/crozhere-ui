@@ -64,6 +64,7 @@ export interface AddStationRequest {
   stationName: string;
   stationType: StationType;
   operatingHours: OperatingHours;
+  rateId: number;
   capacity: number
 }
 
@@ -71,6 +72,7 @@ export interface UpdateStationRequest {
   clubAdminId: number;
   stationName?: string;
   operatingHours?: OperatingHours;
+  rateId?: number;
   capacity?: number;
 }
 
@@ -81,6 +83,8 @@ export interface StationDetailsResponse {
   stationType: StationType;
   operatingHours: OperatingHours;
   capacity: number;
+  rateId: number;
+  rateName: string;
   isActive: boolean;
 }
 
@@ -256,7 +260,7 @@ export async function createRateCardApi(
 
 export async function getRateCardsforClubIdApi(
   clubId: number
-): Promise<RateCardResponse[]> {
+): Promise<RateCardDetailsResponse[]> {
   const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/manage/clubs/${clubId}/rate-cards`);
 
   if(!res.ok){

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { StationDetailsResponse } from '@/api/clubManagementApi';
-import { Pencil, Trash2, Power, Clock, Users, Loader2 } from 'lucide-react';
+import { Pencil, Trash2, Power, Clock, Users, Loader2, BadgeIndianRupee, IndianRupee } from 'lucide-react';
 import EditStationDialog from '@/components/club-management/EditStationDialog';
 import { StationFormData } from '@/components/club-management/StationForm';
 import { useSelector } from 'react-redux';
@@ -85,6 +85,10 @@ function StationCard({
                 <Users size={14} className="text-gray-400" />
                 <span>{stationDetails.capacity}</span>
               </div>
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <IndianRupee size={14} className="text-gray-400" />
+                <span>{stationDetails.rateName}</span>
+              </div>
             </div>
           </div>
 
@@ -142,6 +146,7 @@ function mapStationDetailsToStationFormData(stationDetails: StationDetailsRespon
       stationType: stationDetails.stationType,
       openTime: stationDetails.operatingHours.openTime,
       closeTime: stationDetails.operatingHours.closeTime,
+      rateId: stationDetails.rateId,
       capacity: stationDetails.capacity
     }
     return stationFormData;
