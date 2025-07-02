@@ -20,7 +20,7 @@ function ClubManagementDesktop() {
   const dispatchRedux = useDispatchRedux();
 
   const params = useParams();
-  const paramAdminId = parseInt(params.adminId as string)
+  const paramAdminId = parseInt(params.adminId as string);
   const authAdminId = useSelector(selectAuthClubAdminId);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);

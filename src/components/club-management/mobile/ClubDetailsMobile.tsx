@@ -28,7 +28,7 @@ function ClubDetailsMobile() {
   
     const authClubAdminId = useSelector(selectAuthClubAdminId);
     const [isEditClubOpen, setIsEditClubOpen] = useState(false);
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
       if (selectedClubId) {

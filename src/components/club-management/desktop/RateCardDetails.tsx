@@ -30,7 +30,7 @@ function RateCardDetails() {
     selectedRateCardDetails
   } = useSelector(selectClubManagementState)
 
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isCreateRateCardDialogOpen, setCreateRateCardDialogOpen] = useState(false);
   const [isEditRateCardDialogOpen, setEditRateCardDialogOpen] = useState(false);
   const [isCreateRateDialogOpen, setCreateRateDialogOpen] = useState(false);

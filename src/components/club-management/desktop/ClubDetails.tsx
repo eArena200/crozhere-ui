@@ -24,7 +24,7 @@ function ClubDetails() {
 
   const authClubAdminId = useSelector(selectAuthClubAdminId);
   const [isEditClubOpen, setIsEditClubOpen] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const initialFormData = useMemo(() => {
     return selectedClubDetails ? getFormDataFromClubDetails(selectedClubDetails) : null;
