@@ -1,6 +1,5 @@
 import { PaymentMode, PaymentStatus } from "@/lib/types/payment";
 
-
 const CMS_ENDPOINT = "http://localhost:8080";
 
 export interface InitPaymentRequest {
@@ -15,6 +14,13 @@ export interface PaymentResponse {
     amount: number;
     paymentMode: PaymentMode;
     status: PaymentStatus;
+}
+
+export interface PaymentServiceException {
+    error: string;
+    type: string;
+    message: string;
+    timestamp: string;
 }
 
 

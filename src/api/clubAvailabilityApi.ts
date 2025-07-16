@@ -1,4 +1,5 @@
 import { StationType } from "@/lib/types/station";
+import { BookingStation } from "@/redux/slices/booking/state";
 
 const CMS_ENDPOINT = "http://localhost:8080";
 
@@ -18,15 +19,13 @@ export interface SearchWindow {
 export interface CheckAvailByStationRequest {
     clubId: number;
     stationType: StationType;
-    stationIds: number[];
-    durationHrs: number[];
+    stations: BookingStation[];
+    durationHrs: number;
     searchWindow: SearchWindow;
 }
 
 export interface StationAvailability {
     stationId: number;
-    stationName: string;
-    stationType: StationType;
     available: boolean;
 }
 
@@ -62,6 +61,7 @@ function handleApiError(errorBody: any, fallbackType: string, fallbackMessage: s
 
 export async function checkAvailByTimeApi(request:CheckAvailByTimeRequest)
 : Promise<CheckAvailByTimeResponse> {
+    console.log("Sending ByTimeRequest: ", JSON.stringify(request));
     const res = await fetch(`${CMS_ENDPOINT}/club/availability/by-time`,{
         method: "POST",
         headers: { "Content-Type": "application/json" },

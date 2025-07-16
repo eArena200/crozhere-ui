@@ -1,8 +1,9 @@
-import { BookingResponse } from '@/api/clubBookingApi';
+import { BookingDetailsResponse, BookingStationDetails } from '@/api/booking/model';
+import { toReadableDateTime } from '@/lib/date-time-util';
 import React from 'react';
 
 interface BookingsTableProps {
-  bookings: BookingResponse[];
+  bookings: BookingDetailsResponse[];
 }
 
 function BookingsTable({ bookings }: BookingsTableProps) {
@@ -17,11 +18,10 @@ function BookingsTable({ bookings }: BookingsTableProps) {
   return (
     <div className="overflow-auto border rounded shadow-sm">
       <table className="min-w-full text-sm text-left text-gray-700">
-        <thead className="bg-gray-100 text-xs uppercase tracking-wider text-gray-600">
+        <thead className="bg-blue-600 text-xs uppercase tracking-wider text-white">
           <tr>
-            <th className="px-4 py-3">Booking ID</th>
-            <th className="px-4 py-3">Player ID</th>
             <th className="px-4 py-3">Station Type</th>
+            <th className="px-4 py-3">Player</th>
             <th className="px-4 py-3">Stations</th>
             <th className="px-4 py-3">Start</th>
             <th className="px-4 py-3">End</th>
@@ -29,15 +29,15 @@ function BookingsTable({ bookings }: BookingsTableProps) {
           </tr>
         </thead>
         <tbody>
-          {bookings.map((booking) => (
-            <tr key={booking.bookingId} className="border-t hover:bg-gray-50">
-              <td className="px-4 py-2">{booking.bookingId}</td>
-              <td className="px-4 py-2">{booking.playerId}</td>
-              <td className="px-4 py-2">{booking.stationType}</td>
-              <td className="px-4 py-2">{booking.stationIds.join(', ')}</td>
-              <td className="px-4 py-2">{formatDate(booking.startTime)}</td>
-              <td className="px-4 py-2">{formatDate(booking.endTime)}</td>
-              <td className="px-4 py-2">{booking.players}</td>
+          {bookings.map((bookingDetails) => (
+            <tr key={bookingDetails.bookingId} className="border-t hover:bg-gray-100">
+              <td className="px-4 py-2">{bookingDetails.booking.stationType}</td>
+              <td className="px-4 py-2">{bookingDetails.player.name}</td>
+              <td className="px-4 py-2">{getFormattedStation(bookingDetails.booking.stations)}
+              </td>
+              <td className="px-4 py-2">{toReadableDateTime(bookingDetails.booking.startTime, true)}</td>
+              <td className="px-4 py-2">{toReadableDateTime(bookingDetails.booking.endTime, true)}</td>
+              <td className="px-4 py-2">{bookingDetails.booking.totalPlayers}</td>
             </tr>
           ))}
         </tbody>
@@ -46,15 +46,10 @@ function BookingsTable({ bookings }: BookingsTableProps) {
   );
 }
 
-function formatDate(dateString: string) {
-  const date = new Date(dateString);
-  return date.toLocaleString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+function getFormattedStation(stations: BookingStationDetails[]): string {
+  return stations.map(stn => {
+    return `${stn.stationName} ${stn.playerCount > 1 ? `(${stn.playerCount})` : ''}`
+  }).join(', ');
 }
 
 export default BookingsTable;

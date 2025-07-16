@@ -9,7 +9,7 @@ import PaginationFooter from '@/components/club-bookings/PaginationFooter';
 import {
   BookingResponse,
   getBookingsForClubApi,
-} from '@/api/clubBookingApi';
+} from '@/api/booking/clubBookingApi';
 import {
   ClubResponse,
   getClubsForAdminId,

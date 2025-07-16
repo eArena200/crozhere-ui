@@ -14,7 +14,7 @@ import {
 import {
   BookingResponse,
   getBookingsForClubApi,
-} from '@/api/clubBookingApi';
+} from '@/api/booking/clubBookingApi';
 
 import { StationType } from '@/lib/types/station';
 import { BookingsFilters, BookingsPagination } from '@/lib/types/bookings';

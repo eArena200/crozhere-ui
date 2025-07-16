@@ -29,7 +29,6 @@ function RateListItem({
     } = useSelector(selectClubManagementState);
 
     const handleEdit = (rateFormData: RateFormData) => {
-        console.log("HandledEdit: ", rateFormData);
         if(selectedClubId){
             dispatchRedux(updateRate({
                 clubId: selectedClubId,

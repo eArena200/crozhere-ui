@@ -1,14 +1,21 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import { Calendar, ChevronDown } from 'lucide-react';
 import { ClubResponse } from '@/api/clubManagementApi';
 
+import { Dialog } from '@headlessui/react';
+import Button from '@/components/ui/Button';
+import ClubBookingFlow from '@/components/club-booking/ClubBookingFlow';
+
 interface CBDesktopHeaderProps {
   clubList: ClubResponse[];
-  selectedClubId: number | null;
+  selectedClubId: number;
   onClubChange: (clubId: number) => void;
 }
 
 function CBDesktopHeader({ clubList, selectedClubId, onClubChange }: CBDesktopHeaderProps) {
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const handleClubSelect = (clubId: number) => {
     onClubChange(clubId);
   };
@@ -41,7 +48,17 @@ function CBDesktopHeader({ clubList, selectedClubId, onClubChange }: CBDesktopHe
           </select>
           <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
+        <Button onClick={() => setIsBookingModalOpen(true)}>+ New Booking</Button>
       </div>
+
+      <Dialog open={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} className="relative z-50">
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="w-full max-w-[50vw] max-h-[100vh] overflow-y-auto rounded-md bg-white shadow-xl">
+            <ClubBookingFlow clubId={selectedClubId} closeFlowHandler={() => {setIsBookingModalOpen(false)}}/>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
     </div>
   );
 }

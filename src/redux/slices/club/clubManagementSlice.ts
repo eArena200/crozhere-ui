@@ -369,8 +369,6 @@ export const addRate = createAsyncThunk<
           maxPlayers: charge.maxPlayers
         }))
       }
-      console.log("AddRateRequest: ", JSON.stringify(request));
-
       const response = addRateApi(clubId, rateCardId, request);
       return response;
     } catch (err: any) {
@@ -413,7 +411,6 @@ RateResponse,
           maxPlayers: charge.maxPlayers
         }))
       }
-      console.log("UpdateRateRequest: ", JSON.stringify(request));
       const response = await updateRateApi(clubId, rateCardId, rateId, request);
       return response;
     } catch (err: any) {
@@ -734,8 +731,6 @@ const clubManagementSlice = createSlice({
       })
       .addCase(createNewClub.fulfilled, (state, action) => {
         state.createClubLoading = false;
-        // TODO: Remove this log
-        console.log(`CreatedClub: ${JSON.stringify(action.payload)}`);
       })
       .addCase(createNewClub.rejected, (state, action) => {
         state.createClubLoading = false;
@@ -822,8 +817,6 @@ const clubManagementSlice = createSlice({
       })
       .addCase(createRateCard.fulfilled, (state, action) => {
         state.createRateCardLoading = false;
-        // TODO: Remove this log
-        console.log(`CreatedRateCard: ${JSON.stringify(action.payload)}`);
       })
       .addCase(createRateCard.rejected, (state, action) => {
         state.createRateCardLoading = false;
@@ -836,8 +829,6 @@ const clubManagementSlice = createSlice({
       })
       .addCase(updateRateCard.fulfilled, (state, action) => {
         state.updateRateCardLoading = false;
-        // TODO: Remove this log
-        console.log(`UpdatedRateCard: ${JSON.stringify(action.payload)}`);
       })
       .addCase(updateRateCard.rejected, (state, action) => {
         state.updateRateCardLoading = false;
@@ -850,8 +841,6 @@ const clubManagementSlice = createSlice({
       })
       .addCase(addRate.fulfilled, (state, action) => {
         state.addRateLoading = false;
-        // TODO: Remove this log
-        console.log(`AddedRate: ${JSON.stringify(action.payload)}`);
       })
       .addCase(addRate.rejected, (state, action) => {
         state.addRateLoading = false;
@@ -864,8 +853,6 @@ const clubManagementSlice = createSlice({
       })
       .addCase(updateRate.fulfilled, (state, action) => {
         state.updateRateLoading = false;
-        // TODO: Remove this log
-        console.log(`UpdatedRate: ${JSON.stringify(action.payload)}`);
       })
       .addCase(updateRate.rejected, (state, action) => {
         state.updateRateLoading = false;
@@ -878,8 +865,6 @@ const clubManagementSlice = createSlice({
       })
       .addCase(deleteRate.fulfilled, (state, action) => {
         state.deleteRateLoading = false;
-        // TODO: Remove this log
-        console.log(`Deleted Rate`);
       })
       .addCase(deleteRate.rejected, (state, action) => {
         state.deleteRateLoading = false;

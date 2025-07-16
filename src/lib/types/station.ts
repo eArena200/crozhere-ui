@@ -8,6 +8,14 @@ export enum StationType {
   POOL = "POOL"
 }
 
+export const stationLogos: Record<StationType, string> = {
+  SNOOKER: "/assets/snooker.png",
+  POOL: "/assets/pool.png",
+  PC: "/assets/pc.png",
+  PS4: "/assets/ps4.png",
+  XBOX: "/assets/xbox.png",
+};
+
 export const StationTypeOptions = Object.values(StationType);
 
 

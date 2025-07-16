@@ -8,6 +8,7 @@ import stationReducer from "@/redux/slices/club/stationSlice";
 import clubAdminReducer from "@/redux/slices/auth/clubAdminSlice";
 import playerReducer from "@/redux/slices/auth/playerSlice";
 import clubManagementReducer from "@/redux/slices/club/clubManagementSlice";
+import clubBookingReducer from "@/redux/slices/booking/bookingSlice";
 
 import {
   FLUSH,
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   club: clubReducer,
   stations: stationReducer,
   clubManagement: clubManagementReducer,
+  clubBooking: clubBookingReducer
 });
 
 const persistConfig = {

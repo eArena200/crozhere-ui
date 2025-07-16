@@ -43,9 +43,7 @@ const RateCardForm: React.FC<RateCardFormProps> = ({
     return (
         <form
             id="rate-card-form"
-            onSubmit={handleSubmit(handleFormSubmit, (formErrors) => {
-                console.log("form-errors:", formErrors);    
-            })}
+            onSubmit={handleSubmit(handleFormSubmit)}
             className='space-y-6'
         >
             <div>

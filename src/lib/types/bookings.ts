@@ -1,5 +1,13 @@
 import { StationType } from "./station";
 
+export enum BookingStep {
+    SELECTION = "SELECTION",
+    PAYMENT = "PAYMENT",
+    COMMIT = "COMMIT"
+}
+
+export const BookingSteps = Object.values(BookingStep);
+
 export enum BookingStatus {
     CONFIRMED = "CONFIRMED",
     CANCELLED = "CANCELLED"
