@@ -1,17 +1,17 @@
 import { StationType } from '@/lib/types/station';
 import React from 'react';
 
-type ClubDashboardHeaderProps = {
+type StationsStatusHeaderProps = {
   stationTypes: StationType[];
   activeStationType: StationType;
   onChange: (stationType: StationType) => void;
 };
 
-function ClubDashboardHeader({
+function StationsStatusHeader({
   stationTypes,
   activeStationType,
   onChange,
-}: ClubDashboardHeaderProps) {
+}: StationsStatusHeaderProps) {
   return (
     <div className="flex z-50 shadow justify-between text-sm font-semibold text-gray-600">
       {stationTypes.map((type) => (
@@ -20,8 +20,8 @@ function ClubDashboardHeader({
           onClick={() => onChange(type)}
           className={`flex-1 text-center p-2 rounded-t-sm
             ${activeStationType === type
-              ? 'bg-blue-500 text-white shadow font-bold'
-              : 'hover:bg-blue-100 text-gray-700 bg-white'}`}
+              ? 'bg-blue-600 text-white shadow font-bold'
+              : 'hover:bg-blue-200 text-gray-700 bg-white'}`}
         >
           {type}
         </button>
@@ -30,4 +30,4 @@ function ClubDashboardHeader({
   );
 }
 
-export default ClubDashboardHeader;
+export default StationsStatusHeader;

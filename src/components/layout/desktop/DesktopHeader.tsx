@@ -74,7 +74,7 @@ export default function DesktopHeader() {
   );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b px-4 py-2 shadow-sm flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-100 bg-white border-b px-4 py-2 shadow-sm flex items-center justify-between">
       <CrozhereLabel size="md"/>
       <div className="flex items-center gap-4">
         {userLoggedIn ? renderNavLinks() : renderGuestControls()}

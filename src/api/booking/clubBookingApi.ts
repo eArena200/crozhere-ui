@@ -1,5 +1,6 @@
 import { BookingsFilters, BookingsPagination } from "@/lib/types/bookings";
-import { BookingDetailsResponse, BookingIntentDetailsResponse, BookingsPagenatedListResponse, CreateClubBookingIntentRequest } from "./model";
+import { BookingDetailsResponse, BookingIntentDetailsResponse, BookingsPagenatedListResponse, CreateClubBookingIntentRequest, DashboardStationBookingStatus } from "./model";
+import { StationType } from "@/lib/types/station";
 
 const CMS_BOOKING_ENDPOINT = "http://localhost:8080/booking/club";
 
@@ -122,6 +123,51 @@ export async function getBookingsForClubApi(
       errBody,
       'GET_BOOKINGS_FOR_CLUB',
       `Failed to get bookings for ClubId: ${clubId}`
+    );
+  }
+
+  return res.json();
+}
+
+export async function getUpcomingBookingsForClubApi(
+  clubId: number, 
+  windowHrs: number = 12, 
+  stationTypes?: StationType[]
+): Promise<BookingDetailsResponse[]> {
+  const params = new URLSearchParams();
+  params.append('window', windowHrs.toString());
+
+  if (stationTypes && stationTypes.length > 0) {
+    for (const st of stationTypes) {
+      params.append('stationTypes', st);
+    }
+  }
+
+  const res = await fetch(`${CMS_BOOKING_ENDPOINT}/upcomingBookings/${clubId}?${params.toString()}`);
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(
+      errBody,
+      "GET_CLUB_BOOKING_DETAILS_BY_INTENT_ID",
+      `Failed to fetch upcoming bookings for clubId: ${clubId}`
+    );
+  }
+
+  return res.json();
+}
+
+export async function getDashboardStationStatusApi(
+  clubId: number
+): Promise<Record<number, DashboardStationBookingStatus>> {
+  const res = await fetch(`${CMS_BOOKING_ENDPOINT}/dashboardStatus/${clubId}`);
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(
+      errBody,
+      "GET_DASHBOARD_STATION_STATUS",
+      `Failed to fetch dashboard station status for clubId: ${clubId}`
     );
   }
 

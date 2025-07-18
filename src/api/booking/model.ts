@@ -106,6 +106,11 @@ export interface BookingCostDetails {
     totalCost: number;
 }
 
+export interface DashboardStationBookingStatus {
+    currentBooking: BookingDetailsResponse;
+    nextBooking: BookingDetailsResponse;
+}
+
 export interface BookingsPagenatedListResponse {
     bookings: BookingDetailsResponse[];
     totalCount: number;
