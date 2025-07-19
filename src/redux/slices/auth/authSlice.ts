@@ -146,5 +146,7 @@ export const selectAuthUser = (state: RootState) => state.auth.user;
 export const selectAuthIsLoading = (state: RootState) => state.auth.isLoading;
 export const selectIsUserLoggedIn = (state: RootState) => state.auth.loggedIn;
 
+export const selectAuthClubAdminId = (state: RootState) => state.auth.user.clubAdminId;
+
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;

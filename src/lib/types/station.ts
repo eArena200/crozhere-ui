@@ -1,5 +1,22 @@
-export type StationType = "SNOOKER" | "POOL" | "PC" | "PS4" | "XBOX";
 export type StationStatus = 'AVAILABLE' | 'OCCUPIED' | 'UNAVAILABLE';
+
+export enum StationType {
+  PC = "PC",
+  PS4 = "PS4",
+  XBOX = "XBOX",
+  SNOOKER = "SNOOKER",
+  POOL = "POOL"
+}
+
+export const stationLogos: Record<StationType, string> = {
+  SNOOKER: "/assets/snooker.png",
+  POOL: "/assets/pool.png",
+  PC: "/assets/pc.png",
+  PS4: "/assets/ps4.png",
+  XBOX: "/assets/xbox.png",
+};
+
+export const StationTypeOptions = Object.values(StationType);
 
 
 export type Station = {

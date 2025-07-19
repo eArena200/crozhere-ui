@@ -115,6 +115,7 @@ const clubAdminSlice = createSlice({
 // SELECTORS
 export const selectClubAdminState = (state: RootState) => state.clubAdmin;
 
+export const selectClubAdminId = (state: RootState) => state.clubAdmin.clubAdminId;
 export const selectClubAdminName = (state: RootState) => state.clubAdmin.name;
 export const selectClubAdminIsLoading = (state: RootState) => state.clubAdmin.isLoading;
 export const selectClubAdminError = (state: RootState) => state.clubAdmin.error;
