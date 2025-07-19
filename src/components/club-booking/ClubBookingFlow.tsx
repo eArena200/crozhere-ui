@@ -18,7 +18,7 @@ import PaymentStep from './steps/PaymentStep';
 import BookingConfirmationStep from './steps/BookingConfirmationStep';
 import { BookingStep } from '@/lib/types/bookings';
 import { BookingSelectionMode, ClubBookingFlowState } from '@/redux/slices/booking/state';
-import { selectAuthState, selectAuthUser } from '@/redux/slices/auth/authSlice';
+import { selectAuthUser } from '@/redux/slices/auth/authSlice';
 import { UserRole } from '@/lib/types/auth';
 
 interface ClubBookingFlowProps {

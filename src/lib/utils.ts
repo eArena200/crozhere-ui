@@ -34,36 +34,3 @@ export function getDayLabel(date: string | Date): string {
   return input.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 }
 
-export function getDayTimeLabel(date: string | Date): string {
-  const inputDate = typeof date === 'string' ? new Date(date) : date;
-
-  const today = new Date();
-  const inputDay = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate());
-  const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-  const diffDays = Math.floor(
-    (inputDay.getTime() - todayDay.getTime()) / (1000 * 60 * 60 * 24)
-  );
-
-  let dayLabel: string;
-
-  if (diffDays === 0) dayLabel = "Today";
-  else if (diffDays === 1) dayLabel = "Tomorrow";
-  else if (diffDays === -1) dayLabel = "Yesterday";
-  else {
-    dayLabel = inputDate.toLocaleDateString(undefined, {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-    });
-  }
-
-  const timeLabel = inputDate.toLocaleTimeString(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  }).toLowerCase();
-
-  return `${dayLabel}, ${timeLabel}`;
-}
-

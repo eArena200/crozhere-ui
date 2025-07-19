@@ -1,25 +1,36 @@
-import React from 'react';
-import ClubLayout from '../clublayout/ClubLayout';
-import UpcomingBookings from './UpcomingBookings';
-import ClubDashboard from './ClubDashboard';
+import React, { useEffect } from 'react';
+import { useDispatchRedux } from '@/redux/store';
+import { useSelector } from 'react-redux';
+import { 
+  fetchClubsForAdminId, 
+} from '@/redux/slices/club/dashboard/clubDashboardSlice';
+import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { useParams } from 'next/navigation';
+import ClubDashboardDesktopHeader from './ClubDashboardDesktopHeader';
+import ClubDashboardDesktopBody from './ClubDashboardDesktopBody';
 
 export default function AdminDesktop() {
-  const clubName = "Lord Of Gaming";
+  const dispatchRedux = useDispatchRedux();
+  const params = useParams();
+  const paramAdminId = parseInt(params.adminId as string);
+  const authAdminId = useSelector(selectAuthClubAdminId);
+
+  useEffect(() => {
+      if (authAdminId && paramAdminId === authAdminId) {
+        dispatchRedux(fetchClubsForAdminId(paramAdminId));
+      }
+    }, [dispatchRedux, paramAdminId, authAdminId]);
+
+  if (!authAdminId || paramAdminId !== authAdminId) {
+    return (
+      <div>Unauthorized</div>
+    );
+  }
 
   return (
-    <>
-      <div className="flex w-full bg-white items-start px-2 text-2xl pt-4 text-gray-700 font-bold">
-        {clubName}
-      </div>
-      <div className="flex bg-white h-full w-full px-2 py-3 gap-2">
-          <div className="w-4/5 h-[80vh]" >
-              {/* <ClubLayout />   */}
-              <ClubDashboard />
-          </div>
-          <div className="w-1/5 h-[80vh]">
-              <UpcomingBookings />
-          </div>
-      </div> 
-    </>
+    <div className='bg-white px-2'>
+      <ClubDashboardDesktopHeader onClickCreateNewBooking={() => {}}/>
+      <ClubDashboardDesktopBody />
+    </div>
   );
 }

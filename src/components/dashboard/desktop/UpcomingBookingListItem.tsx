@@ -2,7 +2,6 @@ import React from 'react';
 import { User, Phone } from 'lucide-react';
 import Logo from '@/components/ui/Logo';
 import { StationType } from '@/lib/types/station';
-import { getDayTimeLabel } from '@/lib/utils';
 
 const stationLogos: Record<StationType, string> = {
   SNOOKER: "/assets/snooker.png",
@@ -14,12 +13,10 @@ const stationLogos: Record<StationType, string> = {
 
 
 export interface BookingListItemProps {
-  id: string,
-  playerId: string,
   playerName?: string;
   contact: string;
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
   stationType: StationType;
   players: number;
 }
@@ -60,4 +57,38 @@ export default function BookingListItem({
         </div>
     </div>
   );
+}
+
+export function getDayTimeLabel(date: string | Date): string {
+  console.log("InputDate: ", JSON.stringify(date));
+  const inputDate = typeof date === 'string' ? new Date(date) : date;
+
+  const today = new Date();
+  const inputDay = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate());
+  const todayDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  const diffDays = Math.floor(
+    (inputDay.getTime() - todayDay.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  let dayLabel: string;
+
+  if (diffDays === 0) dayLabel = "Today";
+  else if (diffDays === 1) dayLabel = "Tomorrow";
+  else if (diffDays === -1) dayLabel = "Yesterday";
+  else {
+    dayLabel = inputDate.toLocaleDateString(undefined, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  const timeLabel = inputDate.toLocaleTimeString(undefined, {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  }).toLowerCase();
+
+  return `${dayLabel}, ${timeLabel}`;
 }
