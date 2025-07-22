@@ -60,7 +60,6 @@ export default function BookingListItem({
 }
 
 export function getDayTimeLabel(date: string | Date): string {
-  console.log("InputDate: ", JSON.stringify(date));
   const inputDate = typeof date === 'string' ? new Date(date) : date;
 
   const today = new Date();

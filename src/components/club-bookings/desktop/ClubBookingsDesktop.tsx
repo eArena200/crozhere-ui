@@ -6,32 +6,27 @@ import FilterSection from '@/components/club-bookings/desktop/FilterSection';
 import BookingsTable from '@/components/club-bookings/desktop/BookingsTable';
 import PaginationFooter from '@/components/club-bookings/PaginationFooter';
 
-import {
-  BookingResponse,
-  getBookingsForClubApi,
-} from '@/api/booking/clubBookingApi';
-import {
-  ClubResponse,
-  getClubsForAdminId,
-  getStationsByClubId,
-  StationDetailsResponse,
-} from '@/api/clubManagementApi';
-
 import { StationType } from '@/lib/types/station';
 import { BookingsFilters, BookingsPagination } from '@/lib/types/bookings';
 import { useSelector } from 'react-redux';
-import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import { useParams } from 'next/navigation';
+import { ClubResponse } from '@/api/club-management/model';
+import { BookingDetailsResponse } from '@/api/booking/model';
+import { getClubsForAdminApi } from '@/api/club-management/clubManagementApi';
+import { StationDetailsResponse } from '@/api/club/model';
+import { getStationsInClubApi } from '@/api/club/clubDetailsApi';
+import { getBookingsForClubApi } from '@/api/booking/clubBookingApi';
 
 function ClubBookingsDesktop() {
   const [clubList, setClubList] = useState<ClubResponse[]>([]);
   const [selectedClubId, setSelectedClubId] = useState<number | null>(null);
   const [supportedStationTypes, setSupportedStationTypes] = useState<StationType[]>([]);
-  const [bookings, setBookings] = useState<BookingResponse[]>([]);
+  const [bookings, setBookings] = useState<BookingDetailsResponse[]>([]);
 
   const params = useParams();
   const paramAdminId = parseInt(params.adminId as string);
-  const authAdminId = useSelector(selectAuthClubAdminId);
+  const authAdminId = useSelector(selectAuthRoleBasedId);
 
   const [pagination, setPagination] = useState<BookingsPagination>({
     page: 1,
@@ -50,7 +45,7 @@ function ClubBookingsDesktop() {
 
   useEffect(() => {
     if(authAdminId && paramAdminId === authAdminId) {
-      fetchClubs(authAdminId);
+      fetchClubs();
     }
   }, [authAdminId]);
 
@@ -66,9 +61,9 @@ function ClubBookingsDesktop() {
     }
   }, [selectedClubId, filters, pagination]);
 
-  async function fetchClubs(clubAdminId: number) {
+  async function fetchClubs() {
     try {
-      const clubs = await getClubsForAdminId(clubAdminId);
+      const clubs = await getClubsForAdminApi();
       setClubList(clubs);
       if (clubs.length > 0) {
         setSelectedClubId(clubs[0].clubId);
@@ -80,7 +75,7 @@ function ClubBookingsDesktop() {
 
   async function fetchStations(clubId: number) {
     try {
-      const stations: StationDetailsResponse[] = await getStationsByClubId(clubId);
+      const stations: StationDetailsResponse[] = await getStationsInClubApi(clubId);
       const stationTypes = Array.from(new Set(stations.map(s => s.stationType)));
       setSupportedStationTypes(stationTypes);
     } catch (e) {
@@ -122,7 +117,7 @@ function ClubBookingsDesktop() {
     <div className="min-h-[90vh] w-full space-y-2 bg-white px-2">
       <CBDesktopHeader
         clubList={clubList}
-        selectedClubId={selectedClubId}
+        selectedClubId={selectedClubId ?? 0}
         onClubChange={handleClubChange}
       />
 

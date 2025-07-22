@@ -11,8 +11,8 @@ import {
 } from '@/redux/slices/club/clubManagementSlice';
 import EditClubDialog from '@/components/club-management/EditClubDialog';
 import { ClubFormData } from '@/components/club-management/ClubForm';
-import { ClubDetailsResponse } from '@/api/clubManagementApi';
-import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
+import { ClubDetailsResponse } from '@/api/club/model';
 
 function ClubDetails() {
   const dispatchRedux = useDispatchRedux();
@@ -22,7 +22,7 @@ function ClubDetails() {
     clubDetailsError,
   } = useSelector(selectClubManagementState);
 
-  const authClubAdminId = useSelector(selectAuthClubAdminId);
+  const authClubAdminId = useSelector(selectAuthRoleBasedId);
   const [isEditClubOpen, setIsEditClubOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 

@@ -11,15 +11,15 @@ import {
   selectPlayerError,
   loadPlayerById,
   updatePlayer
-} from '@/redux/slices/auth/playerSlice';
+} from '@/redux/slices/user/player/playerSlice';
 import { logoutAction, selectAuthUser } from '@/redux/slices/auth/authSlice';
-import { UpdatePlayerRequest } from '@/api/playerApi';
+import { UpdatePlayerRequest } from '@/api/user/player/model';
 
 function PlayerProfileMobile() {
     const dispatchRedux = useDispatchRedux();
     const user = useSelector(selectAuthUser);
     //TODO: Load the playerId from pathName itself
-    const playerId = user?.playerId;
+    const playerId = user?.roleBasedId;
     const player = useSelector(selectPlayerState);
     const isLoading = useSelector(selectPlayerIsLoading);
     const error = useSelector(selectPlayerError);
@@ -35,7 +35,7 @@ function PlayerProfileMobile() {
 
     useEffect(() => {
         if (typeof playerId === 'number' && player.playerId !== playerId) {
-            dispatchRedux(loadPlayerById(playerId));
+            dispatchRedux(loadPlayerById());
         }
     }, [dispatchRedux, player.playerId, playerId]);
 
@@ -73,10 +73,7 @@ function PlayerProfileMobile() {
             username: formData.username,
             email: formData.email
           };
-          dispatchRedux(updatePlayer({
-            playerId: playerId,
-            updatePlayerRequest: updateRequest,
-          }));
+          dispatchRedux(updatePlayer(updateRequest));
         }
         setIsEditing(false);
     };

@@ -1,27 +1,13 @@
+import { 
+    ClubAdminResponse, 
+    ClubAdminServiceException, 
+    UpdateClubAdminRequest
+} from "@/api/user/club-admin/model";
 
-const CLUB_ADMIN_SERVICE_ENDPOINT = "http://localhost:8080/club-admins"
+const CLUB_ADMIN_SERVICE_ENDPOINT = "http://localhost:8080/user/club-admin"
 
-export interface UpdateClubAdminRequest {
-    name?: string;
-    email?: string;
-}
-
-export interface ClubAdminResponse {
-    id: number;
-    name: string;
-    email: string;
-    phone: string;
-}
-
-export interface ClubAdminServiceException {
-    error: string;
-    type: string;
-    message: string;
-    timestamp: string;
-}
-
-export async function fetchClubAdminById(clubAdminId: number): Promise<ClubAdminResponse> {
-    const res = await fetch(`${CLUB_ADMIN_SERVICE_ENDPOINT}/${clubAdminId}`);
+export async function fetchClubAdminDetailsApi(): Promise<ClubAdminResponse> {
+    const res = await fetch(`${CLUB_ADMIN_SERVICE_ENDPOINT}/getDetails`);
 
     if (!res.ok) {
         const errorBody = await res.json().catch(() => null);
@@ -39,7 +25,7 @@ export async function fetchClubAdminById(clubAdminId: number): Promise<ClubAdmin
         throw {
             error: "CLUB_ADMIN_API_ERROR",
             type: "FETCH_CLUB_ADMIN_BY_ID",
-            message: `Failed to fetch club admin with id: ${clubAdminId}`,
+            message: `Failed to fetch club admin details`,
             timestamp: new Date().toISOString(),
         };
     }
@@ -47,11 +33,10 @@ export async function fetchClubAdminById(clubAdminId: number): Promise<ClubAdmin
     return res.json();
 }
 
-export async function updateClubAdminById(
-    clubAdminId: number,
+export async function updateClubAdminDetailsApi(
     updateClubAdminRequest: UpdateClubAdminRequest
 ): Promise<ClubAdminResponse> {
-    const res = await fetch(`${CLUB_ADMIN_SERVICE_ENDPOINT}/${clubAdminId}`,{
+    const res = await fetch(`${CLUB_ADMIN_SERVICE_ENDPOINT}/updateDetails`,{
         method: "PUT",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify(updateClubAdminRequest)
@@ -73,7 +58,7 @@ export async function updateClubAdminById(
         throw {
             error: "CLUB_ADMIN_API_ERROR",
             type: "UPDATE_CLUB_ADMIN",
-            message: `Failed to fetch club admin with id: ${clubAdminId}`,
+            message: `Failed to update club admin details`,
             timestamp: new Date().toISOString(),
         };
     }

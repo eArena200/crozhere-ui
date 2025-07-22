@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { Pencil, Trash2 } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import { RateResponse, ChargeResponse } from '@/api/clubManagementApi';
 import EditRateDialog from '@/components/club-management/EditRateDialog';
 import { RateFormData } from '@/components/club-management/RateForm';
 import { useDispatchRedux } from '@/redux/store';
@@ -12,6 +11,7 @@ import {
     selectClubManagementState, 
     updateRate 
 } from '@/redux/slices/club/clubManagementSlice';
+import { RateResponse, ChargeResponse } from '@/api/club/model';
 
 interface RateListItemProps {
   rateDetails: RateResponse;
@@ -31,8 +31,6 @@ function RateListItem({
     const handleEdit = (rateFormData: RateFormData) => {
         if(selectedClubId){
             dispatchRedux(updateRate({
-                clubId: selectedClubId,
-                rateCardId: rateDetails.rateCardId,
                 rateId: rateDetails.rateId,
                 data: rateFormData
             }))
@@ -48,11 +46,7 @@ function RateListItem({
 
     const handleDelete = (rateId: number) => {
         if(selectedClubId){
-            dispatchRedux(deleteRate({
-                clubId: selectedClubId,
-                rateCardId: rateDetails.rateCardId,
-                rateId: rateDetails.rateId
-            }))
+            dispatchRedux(deleteRate(rateDetails.rateId));
         }
     }
 

@@ -9,7 +9,7 @@ import {
 import {
   CheckAvailByStationRequest,
   checkAvailByStationsApi,
-} from '@/api/clubAvailabilityApi';
+} from '@/api/club/clubAvailabilityApi';
 import { StationType } from '@/lib/types/station';
 import BookingStation from '../BookingStation';
 import { localToUTCISOString, toReadableDateTime, utcToLocalISOString } from '@/lib/date-time-util';

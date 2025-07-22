@@ -5,9 +5,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { StationType, StationTypeOptions } from '@/lib/types/station';
-import { RateCardDetailsResponse } from '@/api/clubManagementApi';
 import { useSelector } from 'react-redux';
 import { selectClubManagementState } from '@/redux/slices/club/clubManagementSlice';
+import { RateCardDetailsResponse } from '@/api/club/model';
 
 export const stationSchema = z.object({
     stationName: z.string().min(1, 'Station name is required'),

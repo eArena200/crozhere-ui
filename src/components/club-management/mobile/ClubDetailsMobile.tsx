@@ -12,10 +12,10 @@ import { Building2, MapPin, Clock, AlertCircle,
   Loader2, CheckCircle2, Pencil, 
   ChevronDown} from "lucide-react";
 import Button from "@/components/ui/Button";
-import { ClubDetailsResponse } from "@/api/clubManagementApi";
-import { selectAuthClubAdminId } from "@/redux/slices/auth/authSlice";
+import { selectAuthRoleBasedId } from "@/redux/slices/auth/authSlice";
 import { ClubFormData } from "@/components/club-management/ClubForm";
 import EditClubDialog from "@/components/club-management/EditClubDialog";
+import { ClubDetailsResponse } from "@/api/club/model";
 
 function ClubDetailsMobile() {
   const dispatchRedux = useDispatchRedux();
@@ -26,7 +26,7 @@ function ClubDetailsMobile() {
       clubDetailsError,
     } = useSelector(selectClubManagementState);
   
-    const authClubAdminId = useSelector(selectAuthClubAdminId);
+    const authClubAdminId = useSelector(selectAuthRoleBasedId);
     const [isEditClubOpen, setIsEditClubOpen] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
 

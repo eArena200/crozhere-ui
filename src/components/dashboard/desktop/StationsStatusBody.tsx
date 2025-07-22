@@ -1,8 +1,8 @@
 import React from 'react';
-import { Station, StationType } from '@/lib/types/station';
+import { StationType } from '@/lib/types/station';
 import StationStatusCard, { StationAvailableStatus } from './StationStatusCard';
-import { StationDetailsResponse } from '@/api/clubManagementApi';
 import { DashboardStationBookingStatus } from '@/api/booking/model';
+import { StationDetailsResponse } from '@/api/club/model';
 
 type StationsStatusBodyProps = {
   stationType: StationType;

@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { Calendar, ChevronDown } from 'lucide-react';
-import { ClubResponse } from '@/api/clubManagementApi';
 
 import { Dialog } from '@headlessui/react';
 import Button from '@/components/ui/Button';
 import ClubBookingFlow from '@/components/club-booking/ClubBookingFlow';
+import { ClubResponse } from '@/api/club-management/model';
 
 interface CBDesktopHeaderProps {
   clubList: ClubResponse[];
@@ -51,7 +51,7 @@ function CBDesktopHeader({ clubList, selectedClubId, onClubChange }: CBDesktopHe
         <Button onClick={() => setIsBookingModalOpen(true)}>+ New Booking</Button>
       </div>
 
-      <Dialog open={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} className="relative z-50">
+      <Dialog open={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} className="relative z-70">
         <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-[50vw] max-h-[100vh] overflow-y-auto rounded-md bg-white shadow-xl">

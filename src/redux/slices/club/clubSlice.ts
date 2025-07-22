@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
-import { ClubResponse, getClubsForAdminId } from "@/api/clubManagementApi";
 import { RootState } from "@/redux/store";
+import { ClubResponse } from "@/api/club-management/model";
+import { getClubsForAdminApi } from "@/api/club-management/clubManagementApi";
 
 export interface ClubState {
   clubs: ClubResponse[];
@@ -16,11 +17,11 @@ const initialState: ClubState = {
 
 export const fetchClubsForAdmin = createAsyncThunk<
   ClubResponse[],
-  number,
+  void,
   { rejectValue: string }
->("clubs/fetchForAdmin", async (adminId, { rejectWithValue }) => {
+>("clubs/fetchForAdmin", async (_, { rejectWithValue }) => {
   try {
-    return await getClubsForAdminId(adminId);
+    return await getClubsForAdminApi();
   } catch (err: any) {
     return rejectWithValue(err.message || "Failed to fetch clubs");
   }

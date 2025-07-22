@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import Tabs, { Tab } from '@/components/ui/Tabs';
-import { StationDetailsResponse } from '@/api/clubManagementApi';
 import { StationType } from '@/lib/types/station';
 import StationDetailsCard from '@/components/club-management/desktop/StationDetailsCard';
 import { Plus } from 'lucide-react';
@@ -15,7 +14,8 @@ import {
   selectSelectedClubId
 } from '@/redux/slices/club/clubManagementSlice';
 import { useDispatchRedux } from '@/redux/store';
-import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
+import { StationDetailsResponse } from '@/api/club/model';
 
 function StationDetails() {
   const dispatchRedux = useDispatchRedux();
@@ -28,7 +28,7 @@ function StationDetails() {
     addStationError
   } = useSelector(selectClubManagementState);
 
-  const authAdminId = useSelector(selectAuthClubAdminId);
+  const authAdminId = useSelector(selectAuthRoleBasedId);
   const clubId = useSelector(selectSelectedClubId);
 
   const [selectedTab, setSelectedTab] = useState<string | null>(null);

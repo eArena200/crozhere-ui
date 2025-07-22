@@ -18,7 +18,7 @@ import { useDispatchRedux } from '@/redux/store';
 import { RateFormData } from '@/components/club-management/RateForm';
 import { RateCardFormData } from '@/components/club-management/RateCardForm';
 import EditRateCardDialog from '@/components/club-management/EditRateCardDialog';
-import { RateCardDetailsResponse } from '@/api/clubManagementApi';
+import { RateCardDetailsResponse } from '@/api/club/model';
 
 function RateCardDetails() {
   const dispatchRedux = useDispatchRedux();
@@ -63,7 +63,6 @@ function RateCardDetails() {
   const handleEditRateCard = (data: RateCardFormData) => {
     if(selectedClubId && selectedRateCardId){
       dispatchRedux(updateRateCard({
-        clubId: selectedClubId,
         rateCardId: selectedRateCardId,
         data: data
       }))
@@ -78,7 +77,6 @@ function RateCardDetails() {
   const handleAddRate = (rateFormData: RateFormData) => {
     if(selectedClubId && selectedRateCardId){
       dispatchRedux(addRate({
-        clubId: selectedClubId,
         rateCardId: selectedRateCardId,
         data: rateFormData
       }))

@@ -1,9 +1,4 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-    getStationsByClubId,
-    StationDetailsResponse,
-    ClubServiceException,
-} from "@/api/clubManagementApi";
 import { StationType } from "@/lib/types/station";
 import { RootState } from "@/redux/store";
 import { PaymentMode, PaymentStatus } from "@/lib/types/payment";
@@ -13,7 +8,7 @@ import {
     InitPaymentRequest,
     PaymentResponse,
     PaymentServiceException,
-} from "@/api/paymentApi";
+} from "@/api/payment/paymentApi";
 import { BookingStep } from "@/lib/types/bookings";
 import { 
     BookingDetailsResponse, 
@@ -36,6 +31,8 @@ import {
     BookingPlayerState
 } from "./state";
 import { getUTCDateTimeWithStepMins } from "@/lib/date-time-util";
+import { StationDetailsResponse, ClubServiceException } from "@/api/club/model";
+import { getStationsInClubApi } from "@/api/club/clubDetailsApi";
 
 
 const initialState: ClubBookingFlowState = {
@@ -92,7 +89,7 @@ export const setClubIdAndFetchStations = createAsyncThunk<
     async (clubId, { dispatch, rejectWithValue }) => {
         try {
             dispatch(setClubIdForBooking(clubId));
-            const stations = await getStationsByClubId(clubId);
+            const stations = await getStationsInClubApi(clubId);
             const stationTypes = Array.from(
                 new Set(stations.map((s) => s.stationType))
             );
@@ -650,7 +647,6 @@ function getEndTimeForSlot(startTime: string, durationHrs: number): string {
     const start = new Date(startTime);
     const durationMs = durationHrs * 60 * 60 * 1000;
     const end = new Date(start.getTime() + durationMs);
-    console.log("Generated EndTime: ", end.toISOString());
     return end.toISOString();
 }
 

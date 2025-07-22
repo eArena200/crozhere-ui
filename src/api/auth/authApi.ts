@@ -1,32 +1,15 @@
-import { UserRole } from "@/lib/types/auth";
+import { 
+  VerifyAuthRequest, 
+  VerifyAuthResponse 
+} from "@/api/auth/model";
 
-export interface VerifyAuthRequest {
-  phone: string;
-  otp: string;
-  role: UserRole;
-}
+const AUTH_ENDPOINT = "http://localhost:8080/auth";
 
-export interface VerifyAuthResponse {
-  jwt: string;
-  userId: number;
-  playerId?: number;
-  clubAdminId?: number;
-  role: UserRole;
-}
-
-export interface AuthServiceException {
-  error: string;
-  type: string;
-  message: string;
-  timestamp: string;
-}
-
-const INIT_AUTH_ENDPOINT = "http://localhost:8080/auth/init";
-const VERIFY_AUTH_ENDPOINT = "http://localhost:8080/auth/verify"
-
-export async function sendOtp(phone: string) {
+export async function sendOtpApi(
+  phone: string
+) {
   try {
-    const res = await fetch(INIT_AUTH_ENDPOINT, {
+    const res = await fetch(`${AUTH_ENDPOINT}/init`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phone }),
@@ -54,10 +37,10 @@ export async function sendOtp(phone: string) {
   }
 }
 
-
-export async function verifyOtp(verifyAuthRequest: VerifyAuthRequest)
-  :Promise<VerifyAuthResponse> {
-    const res = await fetch(VERIFY_AUTH_ENDPOINT, {
+export async function verifyOtpApi(
+  verifyAuthRequest: VerifyAuthRequest
+):Promise<VerifyAuthResponse> {
+    const res = await fetch(`${AUTH_ENDPOINT}/verify`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(verifyAuthRequest),

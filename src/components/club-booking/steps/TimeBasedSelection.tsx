@@ -10,7 +10,7 @@ import {
   selectTimeBasedSelectionState,
   setTimeBasedState,
 } from '@/redux/slices/booking/bookingSlice';
-import { checkAvailByTimeApi, CheckAvailByTimeRequest, StationAvailability } from '@/api/clubAvailabilityApi';
+import { checkAvailByTimeApi, CheckAvailByTimeRequest, StationAvailability } from '@/api/club/clubAvailabilityApi';
 import { StationType } from '@/lib/types/station';
 import BookingStation from '../BookingStation';
 import { localToUTCISOString, utcToLocalISOString } from '@/lib/date-time-util';

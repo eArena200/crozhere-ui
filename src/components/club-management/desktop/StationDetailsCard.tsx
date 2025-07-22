@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { StationDetailsResponse } from '@/api/clubManagementApi';
 import { Pencil, Trash2, Power, Clock, Users, Loader2, BadgeIndianRupee, IndianRupee } from 'lucide-react';
 import EditStationDialog from '@/components/club-management/EditStationDialog';
 import { StationFormData } from '@/components/club-management/StationForm';
 import { useSelector } from 'react-redux';
 import { deleteStation, selectClubManagementState, toggleStation, updateStationDetails } from '@/redux/slices/club/clubManagementSlice';
-import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import { useDispatchRedux } from '@/redux/store';
+import { StationDetailsResponse } from '@/api/club/model';
 
 interface StationCardProps {
   stationDetails: StationDetailsResponse;
@@ -25,7 +25,7 @@ function StationCard({
     updateStationError
   } = useSelector(selectClubManagementState);
 
-  const authAdminId = useSelector(selectAuthClubAdminId);
+  const authAdminId = useSelector(selectAuthRoleBasedId);
 
   const handleEdit = (stationFormData: StationFormData) => {
     if (authAdminId) {

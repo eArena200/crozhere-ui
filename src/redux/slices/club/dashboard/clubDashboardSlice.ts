@@ -1,10 +1,13 @@
-import { ClubDetailsResponse, ClubResponse, ClubServiceException, getClubDetailsById, getClubsForAdminId, getStationsByClubId, StationDetailsResponse } from "@/api/clubManagementApi";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ClubDashboardState } from "./state";
 import { BookingDetailsResponse, DashboardStationBookingStatus } from "@/api/booking/model";
 import { RootState } from "@/redux/store";
 import { getDashboardStationStatusApi, getUpcomingBookingsForClubApi } from "@/api/booking/clubBookingApi";
 import { StationType } from "@/lib/types/station";
+import { ClubResponse } from "@/api/club-management/model";
+import { ClubServiceException, ClubDetailsResponse, StationDetailsResponse } from "@/api/club/model";
+import { getClubsForAdminApi } from "@/api/club-management/clubManagementApi";
+import { getClubDetailsApi, getStationsInClubApi } from "@/api/club/clubDetailsApi";
 
 const initialState: ClubDashboardState = {
     clubs: {},
@@ -27,13 +30,13 @@ const initialState: ClubDashboardState = {
 
 export const fetchClubsForAdminId = createAsyncThunk<
   ClubResponse[],
-  number,
+  void,
   { rejectValue: ClubServiceException }
 >(
   "clubDashboard/fetchClubsForAdminId",
-  async (adminId, { dispatch, rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
-      const clubList = await getClubsForAdminId(adminId);
+      const clubList = await getClubsForAdminApi();
       if (clubList.length > 0) {
         dispatch(setSelectedClubAndFetchDetails(clubList[0].clubId));
       }
@@ -91,7 +94,7 @@ export const fetchClubDetails = createAsyncThunk<
   "clubDashboard/fetchClubDetailsById",
   async (clubId, { rejectWithValue }) => {
     try {
-      const clubDetails = await getClubDetailsById(clubId);
+      const clubDetails = await getClubDetailsApi(clubId);
       return clubDetails;
     } catch (err: any) {
       if (err.response?.data) {
@@ -115,7 +118,7 @@ export const fetchStationsByClubId = createAsyncThunk<
   "clubDashboard/fetchStationsByClubId",
   async (clubId, { rejectWithValue }) => {
     try {
-      const stations = await getStationsByClubId(clubId);
+      const stations = await getStationsInClubApi(clubId);
       return stations;
     } catch (err: any) {
       if (err.response?.data) {

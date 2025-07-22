@@ -12,7 +12,7 @@ import {
   fetchClubIdsForAdminId
 } from '@/redux/slices/club/clubManagementSlice';
 import { useSelector } from 'react-redux';
-import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import CMDesktopHeader from '@/components/club-management/desktop/CMDesktopHeader';
 import RateCardDetails from '@/components/club-management/desktop/RateCardDetails';
 
@@ -21,12 +21,12 @@ function ClubManagementDesktop() {
 
   const params = useParams();
   const paramAdminId = parseInt(params.adminId as string);
-  const authAdminId = useSelector(selectAuthClubAdminId);
+  const authAdminId = useSelector(selectAuthRoleBasedId);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   useEffect(() => {
     if (authAdminId && paramAdminId === authAdminId) {
-      dispatchRedux(fetchClubIdsForAdminId(paramAdminId));
+      dispatchRedux(fetchClubIdsForAdminId());
     }
   }, [dispatchRedux, paramAdminId, authAdminId]);
 

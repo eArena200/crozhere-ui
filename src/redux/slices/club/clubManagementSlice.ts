@@ -1,41 +1,4 @@
 import {
-  addRateApi,
-  AddRateRequest,
-  addStation,
-  AddStationRequest,
-  ClubAddress,
-  ClubDetailsResponse,
-  ClubResponse,
-  ClubServiceException,
-  CreateClubRequest,
-  createRateCardApi,
-  CreateRateCardRequest,
-  deleteRateApi,
-  deleteStationById,
-  getRateCardDetailsApi,
-  getRateCardsforClubIdApi,
-  OperatingHours,
-  RateCardDetailsResponse,
-  RateCardResponse,
-  RateResponse,
-  StationDetailsResponse,
-  toggleStationStatus,
-  updateClub,
-  UpdateClubRequest,
-  updateRateApi,
-  updateRateCardApi,
-  UpdateRateCardRequest,
-  UpdateRateRequest,
-  updateStation,
-  UpdateStationRequest
-} from "@/api/clubManagementApi";
-import {
-  getClubsForAdminId,
-  getClubDetailsById,
-  getStationsByClubId,
-  createClub
-} from "@/api/clubManagementApi";
-import {
   createAsyncThunk,
   createSlice,
   PayloadAction
@@ -45,6 +8,47 @@ import { ClubFormData } from "@/components/club-management/ClubForm";
 import { StationFormData } from "@/components/club-management/StationForm";
 import { RateCardFormData } from "@/components/club-management/RateCardForm";
 import { RateFormData } from "@/components/club-management/RateForm";
+import { 
+  createRateCardApi, 
+  updateRateCardApi, 
+  addRateApi, 
+  updateRateApi, 
+  deleteRateApi, 
+  getClubsForAdminApi,
+  createClubApi,
+  updateClubApi,
+  addStationApi,
+  updateStationApi,
+  toggleStationApi,
+  deleteStationApi
+} from "@/api/club-management/clubManagementApi";
+import { 
+  ClubResponse, 
+  CreateRateCardRequest, 
+  UpdateRateCardRequest, 
+  AddRateRequest, 
+  UpdateRateRequest, 
+  CreateClubRequest, 
+  UpdateClubRequest, 
+  AddStationRequest, 
+  UpdateStationRequest
+} from "@/api/club-management/model";
+import { 
+  getClubDetailsApi, 
+  getRateCardDetailsApi, 
+  getRateCardsforClubApi, 
+  getStationsInClubApi 
+} from "@/api/club/clubDetailsApi";
+import { 
+  ClubAddress, 
+  OperatingHours, 
+  ClubDetailsResponse, 
+  StationDetailsResponse, 
+  RateCardDetailsResponse, 
+  ClubServiceException, 
+  RateCardResponse, 
+  RateResponse 
+} from "@/api/club/model";
 
 export interface ClubMetaData {
   clubId: number;
@@ -143,13 +147,13 @@ const initialState: ClubManagementState = {
 // THUNKS
 export const fetchClubIdsForAdminId = createAsyncThunk<
   ClubResponse[],
-  number,
+  void,
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/fetchClubIdsForAdminId",
-  async (adminId, { dispatch, rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
-      const clubList = await getClubsForAdminId(adminId);
+      const clubList = await getClubsForAdminApi();
       if (clubList.length > 0) {
         dispatch(setSelectedClubAndFetchDetails(clubList[0].clubId));
       }
@@ -207,7 +211,7 @@ export const fetchRateCardsForClubId = createAsyncThunk<
   "clubManagement/fetchRateCardsForClubId",
   async (clubId, { dispatch, rejectWithValue }) => {
     try {
-      const rateCardList = await getRateCardsforClubIdApi(clubId);
+      const rateCardList = await getRateCardsforClubApi(clubId);
       if(rateCardList.length > 0){
         dispatch(setSelectedRateCardAndFetchDetails(rateCardList[0]));
       }
@@ -237,7 +241,7 @@ export const setSelectedRateCardAndFetchDetails = createAsyncThunk<
     try {
       dispatch(setSelectedRateCardId(rateCardResponse.rateCardId));
       await Promise.all([
-        dispatch(fetchRateCardDetails(rateCardResponse)).unwrap()
+        dispatch(fetchRateCardDetails(rateCardResponse.rateCardId)).unwrap()
       ]);
     } catch (err: any) {
       if (err?.response?.data) {
@@ -254,17 +258,15 @@ export const setSelectedRateCardAndFetchDetails = createAsyncThunk<
   }
 );
 
-
 export const fetchRateCardDetails = createAsyncThunk<
   RateCardDetailsResponse,
-  RateCardResponse,
+  number,
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/fetchRateCardDetails",
-  async (rateCardResponse, { rejectWithValue }) => {
+  async (rateCardId, { rejectWithValue }) => {
     try {
-      const rateCardDetailsResponse = await getRateCardDetailsApi(
-        rateCardResponse.clubId, rateCardResponse.rateCardId);
+      const rateCardDetailsResponse = await getRateCardDetailsApi(rateCardId);
       return rateCardDetailsResponse;
     } catch (err: any) {
       if (err.response?.data) {
@@ -289,7 +291,7 @@ export const createRateCard = createAsyncThunk<
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/createRateCard",
-  async ({ clubId, rateCardFormData }, { dispatch, rejectWithValue }) => {
+  async ({ clubId, rateCardFormData }, { rejectWithValue }) => {
     try {
       const request: CreateRateCardRequest = {
         name: rateCardFormData.rateCardName
@@ -314,7 +316,6 @@ export const createRateCard = createAsyncThunk<
 export const updateRateCard = createAsyncThunk<
  RateCardResponse,
  {
-  clubId: number;
   rateCardId: number;
   data: RateCardFormData;
  },
@@ -323,12 +324,12 @@ export const updateRateCard = createAsyncThunk<
  }
 >(
   "clubManagement/updateRateCard",
-  async ({clubId, rateCardId, data}, {dispatch, rejectWithValue}) => {
+  async ({rateCardId, data}, {rejectWithValue}) => {
     try {
       const request: UpdateRateCardRequest = {
         name: data.rateCardName
       }
-      const response = await updateRateCardApi(clubId, rateCardId, request);
+      const response = await updateRateCardApi(rateCardId, request);
       return response;
     } catch (err: any) {
       if (err.response?.data) {
@@ -348,14 +349,13 @@ export const updateRateCard = createAsyncThunk<
 export const addRate = createAsyncThunk<
  RateResponse,
  {
-  clubId: number;
   rateCardId: number;
   data: RateFormData;
  },
  { rejectValue: ClubServiceException }
 >(
   "clubManagement/addRate",
-  async ({ clubId, rateCardId, data }, { dispatch, rejectWithValue }) => {
+  async ({ rateCardId, data }, { rejectWithValue }) => {
     try {
       const request: AddRateRequest = {
         rateName: data.rateName,
@@ -369,7 +369,7 @@ export const addRate = createAsyncThunk<
           maxPlayers: charge.maxPlayers
         }))
       }
-      const response = addRateApi(clubId, rateCardId, request);
+      const response = addRateApi(rateCardId, request);
       return response;
     } catch (err: any) {
       if (err.response?.data) {
@@ -386,17 +386,15 @@ export const addRate = createAsyncThunk<
 );
 
 export const updateRate = createAsyncThunk<
-RateResponse,
- {
-  clubId: number;
-  rateCardId: number;
-  rateId: number;
-  data: RateFormData;
- },
- { rejectValue: ClubServiceException }
+  RateResponse,
+  {
+    rateId: number;
+    data: RateFormData;
+  },
+  { rejectValue: ClubServiceException }
 >(
   "clubManagement/updateRate",
-  async ({ clubId, rateCardId, rateId, data }, { dispatch, rejectWithValue }) => {
+  async ({ rateId, data }, { rejectWithValue }) => {
     try {
       const request: UpdateRateRequest = {
         rateName: data.rateName,
@@ -411,7 +409,7 @@ RateResponse,
           maxPlayers: charge.maxPlayers
         }))
       }
-      const response = await updateRateApi(clubId, rateCardId, rateId, request);
+      const response = await updateRateApi(rateId, request);
       return response;
     } catch (err: any) {
       if (err.response?.data) {
@@ -428,18 +426,14 @@ RateResponse,
 );
 
 export const deleteRate = createAsyncThunk<
-void,
- {
-  clubId: number;
-  rateCardId: number;
-  rateId: number;
- },
- { rejectValue: ClubServiceException }
+  void,
+  number,
+  { rejectValue: ClubServiceException }
 >(
   "clubManagement/deleteRate",
-  async ({ clubId, rateCardId, rateId }, { dispatch, rejectWithValue }) => {
+  async (rateId, { rejectWithValue }) => {
     try {
-      await deleteRateApi(clubId, rateCardId, rateId);
+      await deleteRateApi(rateId);
     } catch (err: any) {
       if (err.response?.data) {
         return rejectWithValue(err.response.data);
@@ -465,7 +459,7 @@ export const createNewClub = createAsyncThunk<
   { rejectValue: ClubServiceException}
 >(
   "clubManagement/createNewClub",
-  async ({clubAdminId, clubFormData}, { dispatch, rejectWithValue }) => {
+  async ({clubAdminId, clubFormData}, { rejectWithValue }) => {
     try {
       const createClubRequest: CreateClubRequest = {
         clubAdminId: clubAdminId,
@@ -483,7 +477,7 @@ export const createNewClub = createAsyncThunk<
         primaryContact: clubFormData.primaryContact,
         secondaryContact: clubFormData.secondaryContact
       }
-      const response = await createClub(createClubRequest);
+      const response = await createClubApi(createClubRequest);
       return response;
     } catch (err: any) {
       if (err.response?.data) {
@@ -527,7 +521,7 @@ export const updateClubDetails = createAsyncThunk<
         primaryContact: updatedClubData.primaryContact,
         secondaryContact: updatedClubData.secondaryContact
       }
-      const response = await updateClub(clubId, updateClubRequest);
+      const response = await updateClubApi(clubId, updateClubRequest);
       return response;
     } catch (err: any) {
       if (err.response?.data) {
@@ -551,7 +545,7 @@ export const fetchClubDetailsById = createAsyncThunk<
   "clubManagement/fetchClubDetailsById",
   async (clubId, { rejectWithValue }) => {
     try {
-      const clubDetails = await getClubDetailsById(clubId);
+      const clubDetails = await getClubDetailsApi(clubId);
       return clubDetails;
     } catch (err: any) {
       if (err.response?.data) {
@@ -576,7 +570,7 @@ export const fetchStationsByClubId = createAsyncThunk<
   "clubManagement/fetchStationsByClubId",
   async (clubId, { rejectWithValue }) => {
     try {
-      const stations = await getStationsByClubId(clubId);
+      const stations = await getStationsInClubApi(clubId);
       return stations;
     } catch (err: any) {
       if (err.response?.data) {
@@ -598,7 +592,7 @@ export const addNewStation = createAsyncThunk<
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/addNewStation",
-  async({clubAdminId, clubId, stationFormData}, {dispatch, rejectWithValue}) => {
+  async({clubAdminId, clubId, stationFormData}, { rejectWithValue }) => {
     try {
       const addStationRequest: AddStationRequest = {
         clubId: clubId,
@@ -613,7 +607,7 @@ export const addNewStation = createAsyncThunk<
         capacity: stationFormData.capacity
       }
       
-      const response = await addStation(addStationRequest);
+      const response = await addStationApi(addStationRequest);
       return response;
     } catch (err: any){
       if (err.response?.data) {
@@ -635,7 +629,7 @@ export const updateStationDetails = createAsyncThunk<
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/updateStationDetails",
-  async({clubAdminId, stationId, stationFormData}, {dispatch, rejectWithValue}) => {
+  async({clubAdminId, stationId, stationFormData}, { rejectWithValue }) => {
     try {
       const UpdateStationRequest: UpdateStationRequest = {
         clubAdminId: clubAdminId,
@@ -648,7 +642,7 @@ export const updateStationDetails = createAsyncThunk<
         capacity:stationFormData.capacity
       }
       
-      const response = await updateStation(stationId, UpdateStationRequest);
+      const response = await updateStationApi(stationId, UpdateStationRequest);
       return response;
     } catch (err: any){
       if (err.response?.data) {
@@ -670,9 +664,9 @@ export const toggleStation = createAsyncThunk<
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/toggleStation",
-  async(stationId, {dispatch, rejectWithValue}) => {
+  async(stationId, { rejectWithValue }) => {
     try {
-      const response = await toggleStationStatus(stationId);
+      const response = await toggleStationApi(stationId);
       return response;
     } catch (err: any){
       if (err.response?.data) {
@@ -694,9 +688,9 @@ export const deleteStation = createAsyncThunk<
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/deleteStation",
-  async(stationId, {dispatch, rejectWithValue}) => {
+  async(stationId, { rejectWithValue }) => {
     try {
-      await deleteStationById(stationId);
+      await deleteStationApi(stationId);
     } catch (err: any){
       if (err.response?.data) {
         return rejectWithValue(err.response.data);

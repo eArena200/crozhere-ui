@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { StationDetailsResponse } from '@/api/clubManagementApi';
 import { Pencil, Trash2, Power, Clock, Users } from 'lucide-react';
 import EditStationDialog from '@/components/club-management/EditStationDialog';
 import { StationFormData } from '@/components/club-management/StationForm';
+import { StationDetailsResponse } from '@/api/club/model';
 
 interface StationListItemProps {
   stationDetails: StationDetailsResponse;
@@ -100,8 +100,7 @@ function StationListItem({ stationDetails, handleEditStation, handleDeleteStatio
         isOpen={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
         onSubmit={handleEdit}
-        initialData={mapStationDetailsToStationFormData(stationDetails)}
-      />
+        initialData={mapStationDetailsToStationFormData(stationDetails)} loading={false}      />
     </>
   );
 }
@@ -113,7 +112,8 @@ function mapStationDetailsToStationFormData(stationDetails: StationDetailsRespon
       stationType: stationDetails.stationType,
       openTime: stationDetails.operatingHours.openTime,
       closeTime: stationDetails.operatingHours.closeTime,
-      capacity: stationDetails.capacity
+      capacity: stationDetails.capacity,
+      rateId: stationDetails.rateId
     }
     return stationFormData;
 }

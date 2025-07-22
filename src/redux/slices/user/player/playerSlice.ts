@@ -1,26 +1,31 @@
-import { fetchPlayerById, PlayerResponse, PlayerServiceException, updatePlayerById, UpdatePlayerRequest } from "@/api/playerApi";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { 
+    fetchPlayerDetailsApi, 
+    updatePlayerDetailsApi 
+} from "@/api/user/player/playerApi";
+import { 
+    PlayerResponse, 
+    PlayerServiceException, 
+    UpdatePlayerRequest 
+} from "@/api/user/player/model";
+import { 
+    createAsyncThunk, 
+    createSlice 
+} from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
-
-export interface PlayerState {
-    isLoading: boolean;
-    playerId?: number;
-    username?: string;
-    email?: string;
-    phone?: string;
-    name?: string;
-    error?: PlayerServiceException
-}
+import { PlayerState } from "@/redux/slices/user/player/state";
 
 // THUNK
 export const loadPlayerById = createAsyncThunk<
-PlayerResponse, number,{
-    rejectValue: PlayerServiceException;
-}>(
+    PlayerResponse, 
+    void,
+    {
+        rejectValue: PlayerServiceException;
+    }
+>(
     "player/loadPlayerById",
-    async(playerId, { rejectWithValue }) => {
+    async(_, { rejectWithValue }) => {
         try {
-            const response = await fetchPlayerById(playerId);
+            const response = await fetchPlayerDetailsApi();
             return response;
         } catch (err: any){
             if(err.response?.data) {
@@ -34,18 +39,17 @@ PlayerResponse, number,{
             });
         }
     }
-    
 );
 
 export const updatePlayer = createAsyncThunk<
     PlayerResponse,
-    { playerId: number, updatePlayerRequest: UpdatePlayerRequest },
-    { rejectValue: PlayerServiceException }>(
-
+    UpdatePlayerRequest,
+    { rejectValue: PlayerServiceException }
+>(
     "player/updatePlayer",
-    async ({playerId, updatePlayerRequest}, { rejectWithValue }) => {
+    async (updatePlayerRequest, { rejectWithValue }) => {
         try {
-            const response = await updatePlayerById(playerId, updatePlayerRequest);
+            const response = await updatePlayerDetailsApi(updatePlayerRequest);
             return response;
         } catch (err: any) {
             if(err.response?.data){

@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { BookingDetailsResponse } from '@/api/booking/model';
-import { StationDetailsResponse } from '@/api/clubManagementApi';
 import { Clock, Info, Phone, User } from 'lucide-react';
 import CountdownTimer from '../CountdownTimer';
+import { StationDetailsResponse } from '@/api/club/model';
 
 export enum StationAvailableStatus {
   AVAILABLE,
@@ -69,7 +69,7 @@ export default function StationStatusCard({
         stationDetails.isActive ? ( 
             <div className="w-full flex flex-col space-y-1 text-gray-700">
               {/* Current Booking */}
-              <div className='h-full border rounded border-gray-400'>
+              <div className='h-full border rounded bg-gray-100 border-gray-300'>
                 {currentBooking ? (
                   <div className='h-full flex flex-row items-start justify-between gap-2'>
                     <div className='w-2/3 text-gray-700 font-semibold text-md px-2 py-1'>
@@ -94,14 +94,17 @@ export default function StationStatusCard({
                   </div>
                 ) : (
                   <div 
-                    className="flex flex-1 text-gray-700 items-center justify-center"
+                    className="w-full h-full flex flex-col text-gray-700 justify-center items-center gap-1"
                   >
-                    No current booking
+                    <Info size={20} className='text-gray-700' />
+                    <div>
+                      No current booking
+                    </div>
                   </div>
                 )}
               </div>
               {/* Next Booking */}
-              <div className='h-full border rounded border-gray-400'>
+              <div className='h-full border rounded bg-gray-100 border-gray-300'>
                 {nextBooking ? (
                   <div className='h-full flex flex-row items-start justify-between gap-2'>
                     <div className='w-2/3 text-gray-700 font-semibold text-md px-2 py-1'>
@@ -126,9 +129,12 @@ export default function StationStatusCard({
                   </div>
                 ) : (
                   <div 
-                    className="flex flex-1 text-gray-700 items-center justify-center"
+                    className="w-full h-full flex flex-col text-gray-700 justify-center items-center gap-1"
                   >
-                    {'No upcoming booking in 12 hrs'}
+                    <Info size={20} className='text-gray-700' />
+                    <div>
+                      No upcoming booking
+                    </div>
                   </div>
                 )}
               </div>

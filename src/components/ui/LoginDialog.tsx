@@ -2,10 +2,10 @@
 import { useReducer } from "react";
 import { useDispatchRedux } from "@/redux/store";
 import { useRouter } from "next/navigation";
-import { VerifyAuthRequest } from "@/api/authApi";
 import Button from "./Button";
 import { loginWithOtpAction, selectAuthIsLoading, sendOtpAction } from "@/redux/slices/auth/authSlice";
 import { useSelector } from "react-redux";
+import { VerifyAuthRequest } from "@/api/auth/model";
 
 type LoginOrRegisterRole = "PLAYER" | "CLUB_ADMIN";
 

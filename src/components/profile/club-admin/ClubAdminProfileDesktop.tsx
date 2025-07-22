@@ -7,21 +7,21 @@ import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 
 import { useDispatchRedux } from '@/redux/store';
-import { UpdateClubAdminRequest } from '@/api/clubAdminApi';
 import {
   selectClubAdminState,
   selectClubAdminIsLoading,
   selectClubAdminError,
   loadClubAdminById,
   updateClubAdmin,
-} from '@/redux/slices/auth/clubAdminSlice';
+} from '@/redux/slices/user/club-admin/clubAdminSlice';
 import { logoutAction, selectAuthUser } from '@/redux/slices/auth/authSlice';
+import { UpdateClubAdminRequest } from '@/api/user/club-admin/model';
 
 function ClubAdminProfileDesktop() {
   const dispatchRedux = useDispatchRedux();
   const user = useSelector(selectAuthUser);
   //TODO: Load the clubAdminId from pathName itself
-  const clubAdminId = user?.clubAdminId;
+  const clubAdminId = user?.roleBasedId;
 
   const clubAdmin = useSelector(selectClubAdminState);
   const isLoading = useSelector(selectClubAdminIsLoading);
@@ -37,7 +37,7 @@ function ClubAdminProfileDesktop() {
 
   useEffect(() => {
     if (typeof clubAdminId === 'number' && clubAdmin.clubAdminId !== clubAdminId) {
-      dispatchRedux(loadClubAdminById(clubAdminId));
+      dispatchRedux(loadClubAdminById());
     }
   }, [dispatchRedux, clubAdminId, clubAdmin.clubAdminId]);
 
@@ -72,10 +72,7 @@ function ClubAdminProfileDesktop() {
         name: formData.name,
         email: formData.email,
       };
-      dispatchRedux(updateClubAdmin({
-        clubAdminId: clubAdmin.clubAdminId,
-        updateClubAdminRequest: updateRequest,
-      }));
+      dispatchRedux(updateClubAdmin(updateRequest));
     }
     setEditMode(false);
   };

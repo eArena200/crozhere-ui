@@ -11,18 +11,18 @@ import {
   selectPlayerError,
   loadPlayerById,
   updatePlayer,
-} from '@/redux/slices/auth/playerSlice';
+} from '@/redux/slices/user/player/playerSlice';
 import {
     logoutAction,
   selectAuthUser
 } from '@/redux/slices/auth/authSlice';
-import { UpdatePlayerRequest } from '@/api/playerApi';
+import { UpdatePlayerRequest } from '@/api/user/player/model';
 
 function PlayerProfileDesktop() {
   const dispatchRedux = useDispatchRedux();
   const user = useSelector(selectAuthUser);
   //TODO: Load the playerId from pathName itself
-  const playerId = user?.playerId;
+  const playerId = user?.roleBasedId;
   const player = useSelector(selectPlayerState);
   const isLoading = useSelector(selectPlayerIsLoading);
   const error = useSelector(selectPlayerError);
@@ -38,7 +38,7 @@ function PlayerProfileDesktop() {
 
   useEffect(() => {
     if (typeof playerId === 'number' && player.playerId !== playerId) {
-      dispatchRedux(loadPlayerById(playerId));
+      dispatchRedux(loadPlayerById());
     }
   }, [dispatchRedux, playerId, player.playerId]);
 
@@ -76,10 +76,7 @@ function PlayerProfileDesktop() {
         username: formData.username,
         email: formData.email
       };
-      dispatchRedux(updatePlayer({
-        playerId: playerId,
-        updatePlayerRequest: updateRequest,
-      }));
+      dispatchRedux(updatePlayer(updateRequest));
     }
     setEditMode(false);
   };

@@ -1,6 +1,6 @@
+import { getStationsInClubApi } from '@/api/club/clubDetailsApi';
+import { StationDetailsResponse } from '@/api/club/model';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getStationsByClubId } from '@/api/clubManagementApi';
-import { StationDetailsResponse } from '@/api/clubManagementApi';
 
 interface StationState {
   stations: StationDetailsResponse[];
@@ -17,7 +17,7 @@ const initialState: StationState = {
 export const fetchStationsByClubId = createAsyncThunk(
   'stations/fetchByClubId',
   async (clubId: number) => {
-    const stations = await getStationsByClubId(clubId);
+    const stations = await getStationsInClubApi(clubId);
     return stations;
   }
 );

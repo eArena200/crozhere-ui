@@ -1,31 +1,28 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { fetchClubAdminById, updateClubAdminById } from "@/api/clubAdminApi";
+import { 
+  fetchClubAdminDetailsApi, 
+  updateClubAdminDetailsApi 
+} from "@/api/user/club-admin/clubAdminApi";
 import { 
   ClubAdminResponse, 
   ClubAdminServiceException, 
   UpdateClubAdminRequest 
-} from "@/api/clubAdminApi";
+} from "@/api/user/club-admin/model";
 import { RootState } from "@/redux/store";
-
-
-export interface ClubAdminState {
-    isLoading: boolean;
-    clubAdminId?: number;
-    name?: string;
-    email?: string;
-    phone?: string;
-    error?: ClubAdminServiceException;
-}
+import { ClubAdminState } from "@/redux/slices/user/club-admin/state";
 
 // THUNKS
 export const loadClubAdminById = createAsyncThunk<
-  ClubAdminResponse, number, {
-    rejectValue: ClubAdminServiceException;
-  }>(
+    ClubAdminResponse, 
+    void,
+    {
+      rejectValue: ClubAdminServiceException;
+    }
+  >(
     "clubAdmin/loadClubAdminById",
-    async (clubAdminId, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
         try {
-            const response = await fetchClubAdminById(clubAdminId);
+            const response = await fetchClubAdminDetailsApi();
             return response;
         } catch (err: any) {
             if (err.response?.data) {
@@ -42,13 +39,16 @@ export const loadClubAdminById = createAsyncThunk<
 );
 
 export const updateClubAdmin = createAsyncThunk<
-  ClubAdminResponse, 
-  { clubAdminId: number, updateClubAdminRequest: UpdateClubAdminRequest }, 
-  { rejectValue: ClubAdminServiceException }>(
+    ClubAdminResponse, 
+    UpdateClubAdminRequest,
+    { 
+      rejectValue: ClubAdminServiceException 
+    }
+  >(
     "clubAdmin/updateClubAdmin",
-    async ({ clubAdminId, updateClubAdminRequest }, { rejectWithValue }) => {
+    async (updateClubAdminRequest, { rejectWithValue }) => {
       try {
-        const response = await updateClubAdminById(clubAdminId, updateClubAdminRequest);
+        const response = await updateClubAdminDetailsApi(updateClubAdminRequest);
         return response;
       } catch (err: any) {
         if (err.response?.data){
@@ -56,8 +56,8 @@ export const updateClubAdmin = createAsyncThunk<
         }
         return rejectWithValue({
           error: "CLUB_ADMIN_THUNK_EXCEPTION",
-          type: "UPDATE_PLAYER",
-          message: "Load club-admin by ID failed",
+          type: "UPDATE_CLUB_ADMIN",
+          message: "Update club-admin by ID failed",
           timestamp: new Date().toISOString()
         });
       }

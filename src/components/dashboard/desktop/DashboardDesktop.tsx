@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { 
   fetchClubsForAdminId, 
 } from '@/redux/slices/club/dashboard/clubDashboardSlice';
-import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import { useParams } from 'next/navigation';
 import ClubDashboardDesktopHeader from './ClubDashboardDesktopHeader';
 import ClubDashboardDesktopBody from './ClubDashboardDesktopBody';
@@ -13,11 +13,11 @@ export default function AdminDesktop() {
   const dispatchRedux = useDispatchRedux();
   const params = useParams();
   const paramAdminId = parseInt(params.adminId as string);
-  const authAdminId = useSelector(selectAuthClubAdminId);
+  const authAdminId = useSelector(selectAuthRoleBasedId);
 
   useEffect(() => {
       if (authAdminId && paramAdminId === authAdminId) {
-        dispatchRedux(fetchClubsForAdminId(paramAdminId));
+        dispatchRedux(fetchClubsForAdminId());
       }
     }, [dispatchRedux, paramAdminId, authAdminId]);
 

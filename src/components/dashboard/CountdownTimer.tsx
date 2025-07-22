@@ -33,7 +33,9 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ endTime, fallbackText =
   }, [endTime, fallbackText]);
 
   return (
-    <div className="flex flex-col w-full max-w-12 h-full max-h-6 items-center justify-center text-xs text-blue-600 bg-blue-200 border border-blue-600 rounded-sm p-2">
+    <div className="flex flex-col w-full 
+      max-w-12 h-full max-h-6 items-center justify-center text-xs 
+      text-blue-600 bg-blue-200 border border-blue-600 rounded-sm p-2 animate-pulse">
       <span>{remaining}</span>
     </div>
   );

@@ -6,13 +6,9 @@ import MobileFilterSection from '@/components/club-bookings/mobile/MobileFilterS
 import PaginationFooter from '@/components/club-bookings/PaginationFooter';
 
 import {
-  getClubsForAdminId,
-  getStationsByClubId,
-  ClubResponse,
-  StationDetailsResponse,
-} from '@/api/clubManagementApi';
+  getClubsForAdminApi
+} from '@/api/club-management/clubManagementApi';
 import {
-  BookingResponse,
   getBookingsForClubApi,
 } from '@/api/booking/clubBookingApi';
 
@@ -21,14 +17,18 @@ import { BookingsFilters, BookingsPagination } from '@/lib/types/bookings';
 
 import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import BookingsList from './BookingsList';
+import { ClubResponse } from '@/api/club-management/model';
+import { StationDetailsResponse } from '@/api/club/model';
+import { BookingDetailsResponse } from '@/api/booking/model';
+import { getStationsInClubApi } from '@/api/club/clubDetailsApi';
 
 function ClubBookingsMobile() {
   const [clubList, setClubList] = useState<ClubResponse[]>([]);
   const [selectedClubId, setSelectedClubId] = useState<number | null>(null);
   const [supportedStationTypes, setSupportedStationTypes] = useState<StationType[]>([]);
-  const [bookings, setBookings] = useState<BookingResponse[]>([]);
+  const [bookings, setBookings] = useState<BookingDetailsResponse[]>([]);
   const [totalBookings, setTotalBookings] = useState<number>(0);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -47,7 +47,7 @@ function ClubBookingsMobile() {
 
   const params = useParams();
   const paramAdminId = parseInt(params.adminId as string);
-  const authAdminId = useSelector(selectAuthClubAdminId);
+  const authAdminId = useSelector(selectAuthRoleBasedId);
 
   useEffect(() => {
     if (authAdminId && paramAdminId === authAdminId) {
@@ -69,7 +69,7 @@ function ClubBookingsMobile() {
 
   async function fetchClubs(clubAdminId: number) {
     try {
-      const clubs = await getClubsForAdminId(clubAdminId);
+      const clubs = await getClubsForAdminApi();
       setClubList(clubs);
       if (clubs.length > 0) {
         setSelectedClubId(clubs[0].clubId);
@@ -81,7 +81,7 @@ function ClubBookingsMobile() {
 
   async function fetchStations(clubId: number) {
     try {
-      const stations: StationDetailsResponse[] = await getStationsByClubId(clubId);
+      const stations: StationDetailsResponse[] = await getStationsInClubApi(clubId);
       const stationTypes = Array.from(new Set(stations.map((s) => s.stationType)));
       setSupportedStationTypes(stationTypes);
     } catch (e) {

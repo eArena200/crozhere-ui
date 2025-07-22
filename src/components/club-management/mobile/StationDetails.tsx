@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import StationListItem from '@/components/club-management/mobile/StationListItem';
-import { StationDetailsResponse } from '@/api/clubManagementApi';
 import { StationType } from '@/lib/types/station';
 import { useDispatchRedux } from '@/redux/store';
 import { useSelector } from 'react-redux';
@@ -15,10 +14,11 @@ import {
   updateStationDetails
 } from '@/redux/slices/club/clubManagementSlice';
 import { StationFormData } from '@/components/club-management/StationForm';
-import { selectAuthClubAdminId } from '@/redux/slices/auth/authSlice';
+import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import { Plus } from 'lucide-react';
 import Tabs, { Tab } from '@/components/ui/Tabs';
 import AddStationDialog from '@/components/club-management/AddStationDialog';
+import { StationDetailsResponse } from '@/api/club/model';
 
 function StationDetails() {
   const dispatchRedux = useDispatchRedux();
@@ -29,7 +29,7 @@ function StationDetails() {
     stationDetailsError
   } = useSelector(selectClubManagementState);
 
-  const authAdminId = useSelector(selectAuthClubAdminId);
+  const authAdminId = useSelector(selectAuthRoleBasedId);
   const clubId = useSelector(selectSelectedClubId);
   
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
@@ -155,10 +155,9 @@ function StationDetails() {
       )}
 
       <AddStationDialog 
-        isOpen={isAddStationOpen} 
-        onClose={() => setIsAddStationOpen(false)} 
-        onSubmit={handleAddStation}        
-      />
+        isOpen={isAddStationOpen}
+        onClose={() => setIsAddStationOpen(false)}
+        onSubmit={handleAddStation} loading={false}      />
     </div>
   );
 }

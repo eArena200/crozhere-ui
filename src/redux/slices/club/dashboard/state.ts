@@ -1,6 +1,7 @@
 import { BookingDetailsResponse, DashboardStationBookingStatus } from "@/api/booking/model";
-import { ClubDetailsResponse, ClubResponse, StationDetailsResponse } from "@/api/clubManagementApi";
-import { Station, StationType } from "@/lib/types/station";
+import { ClubResponse } from "@/api/club-management/model";
+import { ClubDetailsResponse, StationDetailsResponse } from "@/api/club/model";
+import { StationType } from "@/lib/types/station";
 
 export interface ClubDashboardState {
     selectedClubId?: number;

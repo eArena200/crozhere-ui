@@ -1,19 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { AuthUser } from "@/lib/types/auth";
-import { AuthServiceException, VerifyAuthRequest, VerifyAuthResponse, verifyOtp, sendOtp } from '@/api/authApi';
-import { loadClubAdminById } from "./clubAdminSlice";
+import { 
+  AuthServiceException, 
+  VerifyAuthRequest, 
+  VerifyAuthResponse 
+} from '@/api/auth/model';
+import {
+  verifyOtpApi, 
+  sendOtpApi
+} from '@/api/auth/authApi';
+import { loadClubAdminById } from "../user/club-admin/clubAdminSlice";
 import { RootState, persistor } from "@/redux/store";
-import { loadPlayerById } from "./playerSlice";
-
-
-export interface AuthState {
-  isLoading: boolean;
-  loggedIn: boolean;
-  user: AuthUser;
-  jwt?: string;
-  error?: AuthServiceException;
-}
+import { loadPlayerById } from "../user/player/playerSlice";
+import { AuthState } from "@/redux/slices/auth/state";
 
 // THUNKS
 export const sendOtpAction = createAsyncThunk<
@@ -21,9 +20,9 @@ export const sendOtpAction = createAsyncThunk<
     rejectValue: AuthServiceException;
   }>(
     'auth/sendOtp',
-    async (phone: string, {dispatch, rejectWithValue}) => {
+    async (phone: string, {rejectWithValue}) => {
       try{
-        await sendOtp(phone);
+        await sendOtpApi(phone);
       } catch(err: any){
         if(err.response?.data) {
           return rejectWithValue(err.response?.data)
@@ -45,14 +44,14 @@ export const loginWithOtpAction = createAsyncThunk<
     'auth/loginWithOtp',
     async (verifyAuthRequest: VerifyAuthRequest, { dispatch, rejectWithValue }) => {
       try {
-        const verifyResponse = await verifyOtp(verifyAuthRequest);
+        const verifyResponse = await verifyOtpApi(verifyAuthRequest);
 
-        if (verifyAuthRequest.role === 'CLUB_ADMIN' && verifyResponse.clubAdminId) {
-          dispatch(loadClubAdminById(verifyResponse.clubAdminId));
+        if (verifyAuthRequest.role === 'CLUB_ADMIN' && verifyResponse.roleBasedId) {
+          dispatch(loadClubAdminById());
         }
 
-        if (verifyResponse.role === 'PLAYER' && verifyResponse.playerId) {
-          dispatch(loadPlayerById(verifyResponse.playerId));
+        if (verifyResponse.role === 'PLAYER' && verifyResponse.roleBasedId) {
+          dispatch(loadPlayerById());
         }
 
         return verifyResponse;
@@ -126,8 +125,7 @@ const authSlice = createSlice({
         state.user = {
           id: action.payload.userId,
           role: action.payload.role,
-          playerId: action.payload.playerId,
-          clubAdminId: action.payload.clubAdminId,
+          roleBasedId: action.payload.roleBasedId
         };
         state.error = undefined;
       })
@@ -142,11 +140,9 @@ const authSlice = createSlice({
 // SELECTORS
 export const selectAuthState = (state: RootState) => state.auth;
 export const selectAuthUser = (state: RootState) => state.auth.user;
-
 export const selectAuthIsLoading = (state: RootState) => state.auth.isLoading;
 export const selectIsUserLoggedIn = (state: RootState) => state.auth.loggedIn;
-
-export const selectAuthClubAdminId = (state: RootState) => state.auth.user.clubAdminId;
+export const selectAuthRoleBasedId = (state: RootState) => state.auth.user.roleBasedId;
 
 export const { logout } = authSlice.actions;
 export default authSlice.reducer;
