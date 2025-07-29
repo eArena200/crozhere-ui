@@ -44,6 +44,7 @@ export async function createClubBookingIntentApi(
     const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/createBookingIntent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(request),
     });
 
@@ -59,7 +60,9 @@ export async function createClubBookingIntentApi(
 export async function getActiveIntentsForClubApi(
   clubId: number
 ) : Promise<BookingIntentDetailsResponse[]> {
-  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getActiveIntents/${clubId}`);
+  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getActiveIntents/${clubId}`, {
+    credentials: "include"
+  });
 
   if(!res.ok){
     const errBody = await res.json().catch(() => null);
@@ -76,6 +79,7 @@ export async function cancelBookingIntentForClubApi(
 ) : Promise<void>{
   const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/cancelBookingIntent/${clubId}/${intentId}`, {
       method: "PUT",
+      credentials: "include",
       headers: { "Content-Type": "application/json" }
   });
 
@@ -91,7 +95,9 @@ export async function getClubBookingDetailsByIntentIdApi(
   clubId: number, 
   intentId: number
 ) : Promise<BookingDetailsResponse>{
-  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getBookingByIntentId/${clubId}/${intentId}`);
+  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getBookingByIntentId/${clubId}/${intentId}`, {
+    credentials: "include"
+  });
 
   if(!res.ok){
     const errBody = await res.json().catch(() => null);
@@ -106,7 +112,9 @@ export async function getClubBookingDetailsApi(
   clubId: number,
   bookingId: number
 ) : Promise<BookingDetailsResponse>{
-  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getBookingDetails/${clubId}/${bookingId}`);
+  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getBookingDetails/${clubId}/${bookingId}`, {
+    credentials: "include"
+  });
 
   if(!res.ok){
     const errBody = await res.json().catch(() => null);
@@ -135,6 +143,7 @@ export async function getBookingsForClubApi(
   const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getBookings/${clubId}?${params.toString()}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    credentials: "include",
     body: JSON.stringify(requestBody)
   });
 
@@ -164,7 +173,9 @@ export async function getUpcomingBookingsForClubApi(
     }
   }
 
-  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/upcomingBookings/${clubId}?${params.toString()}`);
+  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/upcomingBookings/${clubId}?${params.toString()}`, {
+    credentials: "include"
+  });
 
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);
@@ -181,7 +192,9 @@ export async function getUpcomingBookingsForClubApi(
 export async function getDashboardStationStatusApi(
   clubId: number
 ): Promise<Record<number, DashboardStationBookingStatus>> {
-  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/dashboardStatus/${clubId}`);
+  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/dashboardStatus/${clubId}`, {
+    credentials: "include"
+  });
 
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);

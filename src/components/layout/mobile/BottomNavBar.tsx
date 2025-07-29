@@ -21,12 +21,11 @@ export default function MobileNavBar() {
   const pathname = usePathname();
   const authState = useSelector(selectAuthState);
   const userRole = authState.user.role;
-  const clubAdminId = authState.user.clubAdminId;
-  const playerId = authState.user.playerId;
+  const roleBasedId = authState.user.roleBasedId;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-md flex justify-around items-center h-16 lg:hidden">
-      {getNavTabsForRole(userRole, clubAdminId, playerId).map((item) => (
+      {getNavTabsForRole(userRole, roleBasedId).map((item) => (
         <Link
           key={item.name}
           href={item.href}

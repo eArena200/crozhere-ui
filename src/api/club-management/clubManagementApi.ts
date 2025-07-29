@@ -46,6 +46,7 @@ export async function createClubApi(
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/createClub`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(data),
   });
 
@@ -77,6 +78,7 @@ export async function updateClubApi(
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/updateClub/${clubId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(data),
   });
 
@@ -96,6 +98,7 @@ export async function createRateCardApi(
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/createRateCard/${clubId}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(request),
   });
 
@@ -115,6 +118,7 @@ export async function updateRateCardApi(
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/updateRateCard/${rateCardId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(request),
   });
 
@@ -132,6 +136,7 @@ export async function deleteRateCardApi(
 ): Promise<void> {
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/removeRateCard/${rateCardId}`, {
     method: "DELETE",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
   });
 
@@ -152,6 +157,7 @@ export async function addRateApi(
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/addRate/${rateCardId}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(request),
   });
 
@@ -171,6 +177,7 @@ export async function updateRateApi(
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/updateRate/${rateId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(request),
   });
 
@@ -188,6 +195,7 @@ export async function deleteRateApi(
 ): Promise<void> {
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/removeRate/${rateId}`, {
     method: "DELETE",
+    credentials: "include",
     headers: { "Content-Type": "application/json" },
   });
 
@@ -207,6 +215,7 @@ export async function addStationApi(
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/addStation`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(data),
   });
 
@@ -226,6 +235,7 @@ export async function updateStationApi(
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/updateStation/${stationId}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(data),
   });
 
@@ -260,6 +270,7 @@ export async function deleteStationApi(
 ): Promise<void> {
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/deleteStation/${stationId}`, {
     method: "DELETE",
+    credentials: "include",
   });
 
   if (!res.ok) {

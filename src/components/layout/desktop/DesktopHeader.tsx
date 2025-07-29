@@ -43,12 +43,11 @@ export default function DesktopHeader() {
   const authState = useSelector(selectAuthState);
   const userLoggedIn = authState.loggedIn;
   const userRole = authState.user.role;
-  const clubAdminId = authState.user.clubAdminId;
-  const playerId = authState.user.playerId;
+  const roleBasedId = authState.user.roleBasedId;
 
   const renderNavLinks = () => (
   <div className="flex justify-between gap-4">
-    {getNavTabsForRole(userRole, clubAdminId, playerId).map((item) => (
+    {getNavTabsForRole(userRole, roleBasedId).map((item) => (
       <Link
         key={item.name}
         href={item.href}

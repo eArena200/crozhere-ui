@@ -5,29 +5,29 @@ export interface NavItem {
   href: string;
 }
 
-export function getNavTabsForRole(role: UserRole, adminId?: number, playerId?: number) : NavItem[]{
-  if (role === 'CLUB_ADMIN' && adminId) {
+export function getNavTabsForRole(role: UserRole, roleBasedId?: number) : NavItem[]{
+  if (role === 'CLUB_ADMIN' && roleBasedId) {
     return [
       { name: "Home", href: `/` },
-      { name: "Dashboard", href: `/admin/${adminId}/dashboard` },
-      { name: "Clubs", href: `/admin/${adminId}/clubs` },
-      { name: "Bookings", href: `/admin/${adminId}/bookings` },
-      { name: "Profile", href: `/admin/${adminId}/profile` },
+      { name: "Dashboard", href: `/admin/${roleBasedId}/dashboard` },
+      { name: "Clubs", href: `/admin/${roleBasedId}/clubs` },
+      { name: "Bookings", href: `/admin/${roleBasedId}/bookings` },
+      { name: "Profile", href: `/admin/${roleBasedId}/profile` },
     ];
   }
 
-  if(role === 'PLAYER' && playerId){
+  if(role === 'PLAYER' && roleBasedId){
     return [
       { name: "Home", href: `/` },
-      { name: "Bookings", href: `/player/${playerId}/bookings` },
-      { name: "Profile", href: `/player/${playerId}/profile` },
+      { name: "Bookings", href: `/player/${roleBasedId}/bookings` },
+      { name: "Profile", href: `/player/${roleBasedId}/profile` },
     ];
   }
 
   //TODO: Fix this with proper guest routes and pages
   return [
     { name: "Home", href: `/` },
-    { name: "Bookings", href: `/player/${playerId}/bookings` },
-    { name: "Profile", href: `/player/${playerId}/profile` },
+    { name: "Bookings", href: `/player/${roleBasedId}/bookings` },
+    { name: "Profile", href: `/player/${roleBasedId}/profile` },
   ];
 }

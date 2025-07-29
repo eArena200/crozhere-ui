@@ -6,29 +6,37 @@ import {
 
 const PLAYER_SERVICE_ENDPOINT = "http://localhost:8080/user/player"
 
+function handleApiError(
+  errorBody: any, 
+  fallbackType: string, 
+  fallbackMessage: string
+) {
+  if (errorBody && errorBody.error && errorBody.message) {
+    return {
+      error: errorBody.error,
+      type: errorBody.type || fallbackType,
+      message: errorBody.message,
+      timestamp: errorBody.timestamp || new Date().toISOString(),
+    };
+  }
+  return {
+    error: "PLAYER_API_ERROR",
+    type: fallbackType,
+    message: fallbackMessage,
+    timestamp: new Date().toISOString(),
+  };
+}
+
+
 export async function fetchPlayerDetailsApi() : Promise<PlayerResponse> {
-    const res = await fetch(`${PLAYER_SERVICE_ENDPOINT}/getDetails`);
+    const res = await fetch(`${PLAYER_SERVICE_ENDPOINT}/getDetails`, {
+        credentials: "include"
+    });
 
-    if(!res.ok){
-        const errorBody = await res.json().catch(() => null);
-
-        if(errorBody && errorBody.error && errorBody.message){
-            const playerServiceException: PlayerServiceException = {
-                error: errorBody.error,
-                type: errorBody.type,
-                message: errorBody.message,
-                timestamp: errorBody.timestamp
-            };
-
-            throw playerServiceException;
-        }
-
-        throw {
-            error: "PLAYER_API_ERROR",
-            type: "FETCH_PLAYER_BY_ID",
-            message: `Failed to fetch player`,
-            timeStamp: new Date().toISOString()
-        }
+    if(!res.ok) {
+        const errBody = await res.json().catch(() => null);
+        throw handleApiError(errBody, "FETCH_PLAYER_DETAILS", 
+            "Failed to retrieve player details")
     }
 
     return res.json();
@@ -40,29 +48,14 @@ export async function updatePlayerDetailsApi(
     const res = await fetch(`${PLAYER_SERVICE_ENDPOINT}/updateDetails`,{
         method: "PUT",
         headers: { "Content-Type": "application/json"},
+        credentials: "include",
         body: JSON.stringify(updatePlayerByIdRequest)
     });
 
-    if(!res.ok){
-        const errorBody = await res.json().catch(() => null);
-
-        if(errorBody && errorBody.error && errorBody.message){
-            const playerServiceException: PlayerServiceException = {
-                error: errorBody.error,
-                type: errorBody.type,
-                message: errorBody.message,
-                timestamp: errorBody.timestamp
-            };
-
-            throw playerServiceException;
-        }
-
-        throw {
-            error: "PLAYER_API_ERROR",
-            type: "UPDATE_PLAYER",
-            message: `Failed to update player details`,
-            timeStamp: new Date().toISOString()
-        }
+    if(!res.ok) {
+        const errBody = await res.json().catch(() => null);
+        throw handleApiError(errBody, "UPDATE_PLAYER_DETAILS", 
+            "Failed to update player details")
     }
 
     return res.json();
