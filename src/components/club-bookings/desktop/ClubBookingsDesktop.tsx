@@ -23,9 +23,6 @@ function ClubBookingsDesktop() {
   const [selectedClubId, setSelectedClubId] = useState<number | null>(null);
   const [supportedStationTypes, setSupportedStationTypes] = useState<StationType[]>([]);
   const [bookings, setBookings] = useState<BookingDetailsResponse[]>([]);
-
-  const params = useParams();
-  const paramAdminId = parseInt(params.adminId as string);
   const authAdminId = useSelector(selectAuthRoleBasedId);
 
   const [pagination, setPagination] = useState<BookingsPagination>({
@@ -44,7 +41,7 @@ function ClubBookingsDesktop() {
   });
 
   useEffect(() => {
-    if(authAdminId && paramAdminId === authAdminId) {
+    if(authAdminId) {
       fetchClubs();
     }
   }, [authAdminId]);

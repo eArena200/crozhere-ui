@@ -4,7 +4,7 @@ import {
     UpdateClubAdminRequest
 } from "@/api/user/club-admin/model";
 
-const CLUB_ADMIN_SERVICE_ENDPOINT = "http://localhost:8080/user/club-admin"
+const CLUB_ADMIN_SERVICE_ENDPOINT = "https://api.crozhere.com/user/club-admin";
 
 function handleApiError(
   errorBody: any, 
@@ -28,9 +28,11 @@ function handleApiError(
 }
 
 export async function fetchClubAdminDetailsApi(): Promise<ClubAdminResponse> {
-    console.log("Sending FetchCADetailsRequest")
+    const jwt = localStorage.getItem("jwt");
     const res = await fetch(`${CLUB_ADMIN_SERVICE_ENDPOINT}/getDetails`,{
-        credentials: "include"
+        headers: {
+          "Authorization": `Bearer ${jwt}`
+        }
     });
 
     if(!res.ok) {
@@ -45,11 +47,15 @@ export async function fetchClubAdminDetailsApi(): Promise<ClubAdminResponse> {
 export async function updateClubAdminDetailsApi(
     updateClubAdminRequest: UpdateClubAdminRequest
 ): Promise<ClubAdminResponse> {
+    const jwt = localStorage.getItem("jwt");
     const res = await fetch(`${CLUB_ADMIN_SERVICE_ENDPOINT}/updateDetails`,{
         method: "PUT",
-        headers: { "Content-Type": "application/json"},
-        credentials: "include",
-        body: JSON.stringify(updateClubAdminRequest)
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwt}`
+        },
+        body: JSON.stringify(updateClubAdminRequest),
+        
     });
 
     if(!res.ok) {

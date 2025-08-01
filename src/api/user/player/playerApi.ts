@@ -4,7 +4,7 @@ import {
     UpdatePlayerRequest 
 } from "@/api/user/player/model";
 
-const PLAYER_SERVICE_ENDPOINT = "http://localhost:8080/user/player"
+const PLAYER_SERVICE_ENDPOINT = "https://api.crozhere.com/user/player";
 
 function handleApiError(
   errorBody: any, 
@@ -29,8 +29,11 @@ function handleApiError(
 
 
 export async function fetchPlayerDetailsApi() : Promise<PlayerResponse> {
+    const jwt = localStorage.getItem("jwt");
     const res = await fetch(`${PLAYER_SERVICE_ENDPOINT}/getDetails`, {
-        credentials: "include"
+        headers: {
+          "Authorization": `Bearer ${jwt}`
+        }
     });
 
     if(!res.ok) {
@@ -45,10 +48,13 @@ export async function fetchPlayerDetailsApi() : Promise<PlayerResponse> {
 export async function updatePlayerDetailsApi(
     updatePlayerByIdRequest: UpdatePlayerRequest
 ): Promise<PlayerResponse> {
+    const jwt = localStorage.getItem("jwt");
     const res = await fetch(`${PLAYER_SERVICE_ENDPOINT}/updateDetails`,{
         method: "PUT",
-        headers: { "Content-Type": "application/json"},
-        credentials: "include",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwt}`
+        },
         body: JSON.stringify(updatePlayerByIdRequest)
     });
 

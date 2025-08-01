@@ -1,7 +1,7 @@
 import { StationType } from "@/lib/types/station";
 import { BookingStation } from "@/redux/slices/booking/state";
 
-const CMS_ENDPOINT = "http://localhost:8080";
+const CLUB_AVAIL_ENDPOINT = "https://api.crozhere.com/booking/availability";
 
 
 export interface CheckAvailByTimeRequest {
@@ -61,7 +61,7 @@ function handleApiError(errorBody: any, fallbackType: string, fallbackMessage: s
 
 export async function checkAvailByTimeApi(request:CheckAvailByTimeRequest)
 : Promise<CheckAvailByTimeResponse> {
-    const res = await fetch(`${CMS_ENDPOINT}/club/availability/by-time`,{
+    const res = await fetch(`${CLUB_AVAIL_ENDPOINT}/by-time`,{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(request),
@@ -79,7 +79,7 @@ export async function checkAvailByTimeApi(request:CheckAvailByTimeRequest)
 
 export async function checkAvailByStationsApi(request:CheckAvailByStationRequest)
 : Promise<CheckAvailByStationResponse> {
-    const res = await fetch(`${CMS_ENDPOINT}/club/availability/by-station`,{
+    const res = await fetch(`${CLUB_AVAIL_ENDPOINT}/by-station`,{
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(request),

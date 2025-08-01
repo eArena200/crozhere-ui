@@ -5,6 +5,7 @@ import GameCard from "./GameCard";
 import Button from "./Button";
 import { cn } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
+import { StationType } from "@/lib/types/station";
 
 interface GamesSectionProps {
   className?: string;
@@ -15,7 +16,7 @@ const mockGames: Game[] = [
   {
     id: "1",
     name: "Valorant",
-    type: "PC",
+    type: StationType.PC,
     description: "Tactical 5v5 character-based shooter. Precise gunplay meets unique agent abilities in competitive matches that demand strategy and skill.",
     imageUrl: "/assets/games/valorant.png",
     playersCount: "5v5 players",
@@ -25,7 +26,7 @@ const mockGames: Game[] = [
   {
     id: "2", 
     name: "Counter-Strike 2",
-    type: "PC",
+    type: StationType.PC,
     description: "The legendary tactical shooter rebuilt on Source 2 engine. Experience competitive 5v5 matches with enhanced graphics and gameplay.",
     imageUrl: "/assets/games/cs-2.png",
     playersCount: "5v5 players",
@@ -35,7 +36,7 @@ const mockGames: Game[] = [
   {
     id: "3",
     name: "PUBG Battlegrounds",
-    type: "PC",
+    type: StationType.PC,
     description: "Last player standing battle royale. Drop into massive maps, loot weapons, and fight to be the sole survivor in intense 100-player matches.",
     imageUrl: "/assets/games/battle_ground.png",
     playersCount: "1-4 squad",
@@ -45,7 +46,7 @@ const mockGames: Game[] = [
   {
     id: "4",
     name: "FIFA",
-    type: "PS4",
+    type: StationType.PS4,
     description: "The world's most popular football simulation. Experience realistic gameplay, career modes, and compete in online tournaments.",
     imageUrl: "/assets/games/fifa.png",
     playersCount: "1-2 players",
@@ -55,7 +56,7 @@ const mockGames: Game[] = [
   {
     id: "5",
     name: "Mortal Kombat",
-    type: "PS4",
+    type: StationType.PS4,
     description: "Legendary fighting game with brutal combat and iconic Fatalities. Master unique fighters and dominate in competitive battles.",
     imageUrl: "/assets/games/mortal_combat.png",
     playersCount: "1-2 players",
@@ -65,7 +66,7 @@ const mockGames: Game[] = [
   {
     id: "6",
     name: "Snooker",
-    type: "SNOOKER",
+    type: StationType.SNOOKER,
     description: "Professional snooker table with precision pockets and premium felt. Perfect for serious players who appreciate the gentleman's game.",
     imageUrl: "/assets/games/snooker.png",
     playersCount: "2 players",

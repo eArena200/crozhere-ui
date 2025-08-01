@@ -5,7 +5,7 @@ import {
     StationDetailsResponse 
 } from "@/api/club/model";
 
-const CLUB_SERVICE_ENDPOINT = "http://localhost:8080/clubs";
+const CLUB_SERVICE_ENDPOINT = "https://api.crozhere.com/clubs";
 
 function handleApiError(
     errorBody: any, 
@@ -55,7 +55,7 @@ export async function getStationDetailsApi(
 export async function getStationsInClubApi(
     clubId: number
 ): Promise<StationDetailsResponse[]> {
-  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/getStationForClub/${clubId}`);
+  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/getStationsForClub/${clubId}`);
 
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);

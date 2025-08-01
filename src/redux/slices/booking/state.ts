@@ -1,6 +1,6 @@
 import { BookingIntentDetailsResponse, BookingDetailsResponse } from "@/api/booking/model";
 import { StationAvailability } from "@/api/club/clubAvailabilityApi";
-import { StationDetailsResponse } from "@/api/club-management/clubManagementApi";
+import { StationDetailsResponse } from "@/api/club/model";
 import { PaymentResponse } from "@/api/payment/paymentApi";
 import { BookingStep } from "@/lib/types/bookings";
 import { PaymentMode, PaymentStatus } from "@/lib/types/payment";

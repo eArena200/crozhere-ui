@@ -25,13 +25,12 @@ function ClubManagementDesktop() {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   useEffect(() => {
-    if (authAdminId && paramAdminId === authAdminId) {
+    if (authAdminId) {
       dispatchRedux(fetchClubIdsForAdminId());
     }
-  }, [dispatchRedux, paramAdminId, authAdminId]);
+  }, [dispatchRedux, authAdminId]);
 
-  if (!authAdminId || paramAdminId !== authAdminId) {
-    // TODO: Add an unauthorized page
+  if (!authAdminId) {
     return (
       <div>Unauthorized</div>
     );

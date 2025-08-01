@@ -3,7 +3,7 @@ import {
   VerifyAuthResponse 
 } from "@/api/auth/model";
 
-const AUTH_ENDPOINT = "http://localhost:8080/auth";
+const AUTH_ENDPOINT = "https://api.crozhere.com/auth";
 
 export async function sendOtpApi(
   phone: string

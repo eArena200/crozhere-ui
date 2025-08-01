@@ -14,7 +14,7 @@ import {
 } from "@/lib/types/station";
 
 
-const CLUB_BOOKING_ENDPOINT = "http://localhost:8080/booking/club";
+const CLUB_BOOKING_ENDPOINT = "https://api.crozhere.com/booking/club";
 
 function handleApiError(
   errorBody: any, 
@@ -41,10 +41,13 @@ function handleApiError(
 export async function createClubBookingIntentApi(
   request: CreateClubBookingIntentRequest
 ) : Promise<BookingIntentDetailsResponse> {
+    const jwt = localStorage.getItem("jwt");
     const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/createBookingIntent`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwt}`
+        },
         body: JSON.stringify(request),
     });
 
@@ -60,8 +63,11 @@ export async function createClubBookingIntentApi(
 export async function getActiveIntentsForClubApi(
   clubId: number
 ) : Promise<BookingIntentDetailsResponse[]> {
+  const jwt = localStorage.getItem("jwt");
   const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getActiveIntents/${clubId}`, {
-    credentials: "include"
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
   });
 
   if(!res.ok){
@@ -77,10 +83,13 @@ export async function cancelBookingIntentForClubApi(
   clubId:number, 
   intentId: number
 ) : Promise<void>{
+  const jwt = localStorage.getItem("jwt");
   const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/cancelBookingIntent/${clubId}/${intentId}`, {
       method: "PUT",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" }
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${jwt}`
+      }
   });
 
   if (!res.ok) {
@@ -95,8 +104,11 @@ export async function getClubBookingDetailsByIntentIdApi(
   clubId: number, 
   intentId: number
 ) : Promise<BookingDetailsResponse>{
+  const jwt = localStorage.getItem("jwt");
   const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getBookingByIntentId/${clubId}/${intentId}`, {
-    credentials: "include"
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
   });
 
   if(!res.ok){
@@ -112,8 +124,11 @@ export async function getClubBookingDetailsApi(
   clubId: number,
   bookingId: number
 ) : Promise<BookingDetailsResponse>{
+  const jwt = localStorage.getItem("jwt");
   const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getBookingDetails/${clubId}/${bookingId}`, {
-    credentials: "include"
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
   });
 
   if(!res.ok){
@@ -139,11 +154,14 @@ export async function getBookingsForClubApi(
 
   if (pagination?.pageSize)
     params.append('pageSize', pagination.pageSize.toString());
-  
+
+  const jwt = localStorage.getItem("jwt");
   const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/getBookings/${clubId}?${params.toString()}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: "include",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
+    },
     body: JSON.stringify(requestBody)
   });
 
@@ -172,9 +190,11 @@ export async function getUpcomingBookingsForClubApi(
       params.append('stationTypes', st);
     }
   }
-
+  const jwt = localStorage.getItem("jwt");
   const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/upcomingBookings/${clubId}?${params.toString()}`, {
-    credentials: "include"
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
   });
 
   if (!res.ok) {
@@ -192,8 +212,11 @@ export async function getUpcomingBookingsForClubApi(
 export async function getDashboardStationStatusApi(
   clubId: number
 ): Promise<Record<number, DashboardStationBookingStatus>> {
+  const jwt = localStorage.getItem("jwt");
   const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/dashboardStatus/${clubId}`, {
-    credentials: "include"
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
   });
 
   if (!res.ok) {

@@ -1,6 +1,6 @@
 import { PaymentMode, PaymentStatus } from "@/lib/types/payment";
 
-const CMS_ENDPOINT = "http://localhost:8080";
+const CMS_PAYMENT_ENDPOINT = "https://api.crozhere.com/payment";
 
 export interface InitPaymentRequest {
     intentId: number;
@@ -42,9 +42,13 @@ function handleApiError(errorBody: any, fallbackType: string, fallbackMessage: s
 }
 
 export async function initPaymentApi(request:InitPaymentRequest): Promise<PaymentResponse> {
-    const res = await fetch(`${CMS_ENDPOINT}/payment/initiate`, {
+    const jwt = localStorage.getItem("jwt");
+    const res = await fetch(`${CMS_PAYMENT_ENDPOINT}/initiate`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwt}`
+        },
         body: JSON.stringify(request),
     });
 
@@ -58,7 +62,12 @@ export async function initPaymentApi(request:InitPaymentRequest): Promise<Paymen
 }
 
 export async function getPaymentDetailsApi(paymentId: number): Promise<PaymentResponse> {
-    const res = await fetch(`${CMS_ENDPOINT}/payment/${paymentId}`);
+    const jwt = localStorage.getItem("jwt");
+    const res = await fetch(`${CMS_PAYMENT_ENDPOINT}/${paymentId}`, {
+      headers: {
+        "Authorization": `Bearer ${jwt}`
+      }
+    });
 
     if (!res.ok) {
         const errBody = await res.json().catch(() => null);

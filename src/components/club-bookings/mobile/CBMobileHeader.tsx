@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { ChevronDown, Filter } from 'lucide-react';
-import { ClubResponse } from '@/api/club-management/clubManagementApi';
 import Button from '@/components/ui/Button';
+import { ClubResponse } from '@/api/club-management/model';
 
 type CBMobileHeaderProps = {
   clubList: ClubResponse[];

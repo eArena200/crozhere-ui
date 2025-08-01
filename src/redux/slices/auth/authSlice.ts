@@ -46,6 +46,10 @@ export const loginWithOtpAction = createAsyncThunk<
       try {
         const verifyResponse = await verifyOtpApi(verifyAuthRequest);
 
+        if(verifyResponse.jwt){
+          localStorage.setItem("jwt", verifyResponse.jwt);
+        }
+
         if (verifyAuthRequest.role === 'CLUB_ADMIN' && verifyResponse.roleBasedId) {
           dispatch(loadClubAdminById());
         }
@@ -72,6 +76,7 @@ export const loginWithOtpAction = createAsyncThunk<
 export const logoutAction = createAsyncThunk(
   'auth/logoutAction',
   async (_, { dispatch }) => {
+    localStorage.clear();
     dispatch(logout());
     await persistor.purge();
   }
