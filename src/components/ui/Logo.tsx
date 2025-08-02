@@ -22,10 +22,12 @@ const roundMap = {
 };
 
 export default function Logo(
-  { src = "/assets/logo.png",
+  { 
+    src = "/assets/logo.png",
     size = 'md', 
     variant = 'rounded_square', 
-    link = false }: LogoProps) {
+    link = false 
+  }: LogoProps) {
   const dimension = sizeMap[size];
   const rounding = roundMap[variant];
 

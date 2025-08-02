@@ -16,7 +16,7 @@ export default function CrozhereLabel({
     link = false }: CrozhereLabelProps) {
 
     const crozhereLabel = (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 cursor-pointer">
             <Logo 
                 src="/assets/logo.png"
                 variant='rounded_square'
