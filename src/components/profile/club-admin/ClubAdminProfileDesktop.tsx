@@ -20,7 +20,6 @@ import { UpdateClubAdminRequest } from '@/api/user/club-admin/model';
 function ClubAdminProfileDesktop() {
   const dispatchRedux = useDispatchRedux();
   const user = useSelector(selectAuthUser);
-  //TODO: Load the clubAdminId from pathName itself
   const clubAdminId = user?.roleBasedId;
 
   const clubAdmin = useSelector(selectClubAdminState);
