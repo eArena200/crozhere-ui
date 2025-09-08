@@ -70,108 +70,92 @@ function ClubDetails() {
   }
 
   return (
-    <div className="flex flex-col w-full bg-gray-100 rounded border-gray-300 border-2">
-      {/* Club Header with Chevron */}
-      <div 
-        className="flex items-center justify-between p-4 bg-white rounded-t cursor-pointer hover:bg-gray-50"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        <h2 className="text-xl font-semibold text-gray-900">Club Details</h2>
-        <ChevronDown 
-          className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${isExpanded ? 'transform rotate-180' : ''}`}
-        />
-      </div>
+    <div className="bg-white rounded-b shadow-md overflow-hidden">
+        {/* Cover Image */}
+        <div className="relative h-48 bg-gray-100">
+          {details?.coverImage ? (
+            <img
+              src={details?.coverImage}
+              alt="Club cover"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-400">
+              <Building2 className="h-12 w-12 text-gray-400" />
+            </div>
+          )}
+        </div>
 
-      {/* Club Content */}
-      {isExpanded && (
-        <div className="bg-white rounded-b shadow-md overflow-hidden">
-          {/* Cover Image */}
-          <div className="relative h-48 bg-gray-100">
-            {details?.coverImage ? (
-              <img
-                src={details?.coverImage}
-                alt="Club cover"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-400">
-                <Building2 className="h-12 w-12 text-gray-400" />
+        {/* Club Info */}
+        <div className="p-6">
+          <div className="flex items-start space-x-4">
+            {/* Logo */}
+            <div className="relative -mt-16">
+              <div className="w-32 h-32 rounded-full border-4 border-white bg-white shadow-md overflow-hidden">
+                {details?.logo ? (
+                  <img
+                    src={details?.logo}
+                    alt="Club logo"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                    <Building2 className="h-12 w-12 text-gray-500" />
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-
-          {/* Club Info */}
-          <div className="p-6">
-            <div className="flex items-start space-x-4">
-              {/* Logo */}
-              <div className="relative -mt-16">
-                <div className="w-32 h-32 rounded-full border-4 border-white bg-white shadow-md overflow-hidden">
-                  {details?.logo ? (
-                    <img
-                      src={details?.logo}
-                      alt="Club logo"
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                      <Building2 className="h-12 w-12 text-gray-500" />
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Club Name and Status */}
-              <div className="flex-1">
-                <div className="flex items-center space-x-2">
-                  <h2 className="text-2xl font-bold text-gray-900">{details?.clubName}</h2>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium border border-blue-200 flex items-center">
-                    <CheckCircle2 className="w-4 h-4 mr-1" />
-                    Verified
-                  </span>
-                  <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium border border-green-200">
-                    Active
-                  </span>
-                </div>
-              </div>
-
-              {/* Edit Button */}
-              <Button
-                onClick={() => setIsEditClubOpen(true)}
-                variant="secondary"
-                className="flex items-center"
-              >
-                <Pencil className="w-4 h-4 mr-2" />
-                Edit
-              </Button>
             </div>
 
-            {/* Club Info Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-gray-200">
-                <MapPin className="w-5 h-5 text-gray-500" />
-                <div>
-                  <p className="text-sm text-gray-500">Location</p>
-                  <p className="font-medium text-gray-700">
-                    {`${details?.clubAddress?.streetAddress}, ${details?.clubAddress?.area}`}
-                  </p>
-                  <p className="font-medium text-gray-700">
-                    {`${details?.clubAddress?.city}, ${details?.clubAddress?.state}`}
-                  </p>
-                </div>
+            {/* Club Name and Status */}
+            <div className="flex-1">
+              <div className="flex items-center space-x-2">
+                <h2 className="text-2xl font-bold text-gray-900">{details?.clubName}</h2>
+                <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium border border-blue-200 flex items-center">
+                  <CheckCircle2 className="w-4 h-4 mr-1" />
+                  Verified
+                </span>
+                <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium border border-green-200">
+                  Active
+                </span>
               </div>
-              <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-gray-200">
-                <Clock className="w-5 h-5 text-gray-500" />
-                <div>
-                  <p className="text-sm text-gray-500">Operating Hours</p>
-                  <p className="font-medium text-gray-700">
-                    {`${details?.operatingHours.openTime} - ${details?.operatingHours.closeTime}`}
-                  </p>
-                </div>
+            </div>
+
+            {/* Edit Button */}
+            <Button
+              onClick={() => setIsEditClubOpen(true)}
+              variant="secondary"
+              className="flex items-center"
+            >
+              <Pencil className="w-4 h-4 mr-2" />
+              Edit
+            </Button>
+          </div>
+
+          {/* Club Info Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
+            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-gray-200">
+              <MapPin className="w-5 h-5 text-gray-500" />
+              <div>
+                <p className="text-sm text-gray-500">Location</p>
+                <p className="font-medium text-gray-700">
+                  {`${details?.clubAddress?.streetAddress}, ${details?.clubAddress?.area}`}
+                </p>
+                <p className="font-medium text-gray-700">
+                  {`${details?.clubAddress?.city}, ${details?.clubAddress?.state}`}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-gray-200">
+              <Clock className="w-5 h-5 text-gray-500" />
+              <div>
+                <p className="text-sm text-gray-500">Operating Hours</p>
+                <p className="font-medium text-gray-700">
+                  {`${details?.operatingHours.openTime} - ${details?.operatingHours.closeTime}`}
+                </p>
               </div>
             </div>
           </div>
         </div>
-      )}
       {initialFormData && (
         <EditClubDialog 
           isOpen={isEditClubOpen}

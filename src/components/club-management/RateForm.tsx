@@ -76,18 +76,6 @@ const RateForm: React.FC<RateFormProps> = ({ onSubmit, onCancel, initialData, is
           <p className="mt-1 text-sm text-red-600">{errors.rateDescription.message}</p>
         )}
       </div>
-
-      {/* Actions */}
-      <div className="flex space-x-4">
-        <Button type="submit">
-          {isEditMode ? 'Update Rate' : 'Save Rate'}
-        </Button>
-        {onCancel && (
-          <Button type="button" variant="secondary" onClick={onCancel}>
-            Cancel
-          </Button>
-        )}
-      </div>
     </form>
   );
 };

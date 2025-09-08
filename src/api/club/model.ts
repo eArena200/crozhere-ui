@@ -86,10 +86,10 @@ export interface RateChargeResponse {
   chargeUnit: ChargeUnit;
   chargeName: string;
   amount: number;
-  startTime: string | null;
-  endTime: string | null;
-  minPlayers: number | null;
-  maxPlayers: number | null;
+  startTime?: string;
+  endTime?: string;
+  minPlayers?: number;
+  maxPlayers?: number;
   daysOfWeek: DayOfWeek[];
 }
 

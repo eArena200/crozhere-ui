@@ -40,7 +40,7 @@ const EditRateChargeDialog: React.FC<EditRateChargeDialogProps> = ({
                     {/* Footer */}
                     <div className="border-t px-6 py-4 flex justify-end gap-3">
                         <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
-                        <Button type="submit" form="charge-form" variant="primary">
+                        <Button type="submit" form="rate-charge-form" variant="primary">
                             Update Charge
                         </Button>
                     </div>

@@ -245,18 +245,6 @@ const RateChargeForm: React.FC<RateChargeFormProps> = ({
           />
         </div>
       </div>
-
-      {/* Actions */}
-      <div className="flex space-x-4">
-        <Button type="submit">
-          {isEditMode ? 'Update Charge' : 'Save Charge'}
-        </Button>
-        {onCancel && (
-          <Button type="button" variant="secondary" onClick={onCancel}>
-            Cancel
-          </Button>
-        )}
-      </div>
     </form>
   );
 };
