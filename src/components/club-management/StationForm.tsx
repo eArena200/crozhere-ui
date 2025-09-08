@@ -1,16 +1,16 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { StationType, StationTypeOptions } from '@/lib/types/station';
 import { useSelector } from 'react-redux';
-import { selectClubManagementState } from '@/redux/slices/club/clubManagementSlice';
-import { RateCardDetailsResponse } from '@/api/club/model';
+import { RateCardState, selectSelectedClubRateState } from '@/redux/slices/club/clubManagementSlice';
 
 export const stationSchema = z.object({
     stationName: z.string().min(1, 'Station name is required'),
+    stationDescription: z.string().min(1, 'Station description is required'),
     stationType: z.nativeEnum(StationType),
     openTime: z.string().min(1, 'Open time is required'),
     closeTime: z.string().min(1, 'Close time is required'),
@@ -42,7 +42,7 @@ interface StationFormProps {
 }
 
 const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, onCancel, initialData }) => {
-  const { rateCardList } = useSelector(selectClubManagementState);
+  const { rateCards } = useSelector(selectSelectedClubRateState);
   const [selectedRateCardId, setSelectedRateCardId] = React.useState<number | ''>('');
 
   const {
@@ -54,6 +54,7 @@ const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, on
     resolver: zodResolver(stationSchema),
     defaultValues: {
       stationName: '',
+      stationDescription: '',
       stationType: StationType.PC,
       openTime: '00:00',
       closeTime: '23:00',
@@ -70,6 +71,7 @@ const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, on
     onSubmit(data);
     reset();
   };
+
   return (
     <form
       id="station-form"
@@ -87,6 +89,20 @@ const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, on
         />
         {errors.stationName && (
           <p className="mt-1 text-sm text-red-600">{errors.stationName.message}</p>
+        )}
+      </div>
+
+      {/* Station Description */}
+      <div>
+        <label className="block mb-1 text-sm font-medium text-gray-700">Station Description</label>
+        <input
+          type="text"
+          {...register('stationDescription')}
+          className="w-full px-3 py-2 border rounded-md text-gray-700 text-sm"
+          placeholder="Enter station description"
+        />
+        {errors.stationDescription && (
+          <p className="mt-1 text-sm text-red-600">{errors.stationDescription.message}</p>
         )}
       </div>
 
@@ -148,9 +164,9 @@ const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, on
           className="w-full px-3 py-2 border rounded-md text-gray-700 text-sm"
         >
           <option value="">Select Rate Card</option>
-          {rateCardList?.map((card: RateCardDetailsResponse) => (
-            <option key={card.rateCardId} value={card.rateCardId}>
-              {card.name}
+          {Object.values(rateCards).map((card: RateCardState) => (
+            <option key={card.details.rateCardId} value={card.details.rateCardId}>
+              {card.details.rateCardName}
             </option>
           ))}
         </select>
@@ -165,12 +181,13 @@ const StationForm: React.FC<StationFormProps> = ({isEditMode=false, onSubmit, on
             className="w-full px-3 py-2 border rounded-md text-gray-700 text-sm"
           >
             <option value={-1}>Select Rate</option>
-            {rateCardList?.find((card) => card.rateCardId === selectedRateCardId)
-              ?.rateList.map((rate) => (
+            {Object.values(rateCards[selectedRateCardId].rates).map(
+              (rate) => (
                 <option key={rate.rateId} value={rate.rateId}>
-                  {rate.name}
+                  {rate.rateName}
                 </option>
-              ))}
+              )
+            )}
           </select>
           {errors.rateId && (
             <p className="mt-1 text-sm text-red-600">{errors.rateId.message}</p>

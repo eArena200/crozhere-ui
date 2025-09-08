@@ -1,22 +1,25 @@
 import { 
-  ClubDetailsResponse, 
+  RateChargeResponse,
+  ClubResponse, 
   RateCardResponse,
   RateResponse, 
-  StationDetailsResponse 
+  StationDetailsResponse, 
+  RateCardDetailsResponse
 } from "@/api/club/model";
 import { 
-  CreateClubRequest, 
-  ClubResponse, 
+  CreateClubRequest,  
   UpdateClubRequest, 
   CreateRateCardRequest, 
   UpdateRateCardRequest, 
   AddRateRequest, 
   UpdateRateRequest, 
   AddStationRequest, 
-  UpdateStationRequest 
+  UpdateStationRequest, 
+  AddRateChargeRequest,
+  UpdateRateChargeRequest
 } from "@/api/club-management/model";
 
-const CLUB_MANAGEMENT_SERVICE_ENDPOINT = "https://api.crozhere.com/manage/clubs";
+const CLUB_MANAGEMENT_SERVICE_ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/manage/clubs`;
 
 function handleApiError(
   errorBody: any, 
@@ -40,6 +43,23 @@ function handleApiError(
 }
 
 // CLUB MANAGEMENT APIs
+export async function getClubsForAdminApi(): Promise<ClubResponse[]> {
+  const jwt = localStorage.getItem("jwt");
+  const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/getClubsForAdmin`, {
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
+  });
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_CLUBS_FOR_ADMIN_ID",
+       `Failed to fetch clubs for clubAdmin`);
+  }
+
+  return res.json();
+}
+
 export async function createClubApi(
   data: CreateClubRequest
 ): Promise<ClubResponse> {
@@ -61,28 +81,27 @@ export async function createClubApi(
   return res.json();
 }
 
-export async function getClubsForAdminApi()
-: Promise<ClubResponse[]> {
+export async function getClubByIdApi(
+  clubId: number
+): Promise<ClubResponse> {
   const jwt = localStorage.getItem("jwt");
-  const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/getClubsForAdmin`, {
+  const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/getClubDetails/${clubId}`, {
     headers: {
       "Authorization": `Bearer ${jwt}`
     }
   });
-
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);
-    throw handleApiError(errBody, "GET_CLUBS_FOR_ADMIN_ID",
-       `Failed to fetch clubs for clubAdmin`);
+    throw handleApiError(errBody, "GET_CLUB_DETAILS_BY_ID",
+        `Failed to get club details with id: ${clubId}`);
   }
-
   return res.json();
 }
 
 export async function updateClubApi(
   clubId: number, 
   data: UpdateClubRequest
-): Promise<ClubDetailsResponse> {
+): Promise<ClubResponse> {
   const jwt = localStorage.getItem("jwt");
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/updateClub/${clubId}`, {
     method: "PUT",
@@ -102,10 +121,29 @@ export async function updateClubApi(
 }
 
 // RATE-CARD MANAGEMENT APIs
+export async function getRateCardsByClubIdApi(
+  clubId: number
+): Promise<RateCardDetailsResponse[]> {
+  const jwt = localStorage.getItem("jwt");
+  const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/getRateCardsByClubId/${clubId}`, {
+    headers: {
+      "Authorization": `Bearer ${jwt}`
+    }
+  });
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_RATE_CARDS_FOR_CLUB",
+        "Failed to fetch rate-cards for club");
+  }
+
+  return res.json();
+}
+
 export async function createRateCardApi(
   clubId: number, 
   request: CreateRateCardRequest
-): Promise<RateCardResponse> {
+): Promise<RateCardDetailsResponse> {
   const jwt = localStorage.getItem("jwt");
   const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/createRateCard/${clubId}`, {
     method: "POST",
@@ -237,7 +275,94 @@ export async function deleteRateApi(
   return res.json();
 }
 
+// RATE-CHARGE MANAGEMENT APIs
+export async function addRateChargeApi(
+  rateId: number,
+  request: AddRateChargeRequest
+): Promise<RateChargeResponse> {
+  const jwt = localStorage.getItem("jwt");
+  const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/addRateCharge/${rateId}`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
+    },
+    body: JSON.stringify(request),
+  });
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "ADD_RATE_CHARGE", 
+      "Failed to add rate charge");
+  }
+
+  return res.json();
+}
+
+export async function updateRateChargeApi(
+  rateChargeId: number,
+  request: UpdateRateChargeRequest
+): Promise<RateChargeResponse> {
+  const jwt = localStorage.getItem("jwt");
+  const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/updateRateCharge/${rateChargeId}`, {
+    method: "PUT",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
+    },
+    body: JSON.stringify(request),
+  });
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "UPDATE_RATE_CHARGE", 
+      "Failed to update rate charge");
+  }
+
+  return res.json();
+}
+
+export async function deleteRateChargeApi(
+  rateChargeId: number
+): Promise<void> {
+  const jwt = localStorage.getItem("jwt");
+  const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/removeRateCharge/${rateChargeId}`, {
+    method: "DELETE",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
+    },
+  });
+
+  if(!res.ok){
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "DELETE_RATE_CHARGE", 
+      "Failed to delete rate charge");
+  }
+
+  return res.json();
+}
+
 // STATION MANAGEMENT APIs
+export async function getStationsByClubIdApi(
+    clubId: number
+): Promise<StationDetailsResponse[]> {
+  const jwt = localStorage.getItem("jwt");
+  const res = await fetch(`${CLUB_MANAGEMENT_SERVICE_ENDPOINT}/getStationsByClubId/${clubId}`, {
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
+    },
+  });
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "GET_STATIONS_BY_CLUB_ID", 
+        `Failed to fetch stations by clubId: ${clubId}`);
+  }
+  return res.json();
+}
+
 export async function addStationApi(
   data: AddStationRequest
 ): Promise<StationDetailsResponse> {

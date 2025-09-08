@@ -1,11 +1,9 @@
 import { 
-    ClubDetailsResponse, 
-    RateCardDetailsResponse, 
-    RateResponse, 
+    ClubDetailsResponse,
     StationDetailsResponse 
 } from "@/api/club/model";
 
-const CLUB_SERVICE_ENDPOINT = "https://api.crozhere.com/clubs";
+const CLUB_SERVICE_ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/clubs`;
 
 function handleApiError(
     errorBody: any, 
@@ -35,7 +33,7 @@ export async function getClubDetailsApi(
   if (!res.ok) {
     const errBody = await res.json().catch(() => null);
     throw handleApiError(errBody, "GET_CLUB_BY_ID",
-        `Failed to get club with id: ${clubId}`);
+        `Failed to get club details with id: ${clubId}`);
   }
   return res.json();
 }
@@ -62,60 +60,5 @@ export async function getStationsInClubApi(
     throw handleApiError(errBody, "GET_STATIONS_BY_CLUB", 
         `Failed to fetch stations for clubId: ${clubId}`);
   }
-  return res.json();
-}
-
-export async function getRateCardsforClubApi(
-  clubId: number
-): Promise<RateCardDetailsResponse[]> {
-  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/getRateCardsForClub/${clubId}`);
-
-  if(!res.ok){
-    const errBody = await res.json().catch(() => null);
-    throw handleApiError(errBody, "GET_RATE_CARDS_FOR_CLUB",
-        "Failed to fetch rate-cards for club");
-  }
-
-  return res.json();
-}
-
-export async function getRateCardDetailsApi(
-  rateCardId: number
-): Promise<RateCardDetailsResponse> {
-  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/getRateCard/${rateCardId}`);
-
-  if(!res.ok){
-    const errBody = await res.json().catch(() => null);
-    throw handleApiError(errBody, "GET_RATE_CARD_DETAILS",
-        "Failed to fetch rate-card details");
-  }
-
-  return res.json();
-}
-
-export async function getRatesInRateCardApi(
-  rateCardId: number
-): Promise<RateResponse[]> {
-  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/getRatesInRateCard/${rateCardId}`);
-
-  if(!res.ok){
-    const errBody = await res.json().catch(() => null);
-    throw handleApiError(errBody, "GET_RATES_FOR_RATE_CARD", 
-      "Failed to fetch rates for rate-card");
-  }
-
-  return res.json();
-}
-
-export async function getRateDetailsApi(
-  rateId: number
-): Promise<RateResponse> {
-  const res = await fetch(`${CLUB_SERVICE_ENDPOINT}/getRate/${rateId}`);
-
-  if(!res.ok){
-    const errBody = await res.json().catch(() => null);
-    throw handleApiError(errBody, "GET_RATE", "Failed to fetch rate");
-  }
-
   return res.json();
 }

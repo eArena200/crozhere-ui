@@ -14,7 +14,7 @@ import {
 } from "@/lib/types/station";
 
 
-const CLUB_BOOKING_ENDPOINT = "https://api.crozhere.com/booking/club";
+const CLUB_BOOKING_ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/booking/club`;
 
 function handleApiError(
   errorBody: any, 

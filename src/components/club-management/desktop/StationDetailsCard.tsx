@@ -5,7 +5,7 @@ import { Pencil, Trash2, Power, Clock, Users, Loader2, BadgeIndianRupee, IndianR
 import EditStationDialog from '@/components/club-management/EditStationDialog';
 import { StationFormData } from '@/components/club-management/StationForm';
 import { useSelector } from 'react-redux';
-import { deleteStation, selectClubManagementState, toggleStation, updateStationDetails } from '@/redux/slices/club/clubManagementSlice';
+import { deleteStation, selectClubManagementState, selectSelectedClubStationState, toggleStation, updateStationDetails } from '@/redux/slices/club/clubManagementSlice';
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import { useDispatchRedux } from '@/redux/store';
 import { StationDetailsResponse } from '@/api/club/model';
@@ -23,14 +23,13 @@ function StationCard({
   const { 
     updateStationLoading,
     updateStationError
-  } = useSelector(selectClubManagementState);
+  } = useSelector(selectSelectedClubStationState);
 
   const authAdminId = useSelector(selectAuthRoleBasedId);
 
   const handleEdit = (stationFormData: StationFormData) => {
     if (authAdminId) {
       dispatchRedux(updateStationDetails({
-        clubAdminId: authAdminId,
         stationId: stationDetails.stationId,
         stationFormData,
       }))
@@ -143,6 +142,7 @@ function mapStationDetailsToStationFormData(stationDetails: StationDetailsRespon
   : StationFormData {
     const stationFormData: StationFormData = {
       stationName: stationDetails.stationName,
+      stationDescription: stationDetails.stationDescription,
       stationType: stationDetails.stationType,
       openTime: stationDetails.operatingHours.openTime,
       closeTime: stationDetails.operatingHours.closeTime,

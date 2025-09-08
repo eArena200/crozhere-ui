@@ -1,6 +1,6 @@
 import { PaymentMode, PaymentStatus } from "@/lib/types/payment";
 
-const CMS_PAYMENT_ENDPOINT = "https://api.crozhere.com/payment";
+const CMS_PAYMENT_ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/payment`;
 
 export interface InitPaymentRequest {
     intentId: number;

@@ -1,19 +1,34 @@
-import { ChargeType, ChargeUnit } from "@/lib/types/rate";
+import { ChargeType, ChargeUnit, DayOfWeek } from "@/lib/types/rate";
 import { StationType } from "@/lib/types/station";
 
-export interface ClubDetailsResponse {
+export interface ClubResponse {
+  logo: any;
+  coverImage: any;
   clubId: number;
+  clubAdminId: number;
   clubName: string;
+  clubDescription: string;
   clubAddress: ClubAddress;
   operatingHours: OperatingHours;
   primaryContact: string;
   secondaryContact?: string;
-  logo?: string;
-  coverImage?: string;
+}
+
+export interface ClubDetailsResponse {
+  clubName: string;
+  clubDescription: string;
+  clubAddress: any;
+  operatingHours: any;
+  primaryContact: string;
+  secondaryContact: string | undefined;
+  clubDetails: ClubResponse;
+  clubStations: StationDetailsResponse[];
+  clubRateCards: RateCardDetailsResponse[];
 }
 
 export interface ClubAddress {
   streetAddress: string;
+  area: string;
   city: string;
   state: string;
   pinCode: string;
@@ -32,6 +47,7 @@ export interface StationDetailsResponse {
   stationId: number;
   clubId: number;
   stationName: string;
+  stationDescription: string;
   stationType: StationType;
   operatingHours: OperatingHours;
   capacity: number;
@@ -43,33 +59,38 @@ export interface StationDetailsResponse {
 export interface RateCardResponse {
   rateCardId: number;
   clubId: number;
-  name: string;
+  rateCardName: string;
+  rateCardDescription: string;
 }
 
 export interface RateCardDetailsResponse {
   rateCardId: number;
   clubId: number;
-  name: string;
+  rateCardName: string;
+  rateCardDescription: string;
   rateList: RateResponse[];
 }
 
 export interface RateResponse {
   rateId: number;
   rateCardId: number;
-  name: string;
-  charges: ChargeResponse[];
+  rateName: string;
+  rateDescription: string;
+  rateCharges: RateChargeResponse[];
 }
 
-export interface ChargeResponse {
+export interface RateChargeResponse {
   chargeId: number;
   rateId: number;
   chargeType: ChargeType;
   chargeUnit: ChargeUnit;
+  chargeName: string;
   amount: number;
   startTime: string | null;
   endTime: string | null;
   minPlayers: number | null;
   maxPlayers: number | null;
+  daysOfWeek: DayOfWeek[];
 }
 
 export interface ClubServiceException {

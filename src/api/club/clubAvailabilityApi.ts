@@ -1,8 +1,7 @@
 import { StationType } from "@/lib/types/station";
 import { BookingStation } from "@/redux/slices/booking/state";
 
-const CLUB_AVAIL_ENDPOINT = "https://api.crozhere.com/booking/availability";
-
+const CLUB_AVAIL_ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/booking/availability`
 
 export interface CheckAvailByTimeRequest {
     clubId: number;

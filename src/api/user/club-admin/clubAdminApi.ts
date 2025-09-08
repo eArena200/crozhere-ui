@@ -4,7 +4,7 @@ import {
     UpdateClubAdminRequest
 } from "@/api/user/club-admin/model";
 
-const CLUB_ADMIN_SERVICE_ENDPOINT = "https://api.crozhere.com/user/club-admin";
+const CLUB_ADMIN_SERVICE_ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/user/club-admin`;
 
 function handleApiError(
   errorBody: any, 

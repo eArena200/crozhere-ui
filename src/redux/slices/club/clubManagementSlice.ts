@@ -8,6 +8,7 @@ import { ClubFormData } from "@/components/club-management/ClubForm";
 import { StationFormData } from "@/components/club-management/StationForm";
 import { RateCardFormData } from "@/components/club-management/RateCardForm";
 import { RateFormData } from "@/components/club-management/RateForm";
+import { RateChargeFormData } from "@/components/club-management/RateChargeForm";
 import { 
   createRateCardApi, 
   updateRateCardApi, 
@@ -15,15 +16,21 @@ import {
   updateRateApi, 
   deleteRateApi, 
   getClubsForAdminApi,
+  getClubByIdApi,
   createClubApi,
   updateClubApi,
   addStationApi,
   updateStationApi,
   toggleStationApi,
-  deleteStationApi
+  deleteStationApi,
+  deleteRateCardApi,
+  addRateChargeApi,
+  updateRateChargeApi,
+  deleteRateChargeApi,
+  getRateCardsByClubIdApi,
+  getStationsByClubIdApi
 } from "@/api/club-management/clubManagementApi";
 import { 
-  ClubResponse, 
   CreateRateCardRequest, 
   UpdateRateCardRequest, 
   AddRateRequest, 
@@ -31,118 +38,151 @@ import {
   CreateClubRequest, 
   UpdateClubRequest, 
   AddStationRequest, 
-  UpdateStationRequest
+  UpdateStationRequest,
+  AddRateChargeRequest,
+  UpdateRateChargeRequest
 } from "@/api/club-management/model";
-import { 
-  getClubDetailsApi, 
-  getRateCardDetailsApi, 
-  getRateCardsforClubApi, 
-  getStationsInClubApi 
-} from "@/api/club/clubDetailsApi";
-import { 
-  ClubAddress, 
-  OperatingHours, 
-  ClubDetailsResponse, 
-  StationDetailsResponse, 
-  RateCardDetailsResponse, 
+import {
+  StationDetailsResponse,
   ClubServiceException, 
   RateCardResponse, 
-  RateResponse 
+  RateResponse, 
+  ClubResponse,
+  RateChargeResponse,
 } from "@/api/club/model";
 
-export interface ClubMetaData {
-  clubId: number;
-  clubName: string;
-}
-
-export interface ClubDetailsState {
-  clubId: number;
-  clubName: string;
-  clubAddress: ClubAddress;
-  operatingHours: OperatingHours;
-  primaryContact: string;
-  secondaryContact?: string;
-  logo?: string;
-  coverImage?: string;
+export interface RateCardState {
+  details: RateCardResponse;
+  rates: Record<number, RateResponse>;
 }
 
 export interface ClubManagementState {
   clubList: ClubResponse[];
-  selectedClubId?: number;
-  selectedClubDetails?: ClubDetailsResponse;
-  selectedClubStationsDetails?: StationDetailsResponse[];
-
-  rateCardList?: RateCardDetailsResponse[];
-  selectedRateCardId?: number;
-  selectedRateCardDetails?: RateCardDetailsResponse;
-
-  loadingClubList: boolean;
-  loadingClubDetails: boolean;
-  loadingStations: boolean;
-
+  clubListLoading: boolean;
   clubListError?: string;
-  clubDetailsError?: string;
-  stationDetailsError?: string;
 
   createClubLoading: boolean;
   createClubError?: string;
 
-  updateClubLoading: boolean;
-  updateClubError?: string;
+  selectedClubId?: number;
+  selectedClubLoading: boolean;
+  selectedClubError?: string;
+  selectedClubState: {
+    detailState: {
+      details: ClubResponse;
 
-  addStationLoading: boolean;
-  addStationError?: string;
+      clubDetailsLoading: boolean;
+      clubDetailsError?: string;
 
-  updateStationLoading: boolean;
-  updateStationError?: string;
+      updateClubLoading: boolean;
+      updateClubError?: string;
+    };
+    rateState: {
+      rateCards: Record<number, RateCardState>;
+      selectedRateCardId?: number;
+      rateCardsLoading: boolean;
+      rateCardsError?: string;
 
-  toggleStationLoading: boolean;
-  toggleStationError?: string;
+      createRateCardLoading: boolean;
+      createRateCardError?: string;
 
-  deleteStationLoading: boolean;
-  deleteStationError?: string;
+      updateRateCardLoading: boolean;
+      updateRateCardError?: string;
 
-  rateCardListLoading: boolean;
-  rateCardListError?: string;
+      deleteRateCardLoading: boolean;
+      deleteRateCardError?: string;
 
-  selectedRateCardDetailsLoading: boolean;
-  selectedRateCardDetailsError?: string;
+      addRateLoading: boolean;
+      addRateError?: string;
 
-  createRateCardLoading: boolean;
-  createRateCardError?: string;
+      updateRateLoading: boolean;
+      updateRateError?: string;
 
-  updateRateCardLoading: boolean;
-  updateRateCardError?: string;
+      deleteRateLoading: boolean;
+      deleteRateError?: string;
 
-  addRateLoading: boolean;
-  addRateError?: string;
+      addRateChargeLoading: boolean;
+      addRateChargeError?: string;
 
-  updateRateLoading: boolean;
-  updateRateError?: string;
+      updateRateChargeLoading: boolean;
+      updateRateChargeError?: string;
 
-  deleteRateLoading: boolean;
-  deleteRateError?: string;
+      deleteRateChargeLoading: boolean;
+      deleteRateChargeError?: string;
+    };
+    stationState: {
+      stations: Record<number, StationDetailsResponse>;
+      stationsLoading: boolean;
+      stationsError?: string;
+
+      addStationLoading: boolean;
+      addStationError?: string;
+
+      updateStationLoading: boolean;
+      updateStationError?: string;
+
+      toggleStationLoading: boolean;
+      toggleStationError?: string;
+
+      deleteStationLoading: boolean;
+      deleteStationError?: string;
+    };
+  }
 }
 
 const initialState: ClubManagementState = {
   clubList: [],
-  loadingClubList: false,
-  loadingClubDetails: false,
-  loadingStations: false,
+  clubListLoading: false,
   createClubLoading: false,
-  updateClubLoading: false,
-  addStationLoading: false,
-  updateStationLoading: false,
-  deleteStationLoading: false,
-  toggleStationLoading: false,
-  rateCardListLoading: false,
-  selectedRateCardDetailsLoading: false,
-  createRateCardLoading: false,
-  updateRateCardLoading: false,
-  addRateLoading: false,
-  updateRateLoading: false,
-  deleteRateLoading: false
-};
+  selectedClubLoading: false,
+  selectedClubState: {
+    detailState: {
+      details: {
+        clubId: 0,
+        clubAdminId: 0,
+        clubName: "",
+        clubDescription: "",
+        clubAddress: {
+          streetAddress: "",
+          area: "",
+          city: "",
+          state: "",
+          pinCode: ""
+        },
+        operatingHours: {
+          openTime: "",
+          closeTime: ""
+        },
+        primaryContact: "",
+        logo: undefined,
+        coverImage: undefined
+      },
+      clubDetailsLoading: false,
+      updateClubLoading: false,
+    },
+    rateState: {
+      rateCards: {},
+      rateCardsLoading: false,
+      createRateCardLoading: false,
+      updateRateCardLoading: false,
+      deleteRateCardLoading: false,
+      addRateLoading: false,
+      updateRateLoading: false,
+      deleteRateLoading: false,
+      addRateChargeLoading: false,
+      updateRateChargeLoading: false,
+      deleteRateChargeLoading: false,
+    },
+    stationState: {
+      stations: {},
+      stationsLoading: false,
+      addStationLoading: false,
+      updateStationLoading: false,
+      toggleStationLoading: false,
+      deleteStationLoading: false
+    }
+  }
+}
 
 // THUNKS
 export const fetchClubIdsForAdminId = createAsyncThunk<
@@ -185,7 +225,7 @@ export const setSelectedClubAndFetchDetails = createAsyncThunk<
       await Promise.all([
         dispatch(fetchClubDetailsById(clubId)).unwrap(),
         dispatch(fetchStationsByClubId(clubId)).unwrap(),
-        dispatch(fetchRateCardsForClubId(clubId)).unwrap()
+        dispatch(fetchRateCardsForClub(clubId)).unwrap()
       ]);
     } catch (err: any) {
       if (err?.response?.data) {
@@ -202,79 +242,23 @@ export const setSelectedClubAndFetchDetails = createAsyncThunk<
   }
 );
 
-// RATE THUNKS
-export const fetchRateCardsForClubId = createAsyncThunk<
-  RateCardDetailsResponse[],
+export const fetchClubDetailsById = createAsyncThunk<
+  ClubResponse,
   number,
   { rejectValue: ClubServiceException }
 >(
-  "clubManagement/fetchRateCardsForClubId",
-  async (clubId, { dispatch, rejectWithValue }) => {
+  "clubManagement/fetchClubDetailsById",
+  async (clubId, { rejectWithValue }) => {
     try {
-      const rateCardList = await getRateCardsforClubApi(clubId);
-      if(rateCardList.length > 0){
-        dispatch(setSelectedRateCardAndFetchDetails(rateCardList[0]));
-      }
-
-      return rateCardList;
-    } catch (err: any){
-      if (err.response?.data) {
-        return rejectWithValue(err.response.data);
-      }
-      return rejectWithValue({
-        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
-        type: "FETCH_RATE_CARDS_FOR_CLUB_ID",
-        message: "Failed to fetch rate-card list",
-        timestamp: new Date().toISOString()
-      });
-    }
-  }
-);
-
-export const setSelectedRateCardAndFetchDetails = createAsyncThunk<
-  void,
-  RateCardDetailsResponse,
-  { rejectValue: ClubServiceException }
->(
-  "clubManagement/setSelectedRateCardAndFetchDetails",
-  async (rateCardResponse: RateCardDetailsResponse, {dispatch, rejectWithValue}) => {
-    try {
-      dispatch(setSelectedRateCardId(rateCardResponse.rateCardId));
-      await Promise.all([
-        dispatch(fetchRateCardDetails(rateCardResponse.rateCardId)).unwrap()
-      ]);
-    } catch (err: any) {
-      if (err?.response?.data) {
-        return rejectWithValue(err.response.data);
-      }
-
-      return rejectWithValue({
-        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
-        type: "SET_SELECTED_RATE_CARD_AND_FETCH_DETAILS",
-        message: "Failed to fetch rate-card details",
-        timestamp: new Date().toISOString()
-      });
-    }
-  }
-);
-
-export const fetchRateCardDetails = createAsyncThunk<
-  RateCardDetailsResponse,
-  number,
-  { rejectValue: ClubServiceException }
->(
-  "clubManagement/fetchRateCardDetails",
-  async (rateCardId, { rejectWithValue }) => {
-    try {
-      const rateCardDetailsResponse = await getRateCardDetailsApi(rateCardId);
-      return rateCardDetailsResponse;
+      const club = await getClubByIdApi(clubId);
+      return club;
     } catch (err: any) {
       if (err.response?.data) {
         return rejectWithValue(err.response.data);
       }
       return rejectWithValue({
         error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
-        type: "FETCH_RATE_CARD_DETAILS",
+        type: "FETCH_CLUB_DETAILS_BY_ID",
         message: "Failed to fetch club details",
         timestamp: new Date().toISOString()
       });
@@ -282,8 +266,141 @@ export const fetchRateCardDetails = createAsyncThunk<
   }
 );
 
+export const createNewClub = createAsyncThunk<
+  ClubResponse, 
+  {
+    clubFormData: ClubFormData;
+  },
+  { rejectValue: ClubServiceException}
+>(
+  "clubManagement/createNewClub",
+  async ({clubFormData}, { dispatch, rejectWithValue }) => {
+    try {
+      const createClubRequest: CreateClubRequest = {
+        clubName: clubFormData.clubName,
+        clubDescription: clubFormData.clubDescription,
+        clubAddress: {
+          streetAddress: clubFormData.address.street,
+          area: clubFormData.address.area,
+          city: clubFormData.address.city,
+          state: clubFormData.address.state,
+          pinCode: clubFormData.address.pincode
+        },
+        operatingHours: {
+          openTime: clubFormData.openTime,
+          closeTime: clubFormData.closeTime
+        },
+        primaryContact: clubFormData.primaryContact,
+        secondaryContact: clubFormData.secondaryContact
+      }
+      const response = await createClubApi(createClubRequest);
+      // dispatch(setSelectedClubAndFetchDetails(response.clubId));
+      return response;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "CREATE_NEW_CLUB",
+        message: "Failed to create new club",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const updateClubDetails = createAsyncThunk<
+  ClubResponse, 
+  { 
+    clubId: number;
+    updatedClubData: ClubFormData
+  },
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/updateClubDetails",
+  async ({clubId, updatedClubData}, { dispatch, rejectWithValue }) => {
+    try {
+      const updateClubRequest: UpdateClubRequest = {
+        clubName: updatedClubData.clubName,
+        clubDescription: updatedClubData.clubDescription,
+        clubAddressDetails: {
+          streetAddress: updatedClubData.address.street,
+          area: updatedClubData.address.area,
+          city: updatedClubData.address.city,
+          state: updatedClubData.address.state,
+          pinCode: updatedClubData.address.pincode
+        },
+        operatingHours: {
+          openTime: updatedClubData.openTime,
+          closeTime: updatedClubData.closeTime
+        },
+        primaryContact: updatedClubData.primaryContact,
+        secondaryContact: updatedClubData.secondaryContact
+      }
+      const response = await updateClubApi(clubId, updateClubRequest);
+      return response;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "UPDATE_CLUB_DETAILS",
+        message: "Failed to update club",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+// RATE-CARD THUNKS
+export const fetchRateCardsForClub = createAsyncThunk<
+  Record<number, RateCardState>,
+  number,
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/fetchRateCardsForClub",
+  async (clubId, { dispatch, rejectWithValue }) => {
+    try {
+      const rateCardList = await getRateCardsByClubIdApi(clubId);
+
+      if(rateCardList.length <= 0){
+        return {};
+      }
+
+      dispatch(setSelectedRateCardId(rateCardList[0].rateCardId));
+
+      const rateCardRecord: Record<number, RateCardState> = Object.fromEntries(
+        rateCardList.map(
+          (rateCard) => [
+            rateCard.rateCardId,
+            {
+              details: {
+                ...rateCard
+              } as RateCardResponse,
+              rates: Object.fromEntries(rateCard.rateList.map((rate) => [rate.rateId, rate]))
+            } as RateCardState
+          ]
+        )
+      );
+      return rateCardRecord;
+    } catch (err: any){
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "FETCH_RATE_CARDS_FOR_CLUB",
+        message: "Failed to fetch rate-card records",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
 export const createRateCard = createAsyncThunk<
-  RateCardResponse,
+  RateCardState,
   {
     clubId: number;
     rateCardFormData: RateCardFormData;
@@ -294,10 +411,19 @@ export const createRateCard = createAsyncThunk<
   async ({ clubId, rateCardFormData }, { rejectWithValue }) => {
     try {
       const request: CreateRateCardRequest = {
-        name: rateCardFormData.rateCardName
+        rateCardName: rateCardFormData.rateCardName,
+        rateCardDescription: rateCardFormData.rateCardDescription
       }
-      const response = createRateCardApi(clubId, request);
-      return response;
+      const response = await createRateCardApi(clubId, request);
+
+      const rateCardState: RateCardState = {
+        details: {
+          ...response
+        },
+        rates: {}
+      }
+
+      return rateCardState;
     } catch (err: any) {
       if (err.response?.data) {
         return rejectWithValue(err.response.data);
@@ -327,7 +453,8 @@ export const updateRateCard = createAsyncThunk<
   async ({rateCardId, data}, {rejectWithValue}) => {
     try {
       const request: UpdateRateCardRequest = {
-        name: data.rateCardName
+        rateCardName: data.rateCardName,
+        rateCardDescription: data.rateCardDescription
       }
       const response = await updateRateCardApi(rateCardId, request);
       return response;
@@ -345,29 +472,46 @@ export const updateRateCard = createAsyncThunk<
   }
 );
 
+export const deleteRateCard = createAsyncThunk<
+  void,
+  number,
+  {
+    rejectValue: ClubServiceException
+  }
+>(
+  "clubManagement/deleteRateCard",
+  async (rateCardId, {rejectWithValue}) => {
+    try {
+      await deleteRateCardApi(rateCardId);
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "UPDATE_RATE_CARD",
+        message: "Failed to update rate-card",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
 
+// RATE THUNKS
 export const addRate = createAsyncThunk<
- RateResponse,
- {
-  rateCardId: number;
-  data: RateFormData;
- },
- { rejectValue: ClubServiceException }
+  RateResponse,
+  {
+    rateCardId: number;
+    data: RateFormData;
+  },
+  { rejectValue: ClubServiceException }
 >(
   "clubManagement/addRate",
   async ({ rateCardId, data }, { rejectWithValue }) => {
     try {
       const request: AddRateRequest = {
         rateName: data.rateName,
-        createChargeRequests: data.charges.map(charge => ({
-          chargeType: charge.chargeType,
-          chargeUnit: charge.chargeUnit,
-          amount: charge.amount,
-          startTime: charge.startTime,
-          endTime: charge.endTime,
-          minPlayers: charge.minPlayers,
-          maxPlayers: charge.maxPlayers
-        }))
+        rateDescription: data.rateDescription
       }
       const response = addRateApi(rateCardId, request);
       return response;
@@ -398,16 +542,7 @@ export const updateRate = createAsyncThunk<
     try {
       const request: UpdateRateRequest = {
         rateName: data.rateName,
-        updateChargeRequests: data.charges.map(charge => ({
-          chargeId: charge.chargeId,
-          chargeType: charge.chargeType,
-          chargeUnit: charge.chargeUnit,
-          amount: charge.amount,
-          startTime: charge.startTime,
-          endTime: charge.endTime,
-          minPlayers: charge.minPlayers,
-          maxPlayers: charge.maxPlayers
-        }))
+        rateDescription: data.rateDescription
       }
       const response = await updateRateApi(rateId, request);
       return response;
@@ -449,79 +584,30 @@ export const deleteRate = createAsyncThunk<
 );
 
 
-// CLUB THUNKS
-export const createNewClub = createAsyncThunk<
-  ClubResponse, 
+// RATE-CHARGE THUNKS
+export const addRateCharge = createAsyncThunk<
+  RateChargeResponse,
   {
-    clubAdminId: number;
-    clubFormData: ClubFormData;
-  },
-  { rejectValue: ClubServiceException}
->(
-  "clubManagement/createNewClub",
-  async ({clubAdminId, clubFormData}, { rejectWithValue }) => {
-    try {
-      const createClubRequest: CreateClubRequest = {
-        clubAdminId: clubAdminId,
-        clubName: clubFormData.clubName,
-        clubAddress: {
-          streetAddress: clubFormData.address.street,
-          city: clubFormData.address.city,
-          state: clubFormData.address.state,
-          pinCode: clubFormData.address.pincode
-        },
-        operatingHours: {
-          openTime: clubFormData.openTime,
-          closeTime: clubFormData.closeTime
-        },
-        primaryContact: clubFormData.primaryContact,
-        secondaryContact: clubFormData.secondaryContact
-      }
-      const response = await createClubApi(createClubRequest);
-      return response;
-    } catch (err: any) {
-      if (err.response?.data) {
-        return rejectWithValue(err.response.data);
-      }
-      return rejectWithValue({
-        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
-        type: "CREATE_NEW_CLUB",
-        message: "Failed to create new club",
-        timestamp: new Date().toISOString()
-      });
-    }
-  }
-);
-
-export const updateClubDetails = createAsyncThunk<
-  ClubDetailsResponse, 
-  { 
-    clubId: number;
-    clubAdminId: number;
-    updatedClubData: ClubFormData
+    rateId: number;
+    data: RateChargeFormData;
   },
   { rejectValue: ClubServiceException }
 >(
-  "clubManagement/updateClubDetails",
-  async ({clubId, clubAdminId, updatedClubData}, { dispatch, rejectWithValue }) => {
+  "clubManagement/addRateCharge",
+  async ({ rateId, data }, { rejectWithValue }) => {
     try {
-      const updateClubRequest: UpdateClubRequest = {
-        clubAdminId: clubAdminId,
-        clubName: updatedClubData.clubName,
-        clubAddress: {
-          streetAddress: updatedClubData.address.street,
-          city: updatedClubData.address.city,
-          state: updatedClubData.address.state,
-          pinCode: updatedClubData.address.pincode
-        },
-        operatingHours: {
-          openTime: updatedClubData.openTime,
-          closeTime: updatedClubData.closeTime
-        },
-        primaryContact: updatedClubData.primaryContact,
-        secondaryContact: updatedClubData.secondaryContact
+      const request: AddRateChargeRequest = {
+        chargeType: data.chargeType,
+        chargeName: data.chargeName,
+        chargeUnit: data.chargeUnit,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        minPlayers: data.minPlayers,
+        maxPlayers: data.maxPlayers,
+        amount: data.chargeAmount,
+        daysOfWeek: []
       }
-      const response = await updateClubApi(clubId, updateClubRequest);
+      const response = addRateChargeApi(rateId, request);
       return response;
     } catch (err: any) {
       if (err.response?.data) {
@@ -529,49 +615,89 @@ export const updateClubDetails = createAsyncThunk<
       }
       return rejectWithValue({
         error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
-        type: "UPDATE_CLUB_DETAILS",
-        message: "Failed to update club",
+        type: "ADD_RATE_CHARGE",
+        message: "Failed to add rate-charge",
         timestamp: new Date().toISOString()
       });
     }
   }
 );
 
-export const fetchClubDetailsById = createAsyncThunk<
-  ClubDetailsResponse,
+export const updateRateCharge = createAsyncThunk<
+  RateChargeResponse,
+  {
+    rateChargeId: number;
+    data: RateChargeFormData;
+  },
+  { rejectValue: ClubServiceException }
+>(
+  "clubManagement/updateRateCharge",
+  async ({ rateChargeId, data }, { rejectWithValue }) => {
+    try {
+      const request: UpdateRateChargeRequest = {
+        chargeType: data.chargeType,
+        chargeName: data.chargeName,
+        chargeUnit: data.chargeUnit,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        minPlayers: data.minPlayers,
+        maxPlayers: data.maxPlayers,
+        amount: data.chargeAmount,
+        daysOfWeek: []
+      }
+      const response = await updateRateChargeApi(rateChargeId, request);
+      return response;
+    } catch (err: any) {
+      if (err.response?.data) {
+        return rejectWithValue(err.response.data);
+      }
+      return rejectWithValue({
+        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+        type: "UPDATE_RATE",
+        message: "Failed to update rate",
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+);
+
+export const deleteRateCharge = createAsyncThunk<
+  void,
   number,
   { rejectValue: ClubServiceException }
 >(
-  "clubManagement/fetchClubDetailsById",
-  async (clubId, { rejectWithValue }) => {
+  "clubManagement/deleteRateCharge",
+  async (rateChargeId, { rejectWithValue }) => {
     try {
-      const clubDetails = await getClubDetailsApi(clubId);
-      return clubDetails;
+      await deleteRateChargeApi(rateChargeId);
     } catch (err: any) {
       if (err.response?.data) {
         return rejectWithValue(err.response.data);
       }
       return rejectWithValue({
         error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
-        type: "FETCH_CLUB_DETAILS_BY_ID",
-        message: "Failed to fetch club details",
+        type: "DELETE_RATE",
+        message: "Failed to delete rate",
         timestamp: new Date().toISOString()
       });
     }
   }
 );
 
+
 // STATION THUNKS
 export const fetchStationsByClubId = createAsyncThunk<
-  StationDetailsResponse[],
+  Record<number, StationDetailsResponse>,
   number,
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/fetchStationsByClubId",
   async (clubId, { rejectWithValue }) => {
     try {
-      const stations = await getStationsInClubApi(clubId);
-      return stations;
+      const stations = await getStationsByClubIdApi(clubId);
+      return Object.fromEntries(
+        stations.map((station) => [station.stationId, station])
+      );
     } catch (err: any) {
       if (err.response?.data) {
         return rejectWithValue(err.response.data);
@@ -588,16 +714,19 @@ export const fetchStationsByClubId = createAsyncThunk<
 
 export const addNewStation = createAsyncThunk<
   StationDetailsResponse,
-  { clubAdminId: number, clubId: number, stationFormData: StationFormData},
+  {
+    clubId: number, 
+    stationFormData: StationFormData
+  },
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/addNewStation",
-  async({clubAdminId, clubId, stationFormData}, { rejectWithValue }) => {
+  async({clubId, stationFormData}, { rejectWithValue }) => {
     try {
       const addStationRequest: AddStationRequest = {
         clubId: clubId,
-        clubAdminId: clubAdminId,
         stationName: stationFormData.stationName,
+        stationDescription: stationFormData.stationDescription,
         stationType: stationFormData.stationType,
         operatingHours: {
           openTime: stationFormData.openTime,
@@ -625,15 +754,18 @@ export const addNewStation = createAsyncThunk<
 
 export const updateStationDetails = createAsyncThunk<
   StationDetailsResponse,
-  { clubAdminId: number, stationId: number, stationFormData: StationFormData},
+  { 
+    stationId: number, 
+    stationFormData: StationFormData
+  },
   { rejectValue: ClubServiceException }
 >(
   "clubManagement/updateStationDetails",
-  async({clubAdminId, stationId, stationFormData}, { rejectWithValue }) => {
+  async({stationId, stationFormData}, { rejectWithValue }) => {
     try {
       const UpdateStationRequest: UpdateStationRequest = {
-        clubAdminId: clubAdminId,
         stationName: stationFormData.stationName,
+        stationDescription: stationFormData.stationDescription,
         operatingHours: {
           openTime: stationFormData.openTime,
           closeTime: stationFormData.closeTime
@@ -714,281 +846,311 @@ const clubManagementSlice = createSlice({
       state.selectedClubId = action.payload;
     },
     setSelectedRateCardId: (state, action: PayloadAction<number>) => {
-      state.selectedRateCardId = action.payload;
+      state.selectedClubState.rateState.selectedRateCardId = action.payload;
     }
   },
   extraReducers: (builder) => {
     builder
-      .addCase(createNewClub.pending, (state) => {
-        state.createClubLoading = true;
-        state.createClubError = undefined;
-      })
-      .addCase(createNewClub.fulfilled, (state, action) => {
-        state.createClubLoading = false;
-      })
-      .addCase(createNewClub.rejected, (state, action) => {
-        state.createClubLoading = false;
-        state.clubListError = action.payload?.message;
-      })
-
-      .addCase(updateClubDetails.pending, (state) => {
-        state.updateClubLoading = true;
-        state.updateClubError = undefined;
-      })
-      .addCase(updateClubDetails.fulfilled, (state, action) => {
-        state.updateClubLoading = false;
-        const updatedClub = action.payload;
-        state.selectedClubDetails = updatedClub;
-        const index = state.clubList.findIndex(club => club.clubId === updatedClub.clubId);
-        if (index !== -1) {
-          state.clubList[index] = {
-            ...state.clubList[index],
-            ...updatedClub,
-          };
-        }
-      })
-      .addCase(updateClubDetails.rejected, (state, action) => {
-        state.updateClubLoading = false;
-        state.updateClubError = action.payload?.message;
-      })
-      
       .addCase(fetchClubIdsForAdminId.pending, (state) => {
-        state.loadingClubList = true;
-        state.clubListError = undefined;
+        state.clubListLoading = true;
       })
       .addCase(fetchClubIdsForAdminId.fulfilled, (state, action) => {
-        state.loadingClubList = false;
+        state.clubListLoading = false;
         state.clubList = action.payload;
       })
       .addCase(fetchClubIdsForAdminId.rejected, (state, action) => {
-        state.loadingClubList = false;
+        state.clubListLoading = false;
         state.clubListError = action.payload?.message;
       })
 
-      
       .addCase(fetchClubDetailsById.pending, (state) => {
-        state.loadingClubDetails = true;
-        state.clubDetailsError = undefined;
+        state.selectedClubState.detailState.clubDetailsLoading = true;
       })
       .addCase(fetchClubDetailsById.fulfilled, (state, action) => {
-        state.loadingClubDetails = false;
-        state.selectedClubDetails = action.payload;
+        state.selectedClubState.detailState.clubDetailsLoading = false;
+        state.selectedClubState.detailState.details = action.payload;
       })
       .addCase(fetchClubDetailsById.rejected, (state, action) => {
-        state.loadingClubDetails = false;
-        state.clubDetailsError = action.payload?.message;
+        state.selectedClubState.detailState.clubDetailsLoading = false;
+        state.selectedClubState.detailState.clubDetailsError = action.payload?.message;
       })
 
-      .addCase(fetchRateCardsForClubId.pending, (state) => {
-        state.rateCardListLoading = true;
-        state.rateCardListError = undefined;
+      .addCase(createNewClub.pending, (state) => {
+        state.createClubLoading = true;
       })
-      .addCase(fetchRateCardsForClubId.fulfilled, (state, action) => {
-        state.rateCardListLoading = false;
-        state.rateCardList = action.payload;
+      .addCase(createNewClub.fulfilled, (state, action) => {
+        state.createClubLoading = false;
+        state.clubList.push(action.payload);
       })
-      .addCase(fetchRateCardsForClubId.rejected, (state, action) => {
-        state.rateCardListLoading = false;
-        state.rateCardListError = action.payload?.message;
+      .addCase(createNewClub.rejected, (state, action) => {
+        state.createClubLoading = false;
+        state.createClubError = action.payload?.message;
       })
-      
-      .addCase(fetchRateCardDetails.pending, (state) => {
-        state.selectedRateCardDetailsLoading = true;
-        state.selectedRateCardDetailsError = undefined;
+
+      .addCase(updateClubDetails.pending, (state) => {
+        state.selectedClubState.detailState.updateClubLoading = true;
       })
-      .addCase(fetchRateCardDetails.fulfilled, (state, action) => {
-        state.selectedRateCardDetailsLoading = false;
-        state.selectedRateCardDetails = action.payload;
+      .addCase(updateClubDetails.fulfilled, (state, action) => {
+        state.selectedClubState.detailState.updateClubLoading = false;
+        const index = state.clubList.findIndex(club => club.clubId === action.payload.clubId);
+        if (index !== -1) {
+          state.clubList[index] = {
+            ...state.clubList[index],
+            ...action.payload,
+          };
+        }
+        state.selectedClubState.detailState.details = action.payload;
       })
-      .addCase(fetchRateCardDetails.rejected, (state, action) => {
-        state.selectedRateCardDetailsLoading = false;
-        state.selectedRateCardDetailsError = action.payload?.message;
+      .addCase(updateClubDetails.rejected, (state, action) => {
+        state.selectedClubState.detailState.updateClubLoading = false;
+        state.selectedClubState.detailState.updateClubError = action.payload?.message;
+      })
+
+
+      .addCase(fetchRateCardsForClub.pending, (state) => {
+        state.selectedClubState.rateState.rateCardsLoading = true;
+      })
+      .addCase(fetchRateCardsForClub.fulfilled, (state, action) => {
+        state.selectedClubState.rateState.rateCardsLoading = false;
+        state.selectedClubState.rateState.rateCards = action.payload;
+      })
+      .addCase(fetchRateCardsForClub.rejected, (state, action) => {
+        state.selectedClubState.rateState.rateCardsLoading = false;
+        state.selectedClubState.rateState.rateCardsError = action.payload?.message;
       })
 
       .addCase(createRateCard.pending, (state) => {
-        state.createRateCardLoading = true;
-        state.createRateCardError = undefined;
+        state.selectedClubState.rateState.createRateCardLoading = true;
       })
       .addCase(createRateCard.fulfilled, (state, action) => {
-        state.createRateCardLoading = false;
+        state.selectedClubState.rateState.createRateCardLoading = false;
+        state.selectedClubState.rateState.rateCards[action.payload.details.rateCardId] = action.payload
       })
       .addCase(createRateCard.rejected, (state, action) => {
-        state.createRateCardLoading = false;
-        state.createRateCardError = action.payload?.message;
+        state.selectedClubState.rateState.createRateCardLoading = false;
+        state.selectedClubState.rateState.createRateCardError = action.payload?.message;
       })
 
       .addCase(updateRateCard.pending, (state) => {
-        state.updateRateCardLoading = true;
-        state.updateRateCardError = undefined;
+        state.selectedClubState.rateState.updateRateCardLoading = true;
       })
       .addCase(updateRateCard.fulfilled, (state, action) => {
-        state.updateRateCardLoading = false;
+        state.selectedClubState.rateState.updateRateCardLoading = false;
+        state.selectedClubState.rateState.rateCards[action.payload.rateCardId].details = action.payload
       })
       .addCase(updateRateCard.rejected, (state, action) => {
-        state.updateRateCardLoading = false;
-        state.updateRateCardError = action.payload?.message;
+        state.selectedClubState.rateState.updateRateCardLoading = false;
+        state.selectedClubState.rateState.updateRateCardError = action.payload?.message;
+      })
+
+      .addCase(deleteRateCard.pending, (state) => {
+        state.selectedClubState.rateState.deleteRateCardLoading = true;
+      })
+      .addCase(deleteRateCard.fulfilled, (state, action) => {
+        state.selectedClubState.rateState.deleteRateCardLoading = false;
+        delete state.selectedClubState.rateState.rateCards[action.meta.arg];
+      })
+      .addCase(deleteRateCard.rejected, (state, action) => {
+        state.selectedClubState.rateState.deleteRateCardLoading = false;
+        state.selectedClubState.rateState.deleteRateCardError = action.payload?.message;
       })
 
       .addCase(addRate.pending, (state) => {
-        state.addRateLoading = true;
-        state.addRateError = undefined;
+        state.selectedClubState.rateState.addRateLoading = true;
       })
       .addCase(addRate.fulfilled, (state, action) => {
-        state.addRateLoading = false;
+        state.selectedClubState.rateState.addRateLoading = false;
+        const rate = action.payload;
+        state.selectedClubState.rateState.rateCards[rate.rateCardId].rates[rate.rateId] = rate;
       })
       .addCase(addRate.rejected, (state, action) => {
-        state.addRateLoading = false;
-        state.addRateError = action.payload?.message;
+        state.selectedClubState.rateState.addRateLoading = false;
+        state.selectedClubState.rateState.addRateError = action.payload?.message;
       })
+
 
       .addCase(updateRate.pending, (state) => {
-        state.updateRateLoading = true;
-        state.updateRateError = undefined;
+        state.selectedClubState.rateState.updateRateLoading = true;
       })
       .addCase(updateRate.fulfilled, (state, action) => {
-        state.updateRateLoading = false;
+        state.selectedClubState.rateState.updateRateLoading = false;
+        const rate = action.payload;
+        state.selectedClubState.rateState.rateCards[rate.rateCardId].rates[rate.rateId] = rate;
       })
       .addCase(updateRate.rejected, (state, action) => {
-        state.updateRateLoading = false;
-        state.updateRateError = action.payload?.message;
+        state.selectedClubState.rateState.updateRateLoading = false;
+        state.selectedClubState.rateState.updateRateError = action.payload?.message;
       })
 
+
       .addCase(deleteRate.pending, (state) => {
-        state.deleteRateLoading = true;
-        state.deleteRateError = undefined;
+        state.selectedClubState.rateState.deleteRateLoading = true;
       })
       .addCase(deleteRate.fulfilled, (state, action) => {
-        state.deleteRateLoading = false;
+        state.selectedClubState.rateState.deleteRateLoading = false;
+        const rateId = action.meta.arg;
+        
+        for (const cardId in state.selectedClubState.rateState.rateCards) {
+          const rateCard = state.selectedClubState.rateState.rateCards[cardId];
+          if (rateCard.rates[rateId]) {
+            delete rateCard.rates[rateId];
+            break;
+          }
+        }
       })
       .addCase(deleteRate.rejected, (state, action) => {
-        state.deleteRateLoading = false;
-        state.deleteRateError = action.payload?.message;
+        state.selectedClubState.rateState.deleteRateLoading = false;
+        state.selectedClubState.rateState.deleteRateError = action.payload?.message;
+      })
+      
+
+      .addCase(addRateCharge.pending, (state) => {
+        state.selectedClubState.rateState.addRateChargeLoading = true;
+      })
+      .addCase(addRateCharge.fulfilled, (state, action) => {
+        state.selectedClubState.rateState.addRateChargeLoading = false;
+
+        const rateId = action.payload.rateId;
+        for(const cardId in state.selectedClubState.rateState.rateCards) {
+          const rateCard = state.selectedClubState.rateState.rateCards[cardId];
+          if(rateCard.rates[rateId]){
+            rateCard.rates[rateId].rateCharges.push(action.payload);
+            break;
+          }
+        }
+      })
+      .addCase(addRateCharge.rejected, (state, action) => {
+        state.selectedClubState.rateState.addRateChargeLoading = false;
+        state.selectedClubState.rateState.addRateChargeError = action.payload?.message;
+      })
+
+
+      .addCase(updateRateCharge.pending, (state) => {
+        state.selectedClubState.rateState.updateRateChargeLoading = true;
+      })
+      .addCase(updateRateCharge.fulfilled, (state, action) => {
+        state.selectedClubState.rateState.updateRateChargeLoading = false;
+
+        const { rateId, chargeId } = action.payload;
+        for (const cardId in state.selectedClubState.rateState.rateCards) {
+          const rateCard = state.selectedClubState.rateState.rateCards[cardId];
+          if (rateCard.rates[rateId]) {
+            const charges = rateCard.rates[rateId].rateCharges;
+            const idx = charges.findIndex((c) => c.chargeId === chargeId);
+            if (idx !== -1) {
+              charges[idx] = action.payload;
+            }
+            break;
+          }
+        }
+      })
+      .addCase(updateRateCharge.rejected, (state, action) => {
+        state.selectedClubState.rateState.updateRateChargeLoading = false;
+        state.selectedClubState.rateState.updateRateChargeError = action.payload?.message;
+      })
+
+      .addCase(deleteRateCharge.pending, (state) => {
+        state.selectedClubState.rateState.deleteRateChargeLoading = true;
+      })
+      .addCase(deleteRateCharge.fulfilled, (state, action) => {
+        state.selectedClubState.rateState.deleteRateChargeLoading = false;
+
+        const chargeId = action.meta.arg;
+
+        for (const cardId in state.selectedClubState.rateState.rateCards) {
+          const rateCard = state.selectedClubState.rateState.rateCards[cardId];
+
+          for (const rateId in rateCard.rates) {
+            const charges = rateCard.rates[rateId].rateCharges;
+            const idx = charges.findIndex((c) => c.chargeId === chargeId);
+
+            if (idx !== -1) {
+              charges.splice(idx, 1);
+              return;
+            }
+          }
+        }
+      })
+      .addCase(deleteRateCharge.rejected, (state, action) => {
+        state.selectedClubState.rateState.deleteRateChargeLoading = false;
+        state.selectedClubState.rateState.deleteRateChargeError = action.payload?.message;
+      })
+
+
+      .addCase(fetchStationsByClubId.pending, (state) => {
+        state.selectedClubState.stationState.stationsLoading = true;
+      })
+      .addCase(fetchStationsByClubId.fulfilled, (state, action) => {
+        state.selectedClubState.stationState.stationsLoading = false;
+        state.selectedClubState.stationState.stations = action.payload;
+      })
+      .addCase(fetchStationsByClubId.rejected, (state, action) => {
+        state.selectedClubState.stationState.stationsLoading = false;
+        state.selectedClubState.stationState.stationsError = action.payload?.message;
       })
 
       .addCase(addNewStation.pending, (state) => {
-        state.addStationLoading = true;
-        state.addStationError = undefined;
+        state.selectedClubState.stationState.addStationLoading = true;
       })
       .addCase(addNewStation.fulfilled, (state, action) => {
-        state.addStationLoading = false;
-        const addedStation = action.payload;
-        state.selectedClubStationsDetails?.push(addedStation);
+        state.selectedClubState.stationState.addStationLoading = false;
+        state.selectedClubState.stationState.stations[action.payload.stationId] = (action.payload);
       })
       .addCase(addNewStation.rejected, (state, action) => {
-        state.addStationLoading = false;
-        state.addStationError = action.payload?.message;
+        state.selectedClubState.stationState.addStationLoading = false;
+        state.selectedClubState.stationState.addStationError = action.payload?.message;
       })
 
       .addCase(updateStationDetails.pending, (state) => {
-        state.updateStationLoading = true;
-        state.updateStationError = undefined;
+        state.selectedClubState.stationState.updateStationLoading = true;
       })
       .addCase(updateStationDetails.fulfilled, (state, action) => {
-        state.updateStationLoading = false;
-        const updatedStationDetails = action.payload;
-        const index = state.selectedClubStationsDetails?.findIndex(
-          (station) => station.stationId === updatedStationDetails.stationId);
-        
-        if (index !== undefined && index !== -1 && state.selectedClubStationsDetails) {
-          state.selectedClubStationsDetails[index] = {
-            ...state.selectedClubStationsDetails[index],
-            ...updatedStationDetails,
-          };
-        }
+        state.selectedClubState.stationState.updateStationLoading = false;
+        state.selectedClubState.stationState.stations[action.payload.stationId] = (action.payload);
       })
       .addCase(updateStationDetails.rejected, (state, action) => {
-        state.updateStationLoading = false;
-        state.updateStationError = action.payload?.message;
+        state.selectedClubState.stationState.updateStationLoading = false;
+        state.selectedClubState.stationState.updateStationError = action.payload?.message;
       })
 
       .addCase(toggleStation.pending, (state) => {
-        state.toggleStationLoading = true;
-        state.toggleStationError = undefined;
+        state.selectedClubState.stationState.toggleStationLoading = true;
       })
       .addCase(toggleStation.fulfilled, (state, action) => {
-        state.toggleStationLoading = false;
-        const updatedStationDetails = action.payload;
-        const index = state.selectedClubStationsDetails?.findIndex(
-          (station) => station.stationId === updatedStationDetails.stationId);
-        
-        if (index !== undefined && index !== -1 && state.selectedClubStationsDetails) {
-          state.selectedClubStationsDetails[index] = {
-            ...state.selectedClubStationsDetails[index],
-            ...updatedStationDetails,
-          };
-        }
+        state.selectedClubState.stationState.toggleStationLoading = false;
+        state.selectedClubState.stationState.stations[action.payload.stationId] = (action.payload);
       })
       .addCase(toggleStation.rejected, (state, action) => {
-        state.toggleStationLoading = false;
-        state.toggleStationError = action.payload?.message;
+        state.selectedClubState.stationState.toggleStationLoading = false;
+        state.selectedClubState.stationState.toggleStationError = action.payload?.message;
       })
 
       .addCase(deleteStation.pending, (state) => {
-        state.deleteStationLoading = true;
-        state.deleteStationError = undefined;
+        state.selectedClubState.stationState.deleteStationLoading = true;
       })
       .addCase(deleteStation.fulfilled, (state, action) => {
-        state.deleteStationLoading = false;
-        const deletedStationId = action.meta.arg;
-        state.selectedClubStationsDetails = state.selectedClubStationsDetails?.filter(
-          (station) => station.stationId !== deletedStationId
-        );
+        state.selectedClubState.stationState.deleteStationLoading = false;
+        delete state.selectedClubState.stationState.stations[action.meta.arg];
       })
       .addCase(deleteStation.rejected, (state, action) => {
-        state.deleteStationLoading = false;
-        state.deleteStationError = action.payload?.message;
+        state.selectedClubState.stationState.deleteStationLoading = false;
+        state.selectedClubState.stationState.deleteStationError = action.payload?.message;
       })
-
-      .addCase(fetchStationsByClubId.pending, (state) => {
-        state.loadingStations = true;
-        state.stationDetailsError = undefined;
-      })
-      .addCase(fetchStationsByClubId.fulfilled, (state, action) => {
-        state.loadingStations = false;
-        state.selectedClubStationsDetails = action.payload;
-      })
-      .addCase(fetchStationsByClubId.rejected, (state, action) => {
-        state.loadingStations = false;
-        state.stationDetailsError = action.payload?.message;
-      });
   }
 });
 
 // SELECTORS
 export const selectClubManagementState = (state: RootState) => state.clubManagement;
 
-export const selectSelectedClubId = (state: RootState) =>
-  state.clubManagement.selectedClubId;
-
-export const selectSelectedClubDetails = (state: RootState) =>
-  state.clubManagement.selectedClubDetails;
-
-export const selectSelectedClubStationDetails = (state: RootState) =>
-  state.clubManagement.selectedClubStationsDetails;
-
-// Loading
-export const selectLoadingClubList = (state: RootState) =>
-  state.clubManagement.loadingClubList;
-
-export const selectLoadingClubDetails = (state: RootState) =>
-  state.clubManagement.loadingClubDetails;
-
-export const selectLoadingStations = (state: RootState) =>
-  state.clubManagement.loadingStations;
-
-// Errors
-export const selectClubListError = (state: RootState) =>
-  state.clubManagement.clubListError;
-
-export const selectClubDetailsError = (state: RootState) =>
-  state.clubManagement.clubDetailsError;
-
-export const selectStationError = (state: RootState) =>
-  state.clubManagement.stationDetailsError;
+export const selectSelectedClubId = (state: RootState) => state.clubManagement.selectedClubId;
+export const selectSelectedClubDetailState = (state: RootState) => state.clubManagement.selectedClubState.detailState;
+export const selectSelectedClubRateState = (state: RootState) => state.clubManagement.selectedClubState.rateState;
+export const selectSelectedClubStationState = (state: RootState) => state.clubManagement.selectedClubState.stationState;
 
 // EXPORT
 export const { 
-  setSelectedClubId, 
-  setSelectedRateCardId 
+  setSelectedClubId,
+  setSelectedRateCardId
 } = clubManagementSlice.actions;
 export default clubManagementSlice.reducer;
+

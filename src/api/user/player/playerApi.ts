@@ -4,7 +4,7 @@ import {
     UpdatePlayerRequest 
 } from "@/api/user/player/model";
 
-const PLAYER_SERVICE_ENDPOINT = "https://api.crozhere.com/user/player";
+const PLAYER_SERVICE_ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/user/player`;
 
 function handleApiError(
   errorBody: any, 

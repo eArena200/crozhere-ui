@@ -4,8 +4,7 @@ import { BookingDetailsResponse, DashboardStationBookingStatus } from "@/api/boo
 import { RootState } from "@/redux/store";
 import { getDashboardStationStatusApi, getUpcomingBookingsForClubApi } from "@/api/booking/clubBookingApi";
 import { StationType } from "@/lib/types/station";
-import { ClubResponse } from "@/api/club-management/model";
-import { ClubServiceException, ClubDetailsResponse, StationDetailsResponse } from "@/api/club/model";
+import { ClubServiceException, ClubDetailsResponse, StationDetailsResponse, ClubResponse } from "@/api/club/model";
 import { getClubsForAdminApi } from "@/api/club-management/clubManagementApi";
 import { getClubDetailsApi, getStationsInClubApi } from "@/api/club/clubDetailsApi";
 

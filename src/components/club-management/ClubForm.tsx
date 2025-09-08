@@ -11,10 +11,10 @@ const phoneRegex = /^[6-9]\d{9}$/;
 
 export const clubSchema = z.object({
   clubName: z.string().min(1, 'Club name is required'),
-  logo: z.string().optional(),
-  coverImage: z.string().optional(),
+  clubDescription: z.string().min(1, 'Club Description is required'),
   address: z.object({
     street: z.string().min(1, 'Street address is required'),
+    area: z.string().min(1, 'Area is required'),
     city: z.string().min(1, 'City is required'),
     state: z.string().min(1, 'State is required'),
     pincode: z.string().min(6, 'Pincode must be at least 6 characters'),
@@ -61,8 +61,6 @@ const ClubForm: React.FC<ClubFormProps> = ({ isEditMode=false, onSubmit, onCance
     resolver: zodResolver(clubSchema),
     defaultValues: {
       clubName: '',
-      logo: '',
-      coverImage: '',
       address: {
         street: '',
         city: '',
@@ -118,6 +116,20 @@ const ClubForm: React.FC<ClubFormProps> = ({ isEditMode=false, onSubmit, onCance
         )}
       </div>
 
+      {/* Club Description */} 
+      <div>
+        <label className="block mb-1 text-sm font-medium text-gray-700">Club Description</label>
+        <input
+          type="text"
+          {...register('clubDescription')}
+          placeholder="Enter club description"
+          className="w-full px-3 py-2 border rounded-md text-gray-700 text-sm"
+        />
+        {errors.clubDescription && (
+          <p className="mt-1 text-sm text-red-600">{errors.clubDescription.message}</p>
+        )}
+      </div>
+
       {/* Address */}
       <div>
         <div className="flex justify-between items-center mb-1">
@@ -141,6 +153,15 @@ const ClubForm: React.FC<ClubFormProps> = ({ isEditMode=false, onSubmit, onCance
         {errors.address?.street && <p className="text-sm text-red-600 mb-1">{errors.address.street.message}</p>}
 
         <div className="grid grid-cols-2 gap-4 mb-1">
+          <div>
+            <input
+              type="text"
+              placeholder="Area"
+              {...register('address.area')}
+              className="w-full px-3 py-2 border rounded-md text-gray-700 text-sm"
+            />
+            {errors.address?.area && <p className="text-sm text-red-600">{errors.address.area.message}</p>}
+          </div>
           <div>
             <input
               type="text"

@@ -6,41 +6,40 @@ import { useDispatchRedux } from '@/redux/store';
 import { Building2, Clock, MapPin, Pencil, CheckCircle2, ChevronDown } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { 
-  selectClubManagementState,
+  selectSelectedClubDetailState,
   updateClubDetails
 } from '@/redux/slices/club/clubManagementSlice';
 import EditClubDialog from '@/components/club-management/EditClubDialog';
 import { ClubFormData } from '@/components/club-management/ClubForm';
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
-import { ClubDetailsResponse } from '@/api/club/model';
+import { ClubResponse } from '@/api/club/model';
 
 function ClubDetails() {
   const dispatchRedux = useDispatchRedux();
   const {
-    loadingClubDetails,
-    selectedClubDetails,
+    clubDetailsLoading,
+    details,
     clubDetailsError,
-  } = useSelector(selectClubManagementState);
+  } = useSelector(selectSelectedClubDetailState);
 
   const authClubAdminId = useSelector(selectAuthRoleBasedId);
   const [isEditClubOpen, setIsEditClubOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const initialFormData = useMemo(() => {
-    return selectedClubDetails ? getFormDataFromClubDetails(selectedClubDetails) : null;
-  }, [selectedClubDetails]);
+    return details ? getFormDataFromClubDetails(details) : null;
+  }, [details]);
 
   const handleUpdateClub = (updatedClubData: ClubFormData) => {
-    if(authClubAdminId && selectedClubDetails){
+    if(authClubAdminId && details){
       dispatchRedux(updateClubDetails({
-        clubId: selectedClubDetails.clubId,
-        clubAdminId: authClubAdminId,
+        clubId: details.clubId,
         updatedClubData: updatedClubData
       }));
     }
   }
 
-  if (!selectedClubDetails) {
+  if (!details) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center p-8 bg-white rounded-lg shadow-md">
@@ -51,7 +50,7 @@ function ClubDetails() {
     );
   }
 
-  if(loadingClubDetails){
+  if(clubDetailsLoading){
     <div className="flex flex-col items-center justify-center h-48">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
       <p className="mt-4 text-sm text-gray-500">Loading Club Details</p>
@@ -88,9 +87,9 @@ function ClubDetails() {
         <div className="bg-white rounded-b shadow-md overflow-hidden">
           {/* Cover Image */}
           <div className="relative h-48 bg-gray-100">
-            {selectedClubDetails?.coverImage ? (
+            {details?.coverImage ? (
               <img
-                src={selectedClubDetails?.coverImage}
+                src={details?.coverImage}
                 alt="Club cover"
                 className="w-full h-full object-cover"
               />
@@ -107,9 +106,9 @@ function ClubDetails() {
               {/* Logo */}
               <div className="relative -mt-16">
                 <div className="w-32 h-32 rounded-full border-4 border-white bg-white shadow-md overflow-hidden">
-                  {selectedClubDetails?.logo ? (
+                  {details?.logo ? (
                     <img
-                      src={selectedClubDetails?.logo}
+                      src={details?.logo}
                       alt="Club logo"
                       className="w-full h-full object-cover"
                     />
@@ -124,7 +123,7 @@ function ClubDetails() {
               {/* Club Name and Status */}
               <div className="flex-1">
                 <div className="flex items-center space-x-2">
-                  <h2 className="text-2xl font-bold text-gray-900">{selectedClubDetails?.clubName}</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">{details?.clubName}</h2>
                   <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium border border-blue-200 flex items-center">
                     <CheckCircle2 className="w-4 h-4 mr-1" />
                     Verified
@@ -153,7 +152,10 @@ function ClubDetails() {
                 <div>
                   <p className="text-sm text-gray-500">Location</p>
                   <p className="font-medium text-gray-700">
-                    {`${selectedClubDetails?.clubAddress?.city}, ${selectedClubDetails?.clubAddress?.state}`}
+                    {`${details?.clubAddress?.streetAddress}, ${details?.clubAddress?.area}`}
+                  </p>
+                  <p className="font-medium text-gray-700">
+                    {`${details?.clubAddress?.city}, ${details?.clubAddress?.state}`}
                   </p>
                 </div>
               </div>
@@ -162,7 +164,7 @@ function ClubDetails() {
                 <div>
                   <p className="text-sm text-gray-500">Operating Hours</p>
                   <p className="font-medium text-gray-700">
-                    {`${selectedClubDetails?.operatingHours.openTime} - ${selectedClubDetails?.operatingHours.closeTime}`}
+                    {`${details?.operatingHours.openTime} - ${details?.operatingHours.closeTime}`}
                   </p>
                 </div>
               </div>
@@ -183,11 +185,13 @@ function ClubDetails() {
 }
 
 
-function getFormDataFromClubDetails(clubDetails: ClubDetailsResponse) : ClubFormData {
+function getFormDataFromClubDetails(clubDetails: ClubResponse) : ClubFormData {
   return {
     clubName: clubDetails.clubName,
+    clubDescription: clubDetails.clubDescription,
     address: {
       street: clubDetails.clubAddress.streetAddress,
+      area: clubDetails.clubAddress.area,
       city: clubDetails.clubAddress.city,
       state: clubDetails.clubAddress.state,
       pincode: clubDetails.clubAddress.pinCode,

@@ -3,7 +3,7 @@ import {
   VerifyAuthResponse 
 } from "@/api/auth/model";
 
-const AUTH_ENDPOINT = "https://api.crozhere.com/auth";
+const AUTH_ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/auth`;
 
 export async function sendOtpApi(
   phone: string

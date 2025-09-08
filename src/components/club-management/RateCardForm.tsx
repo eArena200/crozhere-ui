@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 export const rateCardSchema = z.object({
     rateCardName: z.string().min(1, 'Rate-card name is required'),
+    rateCardDescription: z.string().min(1, 'Rate-card description is required'),
 });
 
 export type RateCardFormData = z.infer<typeof rateCardSchema>;
@@ -31,6 +32,7 @@ const RateCardForm: React.FC<RateCardFormProps> = ({
         resolver: zodResolver(rateCardSchema),
         defaultValues: {
             rateCardName: '',
+            rateCardDescription: '',
             ...initialData
         }
     });
@@ -49,16 +51,31 @@ const RateCardForm: React.FC<RateCardFormProps> = ({
             <div>
                 <label className="block mb-1 text-sm font-medium text-gray-700">Rate Card Name</label>
                 <input
-                type="text"
-                {...register('rateCardName')}
-                placeholder="Enter ratecard name"
-                className="w-full px-3 py-2 border rounded-md text-gray-700 text-sm"
+                    type="text"
+                    {...register('rateCardName')}
+                    placeholder="Enter ratecard name"
+                    className="w-full px-3 py-2 border rounded-md text-gray-700 text-sm"
                 />
+
                 {errors.rateCardName && (
-                <p className="mt-1 text-sm text-red-600">{errors.rateCardName.message}</p>
+                    <p className="mt-1 text-sm text-red-600">{errors.rateCardName.message}</p>
                 )}
+
             </div>
 
+            <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">Rate Card Description</label>
+                <input
+                type="text"
+                    {...register('rateCardDescription')}
+                    placeholder="Enter rate-card description"
+                    className="w-full px-3 py-2 border rounded-md text-gray-700 text-sm"
+                />
+
+                {errors.rateCardDescription && (
+                    <p className="mt-1 text-sm text-red-600">{errors.rateCardDescription.message}</p>
+                )}
+            </div>
         </form>
     )
 }

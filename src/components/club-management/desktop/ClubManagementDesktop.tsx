@@ -19,8 +19,6 @@ import RateCardDetails from '@/components/club-management/desktop/RateCardDetail
 function ClubManagementDesktop() {
   const dispatchRedux = useDispatchRedux();
 
-  const params = useParams();
-  const paramAdminId = parseInt(params.adminId as string);
   const authAdminId = useSelector(selectAuthRoleBasedId);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -38,7 +36,6 @@ function ClubManagementDesktop() {
 
   const handleCreateClub = (clubData: ClubFormData) => {
     dispatchRedux(createNewClub({
-      clubAdminId: authAdminId,
       clubFormData: clubData
     }));
   }

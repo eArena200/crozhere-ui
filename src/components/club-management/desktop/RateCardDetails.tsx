@@ -6,9 +6,11 @@ import Button from '@/components/ui/Button';
 import { useSelector } from 'react-redux';
 import { 
   addRate, 
-  createRateCard, 
-  selectClubManagementState, 
-  setSelectedRateCardAndFetchDetails, 
+  createRateCard,
+  RateCardState,
+  selectSelectedClubId, 
+  selectSelectedClubRateState,
+  setSelectedRateCardId,
   updateRateCard 
 } from '@/redux/slices/club/clubManagementSlice';
 import CreateRateCardDialog from '@/components/club-management/CreateRateCardDialog';
@@ -18,31 +20,36 @@ import { useDispatchRedux } from '@/redux/store';
 import { RateFormData } from '@/components/club-management/RateForm';
 import { RateCardFormData } from '@/components/club-management/RateCardForm';
 import EditRateCardDialog from '@/components/club-management/EditRateCardDialog';
-import { RateCardDetailsResponse } from '@/api/club/model';
+import { RateCardDetailsResponse, RateCardResponse } from '@/api/club/model';
 
 function RateCardDetails() {
   const dispatchRedux = useDispatchRedux();
 
   const {
-    selectedClubId,
-    rateCardList,
-    selectedRateCardId,
-    selectedRateCardDetails
-  } = useSelector(selectClubManagementState)
+    rateCards,
+    selectedRateCardId
+  } = useSelector(selectSelectedClubRateState)
+
+  const selectedClubId = useSelector(selectSelectedClubId);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isCreateRateCardDialogOpen, setCreateRateCardDialogOpen] = useState(false);
   const [isEditRateCardDialogOpen, setEditRateCardDialogOpen] = useState(false);
   const [isCreateRateDialogOpen, setCreateRateDialogOpen] = useState(false);
 
+  const selectedRateCard: RateCardState | undefined = 
+    (selectedRateCardId && rateCards && rateCards[selectedRateCardId]) 
+      ? rateCards[selectedRateCardId] 
+      : undefined;
+
   const initialFormData = useMemo(() => {
-    return selectedRateCardDetails ? mapRateCardDetailsToRateCardForm(selectedRateCardDetails) : null;
-  }, [selectedRateCardDetails]);
+    return selectedRateCard ? mapRateCardDetailsToRateCardForm(selectedRateCard.details) : null;
+  }, [selectedRateCard]);
 
   const handleSelectRateCard = (rateCardId: number) => {
-    const rateCard = rateCardList?.find(card => card.rateCardId === rateCardId);
+    const rateCard = rateCards[rateCardId];
     if(rateCard){
-      dispatchRedux(setSelectedRateCardAndFetchDetails(rateCard));
+      dispatchRedux(setSelectedRateCardId(rateCardId));
     }
   };
 
@@ -106,16 +113,15 @@ function RateCardDetails() {
           {/* Sub-header */}
           <div className="flex justify-between items-center p-4 border-b border-gray-400">
             { 
-              rateCardList && 
-              rateCardList.length > 0 && 
+              rateCards && Object.values(rateCards).length > 0 && 
               <select
                 className="px-3 py-2 border rounded-md text-sm text-gray-700"
                 value={selectedRateCardId}
                 onChange={(e) => handleSelectRateCard(Number(e.target.value))}
               >
-                {rateCardList?.map((card) => (
-                  <option key={card.rateCardId} value={card.rateCardId}>
-                    {card.name}
+                {Object.values(rateCards).map((card) => (
+                  <option key={card.details.rateCardId} value={card.details.rateCardId}>
+                    {card.details.rateCardName}
                   </option>
                 ))}
               </select>
@@ -127,10 +133,10 @@ function RateCardDetails() {
 
           {/* Rate list */}
           {
-            rateCardList && rateCardList.length > 0 &&
+            selectedRateCard &&
             <div className="p-4 space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold text-gray-800">{selectedRateCardDetails?.name}</h3>
+                <h3 className="text-lg font-semibold text-gray-800">{selectedRateCard?.details.rateCardName}</h3>
                 <div className='flex flex-row gap-2'> 
                   <Button 
                     variant="secondary" 
@@ -148,11 +154,11 @@ function RateCardDetails() {
               </div>
 
               <div className="max-h-[calc(100vh-12rem)] overflow-y-auto border-2 border-gray-300 rounded-md p-2">
-                { selectedRateCardDetails && selectedRateCardDetails.rateList.length === 0 ? (
+                { Object.values(selectedRateCard.rates).length === 0 ? (
                   <p className="text-sm text-gray-500 p-4">No rates available.</p>
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {selectedRateCardDetails?.rateList.map((rateDetails) => (
+                    {Object.values(selectedRateCard.rates).map((rateDetails) => (
                       <RateListItem key={rateDetails.rateId} rateDetails={rateDetails} />
                     ))}
                   </div>
@@ -187,9 +193,10 @@ function RateCardDetails() {
   );
 }
 
-function mapRateCardDetailsToRateCardForm(rateCardDetails: RateCardDetailsResponse): RateCardFormData {
+function mapRateCardDetailsToRateCardForm(rateCardDetails: RateCardResponse): RateCardFormData {
   return {
-    rateCardName: rateCardDetails?.name
+    rateCardName: rateCardDetails?.rateCardName,
+    rateCardDescription: rateCardDetails?.rateCardDescription
   }
 }
 

@@ -7,11 +7,15 @@ import EditRateDialog from '@/components/club-management/EditRateDialog';
 import { RateFormData } from '@/components/club-management/RateForm';
 import { useDispatchRedux } from '@/redux/store';
 import { 
-    deleteRate, 
-    selectClubManagementState, 
+    deleteRate,
+    selectSelectedClubId, 
+    selectSelectedClubRateState,
     updateRate 
 } from '@/redux/slices/club/clubManagementSlice';
-import { RateResponse, ChargeResponse } from '@/api/club/model';
+import { 
+    RateResponse,
+    RateChargeResponse
+} from '@/api/club/model';
 
 interface RateListItemProps {
   rateDetails: RateResponse;
@@ -23,10 +27,11 @@ function RateListItem({
     const dispatchRedux = useDispatchRedux();
     const [isEditRateDialogOpen, setEditRateDialogOpen] = useState(false);
     const {
-        selectedClubId,
         updateRateLoading,
         updateRateError
-    } = useSelector(selectClubManagementState);
+    } = useSelector(selectSelectedClubRateState);
+
+    const selectedClubId = useSelector(selectSelectedClubId);
 
     const handleEdit = (rateFormData: RateFormData) => {
         if(selectedClubId){
@@ -54,7 +59,7 @@ function RateListItem({
         <div className="p-4 border hover:bg-gray-50 transition m-2">
         {/* Header row */}
             <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-gray-800">{rateDetails.name}</h4>
+                <h4 className="font-semibold text-gray-800">{rateDetails.rateName}</h4>
                 <div className="flex space-x-2">
                     
                     <button
@@ -78,7 +83,7 @@ function RateListItem({
 
         {/* Charges list */}
             <div className="space-y-2">
-                {rateDetails.charges.map((charge: ChargeResponse) => (
+                {rateDetails.rateCharges.map((charge: RateChargeResponse) => (
                 <div key={charge.chargeId} className="text-sm text-gray-700 bg-gray-100 rounded p-2">
                     <div className="flex justify-between">
                     <div>
@@ -104,17 +109,8 @@ function RateListItem({
 
 function mapRateResponseToRateForm(rate: RateResponse): RateFormData{
     const rateFormData: RateFormData = {
-        rateName: rate.name,
-        charges: rate.charges.map(charge => ({
-            chargeId: charge.chargeId,
-            chargeType: charge.chargeType,
-            chargeUnit: charge.chargeUnit,
-            amount: charge.amount,
-            startTime: charge.startTime === null ? undefined : charge.startTime,
-            endTime: charge.endTime === null ? undefined : charge.endTime,
-            minPlayers: charge.minPlayers === null ? undefined : charge.minPlayers,
-            maxPlayers: charge.maxPlayers === null ? undefined : charge.maxPlayers
-        }))
+        rateName: rate.rateName,
+        rateDescription: rate.rateDescription
     }
 
     return rateFormData;
@@ -133,14 +129,14 @@ function formatUnit(unit: string): string {
   }
 }
 
-function formatTimeWindow(charge: ChargeResponse): string {
+function formatTimeWindow(charge: RateChargeResponse): string {
   if (charge.startTime !== null && charge.endTime !== null) {
     return `⏰ ${charge.startTime}:00 - ${charge.endTime}:00`;
   }
   return '';
 }
 
-function formatPlayerRange(charge: ChargeResponse): string {
+function formatPlayerRange(charge: RateChargeResponse): string {
   if (charge.minPlayers !== null && charge.maxPlayers !== null) {
     return `👥 ${charge.minPlayers}–${charge.maxPlayers} players`;
   }
