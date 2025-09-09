@@ -26,8 +26,11 @@ const AddStationDialog: React.FC<AddStationDialogProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
+    <Dialog open={isOpen} onClose={handleClose} className="relative z-70">
+      {/* Overlay */}
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+      {/* Panel */}
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="mx-auto w-full max-w-md rounded-2xl bg-white shadow-xl max-h-[90vh] flex flex-col relative">
           {/* Header */}
@@ -46,21 +49,17 @@ const AddStationDialog: React.FC<AddStationDialogProps> = ({
             </button>
           </div>
 
-          {/* Scrollable form content */}
-          <div className="relative flex-1">
-            <div className="overflow-y-auto p-6 flex-1">
-              <StationForm
-                onSubmit={onSubmit}
-                onCancel={handleClose}
-              />
-              {error && (
-                <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
-              )}
-            </div>
+          {/* Scrollable Form Content */}
+          <div className="overflow-y-auto p-6 flex-1 relative">
+            <StationForm onSubmit={onSubmit} onCancel={handleClose} />
+
+            {error && (
+              <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
+            )}
 
             {/* Loading Overlay */}
             {loading && (
-              <div className="absolute inset-0 bg-white bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 rounded-b-2xl">
+              <div className="absolute inset-0 bg-white/70 backdrop-blur-sm flex items-center justify-center z-10 rounded-b-2xl">
                 <div className="flex flex-col items-center gap-2">
                   <svg
                     className="animate-spin h-8 w-8 text-gray-600"

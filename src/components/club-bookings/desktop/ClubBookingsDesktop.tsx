@@ -10,11 +10,9 @@ import { StationType } from '@/lib/types/station';
 import { BookingsFilters, BookingsPagination } from '@/lib/types/bookings';
 import { useSelector } from 'react-redux';
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
-import { useParams } from 'next/navigation';
-import { ClubResponse } from '@/api/club-management/model';
 import { BookingDetailsResponse } from '@/api/booking/model';
 import { getClubsForAdminApi } from '@/api/club-management/clubManagementApi';
-import { StationDetailsResponse } from '@/api/club/model';
+import { ClubResponse, StationDetailsResponse } from '@/api/club/model';
 import { getStationsInClubApi } from '@/api/club/clubDetailsApi';
 import { getBookingsForClubApi } from '@/api/booking/clubBookingApi';
 

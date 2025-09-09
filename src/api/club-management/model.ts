@@ -5,7 +5,7 @@ import { ClubAddress, OperatingHours } from "@/api/club/model";
 export interface CreateClubRequest {
   clubName: string;
   clubDescription: string;
-  clubAddress: ClubAddress;
+  clubAddressDetails: ClubAddress;
   operatingHours: OperatingHours;
   primaryContact: string;
   secondaryContact?: string;

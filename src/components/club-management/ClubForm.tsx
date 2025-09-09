@@ -19,8 +19,8 @@ export const clubSchema = z.object({
     state: z.string().min(1, 'State is required'),
     pincode: z.string().min(6, 'Pincode must be at least 6 characters'),
     coordinates: z.object({
-      latitude: z.union([z.number(), z.null(), z.undefined()]).optional(),
-      longitude: z.union([z.number(), z.null(), z.undefined()]).optional(),
+      latitude: z.union([z.number(), z.undefined()]).optional(),
+      longitude: z.union([z.number(), z.undefined()]).optional(),
     }).optional(),
   }),
   openTime: z.string().min(1, 'Open time is required'),

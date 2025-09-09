@@ -2,20 +2,16 @@ import Button from '@/components/ui/Button';
 import { selectClubDashboardState, setSelectedClubAndFetchDetails } from '@/redux/slices/club/dashboard/clubDashboardSlice';
 import { useDispatchRedux } from '@/redux/store';
 import { ChevronDown } from 'lucide-react';
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
+import { Dialog } from '@headlessui/react';
+import ClubBookingFlow from '@/components/club-booking/ClubBookingFlow';
 
-interface ClubDashboardDesktopHeaderProps {
-  onClickCreateNewBooking: () => void;
-}
-
-function ClubDashboardDesktopHeader(
-  {
-    onClickCreateNewBooking
-  } : ClubDashboardDesktopHeaderProps) {
+function ClubDashboardDesktopHeader() {
   const dispatchRedux = useDispatchRedux();
   const { clubs, selectedClubId } = useSelector(selectClubDashboardState);
-  
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
   const handleClubSelect = (clubId: number) => {
     dispatchRedux(setSelectedClubAndFetchDetails(clubId));
   }
@@ -56,12 +52,25 @@ function ClubDashboardDesktopHeader(
           selectedClubId ? (
             <Button
               variant='primary'
-              onClick={onClickCreateNewBooking}
+              onClick={() => setIsBookingModalOpen(true)}
             >
               + New Booking
             </Button>
           ) : ( <> </>)
         }
+        {
+          selectedClubId && (
+            <Dialog open={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} className="relative z-70">
+              <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+              <div className="fixed inset-0 flex items-center justify-center p-4">
+                <Dialog.Panel className="w-full max-w-[50vw] max-h-[100vh] overflow-y-auto rounded-md bg-white shadow-xl">
+                  <ClubBookingFlow clubId={selectedClubId} closeFlowHandler={() => {setIsBookingModalOpen(false)}}/>
+                </Dialog.Panel>
+              </div>
+            </Dialog>
+          )
+        }
+        
       </div>
     </div>
   )

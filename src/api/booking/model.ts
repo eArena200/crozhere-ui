@@ -73,6 +73,22 @@ export interface BookingIntentStationDetails {
 
 export interface BookingIntentCostDetails {
     totalCost: number;
+    costBreakup: BookingAmountDetails[];
+}
+
+export interface BookingAmountDetails {
+    cost: number;
+    category: string;
+    details: BookingAmountItem[];
+}
+
+export interface BookingAmountItem {
+    subCategory: string;
+    rate: number;
+    rateUnit: string;
+    qty: number;
+    qtyUnit: string;
+    amount: number;
 }
 
 export interface BookingClubDetails {
@@ -104,6 +120,7 @@ export interface BookingStationDetails {
 
 export interface BookingCostDetails {
     totalCost: number;
+    costBreakup: BookingAmountDetails[];
 }
 
 export interface DashboardStationBookingStatus {

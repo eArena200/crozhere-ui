@@ -1,9 +1,7 @@
 'use client';
 
 import React from 'react';
-import { stationLogos } from '@/lib/types/station';
 import { BookingIntentDetailsResponse } from '@/api/booking/model';
-import Logo from '../ui/Logo';
 import { Timer, User, Users } from 'lucide-react';
 import { toReadableDateTime } from '@/lib/date-time-util';
 
@@ -46,7 +44,7 @@ const BookingSummaryCard: React.FC<BookingSummaryCardProps> = ({ intentDetails }
               key={s.stationId}
               className="bg-blue-600 text-white text-sm rounded-md px-2 py-1 text-center"
             >
-                {`${s.stationName}`}
+                {`${s.stationName} (${s.playerCount}`}
             </div>
           ))}
         </div>

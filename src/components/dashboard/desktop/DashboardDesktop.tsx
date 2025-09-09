@@ -26,7 +26,7 @@ export default function AdminDesktop() {
 
   return (
     <div className='bg-white px-2'>
-      <ClubDashboardDesktopHeader onClickCreateNewBooking={() => {}}/>
+      <ClubDashboardDesktopHeader/>
       <ClubDashboardDesktopBody />
     </div>
   );

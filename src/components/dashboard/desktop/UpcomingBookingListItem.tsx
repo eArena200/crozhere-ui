@@ -8,7 +8,8 @@ const stationLogos: Record<StationType, string> = {
   POOL: "/assets/pool.png",
   PC: "/assets/pc.png",
   PS4: "/assets/ps4.png",
-  XBOX: "/assets/xbox.png",
+  PS5: "/assets/ps4.png",
+  XBOX: "/assets/xbox.png"
 };
 
 

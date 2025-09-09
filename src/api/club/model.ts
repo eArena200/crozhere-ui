@@ -32,9 +32,9 @@ export interface ClubAddress {
   city: string;
   state: string;
   pinCode: string;
-  geoLocation?: {
-    latitude: number;
-    longitude: number;
+  geoLocation: {
+    latitude?: number;
+    longitude?: number;
   }
 }
 

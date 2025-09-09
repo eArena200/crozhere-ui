@@ -147,7 +147,10 @@ const initialState: ClubManagementState = {
           area: "",
           city: "",
           state: "",
-          pinCode: ""
+          pinCode: "",
+          geoLocation: {
+            
+          }
         },
         operatingHours: {
           openTime: "",
@@ -279,12 +282,16 @@ export const createNewClub = createAsyncThunk<
       const createClubRequest: CreateClubRequest = {
         clubName: clubFormData.clubName,
         clubDescription: clubFormData.clubDescription,
-        clubAddress: {
+        clubAddressDetails: {
           streetAddress: clubFormData.address.street,
           area: clubFormData.address.area,
           city: clubFormData.address.city,
           state: clubFormData.address.state,
-          pinCode: clubFormData.address.pincode
+          pinCode: clubFormData.address.pincode,
+          geoLocation: {
+            latitude: clubFormData.address.coordinates?.latitude,
+            longitude: clubFormData.address.coordinates?.longitude
+          }
         },
         operatingHours: {
           openTime: clubFormData.openTime,
@@ -329,7 +336,11 @@ export const updateClubDetails = createAsyncThunk<
           area: updatedClubData.address.area,
           city: updatedClubData.address.city,
           state: updatedClubData.address.state,
-          pinCode: updatedClubData.address.pincode
+          pinCode: updatedClubData.address.pincode,
+          geoLocation: {
+            latitude: updatedClubData.address.coordinates?.latitude,
+            longitude: updatedClubData.address.coordinates?.longitude
+          }
         },
         operatingHours: {
           openTime: updatedClubData.openTime,
