@@ -10,6 +10,7 @@ import {
   deleteStation,
   selectClubManagementState,
   selectSelectedClubId,
+  selectSelectedClubStationState,
   toggleStation, 
   updateStationDetails
 } from '@/redux/slices/club/clubManagementSlice';
@@ -24,10 +25,12 @@ function StationDetails() {
   const dispatchRedux = useDispatchRedux();
 
   const {
-    loadingStations,
-    selectedClubStationsDetails,
-    stationDetailsError
-  } = useSelector(selectClubManagementState);
+      stations,
+      stationsLoading,
+      stationsError,
+      addStationLoading,
+      addStationError
+    } = useSelector(selectSelectedClubStationState);
 
   const authAdminId = useSelector(selectAuthRoleBasedId);
   const clubId = useSelector(selectSelectedClubId);
@@ -36,11 +39,12 @@ function StationDetails() {
   const [isAddStationOpen, setIsAddStationOpen] = useState(false);
 
   const uniqueStationTypes: StationType[] = Array.from(
-    new Set(selectedClubStationsDetails
-        ?.map((station: StationDetailsResponse) => station.stationType)
-        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-      )
-  );
+      new Set(
+        Object.values(stations)
+          .map((station: StationDetailsResponse) => station.stationType)
+          .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
+        )
+    );
 
   useEffect(() => {
     if (uniqueStationTypes.length && !selectedTab) {
@@ -52,7 +56,6 @@ function StationDetails() {
     if(authAdminId && clubId){
       dispatchRedux(
         addNewStation({
-          clubAdminId: authAdminId,
           clubId: clubId,
           stationFormData: stationData
         }));
@@ -62,7 +65,6 @@ function StationDetails() {
   const handleEditStation = (stationId: number, stationData: StationFormData) => {
     if(authAdminId){
       dispatchRedux(updateStationDetails({
-        clubAdminId: authAdminId,
         stationId: stationId,
         stationFormData: stationData
       }));
@@ -78,7 +80,7 @@ function StationDetails() {
   };
 
 
-  if (loadingStations) {
+  if (stationsLoading) {
     return (
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
@@ -99,10 +101,10 @@ function StationDetails() {
     );
   }
 
-  if (stationDetailsError) {
+  if (stationsError) {
     return (
       <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-        <p className="text-red-600 text-sm">{stationDetailsError}</p>
+        <p className="text-red-600 text-sm">{stationsError}</p>
       </div>
     );
   }
@@ -131,19 +133,20 @@ function StationDetails() {
                 <Tab key={type} label={type} value={type}>
                   <div className="max-h-[60vh] overflow-y-auto">
                     <div className="p-4 space-y-4">
-                      {selectedClubStationsDetails
-                        ?.filter((station: StationDetailsResponse) => station.stationType === type)
-                        .sort((a, b) =>
-                          a.stationName.toLowerCase().localeCompare(b.stationName.toLowerCase())
-                        )
-                        .map((station: StationDetailsResponse) => (
-                          <StationListItem 
-                            key={station.stationId} 
-                            stationDetails={station}
-                            handleEditStation={handleEditStation}
-                            handleDeleteStation={handleDeleteStation}
-                            onToggleStationStatus={handleToggleStationStatus}
-                          />
+                      {
+                        Object.values(stations)
+                          .filter((station: StationDetailsResponse) => station.stationType === type)
+                          .sort((a, b) =>
+                            a.stationName.toLowerCase().localeCompare(b.stationName.toLowerCase())
+                          )
+                          .map((station: StationDetailsResponse) => (
+                            <StationListItem 
+                              key={station.stationId} 
+                              stationDetails={station}
+                              handleEditStation={handleEditStation}
+                              handleDeleteStation={handleDeleteStation}
+                              onToggleStationStatus={handleToggleStationStatus}
+                            />
                       ))}
                     </div>
                   </div>      

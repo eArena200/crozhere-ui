@@ -19,8 +19,7 @@ import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import BookingsList from './BookingsList';
-import { ClubResponse } from '@/api/club-management/model';
-import { StationDetailsResponse } from '@/api/club/model';
+import { ClubResponse, StationDetailsResponse } from '@/api/club/model';
 import { BookingDetailsResponse } from '@/api/booking/model';
 import { getStationsInClubApi } from '@/api/club/clubDetailsApi';
 

@@ -3,7 +3,7 @@
 import React from 'react';
 import { ChevronDown, Filter } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import { ClubResponse } from '@/api/club-management/model';
+import { ClubResponse } from '@/api/club/model';
 
 type CBMobileHeaderProps = {
   clubList: ClubResponse[];

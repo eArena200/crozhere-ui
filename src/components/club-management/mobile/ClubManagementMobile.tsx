@@ -39,7 +39,6 @@ function ClubManagementMobile() {
 
   const handleCreateClub = (clubData: ClubFormData) => {
     dispatchRedux(createNewClub({
-      clubAdminId: authAdminId,
       clubFormData: clubData
     }));
   }

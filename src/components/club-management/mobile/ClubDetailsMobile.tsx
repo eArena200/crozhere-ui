@@ -4,7 +4,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import {
   fetchClubDetailsById,
-  selectClubManagementState,
+  selectSelectedClubDetailState,
+  selectSelectedClubId,
   updateClubDetails,
 } from "@/redux/slices/club/clubManagementSlice";
 import { useDispatchRedux } from "@/redux/store";
@@ -15,16 +16,17 @@ import Button from "@/components/ui/Button";
 import { selectAuthRoleBasedId } from "@/redux/slices/auth/authSlice";
 import { ClubFormData } from "@/components/club-management/ClubForm";
 import EditClubDialog from "@/components/club-management/EditClubDialog";
-import { ClubDetailsResponse } from "@/api/club/model";
+import { ClubResponse } from "@/api/club/model";
 
 function ClubDetailsMobile() {
-  const dispatchRedux = useDispatchRedux();
-  const {
-      selectedClubId,
-      loadingClubDetails,
-      selectedClubDetails,
-      clubDetailsError,
-    } = useSelector(selectClubManagementState);
+    const dispatchRedux = useDispatchRedux();
+    const selectedClubId = useSelector(selectSelectedClubId);
+
+    const {
+        clubDetailsLoading,
+        details,
+        clubDetailsError,
+      } = useSelector(selectSelectedClubDetailState);
   
     const authClubAdminId = useSelector(selectAuthRoleBasedId);
     const [isEditClubOpen, setIsEditClubOpen] = useState(false);
@@ -37,14 +39,13 @@ function ClubDetailsMobile() {
     }, [dispatchRedux, selectedClubId]);
   
     const initialFormData = useMemo(() => {
-      return selectedClubDetails ? getFormDataFromClubDetails(selectedClubDetails) : null;
-    }, [selectedClubDetails]);
+      return details ? getFormDataFromClubDetails(details) : null;
+    }, [details]);
   
     const handleUpdateClub = (updatedClubData: ClubFormData) => {
       if(authClubAdminId && selectedClubId){
         dispatchRedux(updateClubDetails({
           clubId: selectedClubId,
-          clubAdminId: authClubAdminId,
           updatedClubData: updatedClubData
         }));
       }
@@ -61,7 +62,7 @@ function ClubDetailsMobile() {
     );
   }
 
-  if (loadingClubDetails) {
+  if (clubDetailsLoading) {
     return (
       <div className="mt-2 flex flex-col items-center justify-center space-y-4">
         <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
@@ -102,10 +103,10 @@ function ClubDetailsMobile() {
         <div className="bg-white rounded-lg shadow-sm overflow-hidden border-2 border-gray-200">
           {/* Cover Image Section */}
           <div className="relative h-48 bg-gradient-to-br from-blue-500 to-blue-600">
-            {selectedClubDetails?.coverImage ? (
+            {details?.coverImage ? (
               <img
-                src={selectedClubDetails.coverImage}
-                alt={`${selectedClubDetails.clubName} cover`}
+                src={details.coverImage}
+                alt={`${details.clubName} cover`}
                 className="w-full h-full object-cover"
               />
             ) : (
@@ -121,10 +122,10 @@ function ClubDetailsMobile() {
               {/* Logo */}
               <div className="relative -mt-16">
                 <div className="w-24 h-24 rounded-xl border-4 border-white bg-white shadow-md overflow-hidden">
-                  {selectedClubDetails?.logo ? (
+                  {details?.logo ? (
                     <img
-                      src={selectedClubDetails.logo}
-                      alt={`${selectedClubDetails.clubName} logo`}
+                      src={details.logo}
+                      alt={`${details.clubName} logo`}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -139,7 +140,7 @@ function ClubDetailsMobile() {
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col">
-                    <h2 className="text-2xl font-bold text-gray-900">{selectedClubDetails?.clubName}</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">{details?.clubName}</h2>
                     <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium border border-blue-200 flex items-center w-fit mt-1">
                       <CheckCircle2 className="w-3 h-3 mr-1" />
                       Verified
@@ -156,11 +157,11 @@ function ClubDetailsMobile() {
                 <div className="mt-2 space-y-2">
                   <div className="flex items-center text-gray-600">
                     <MapPin className="w-4 h-4 mr-2" />
-                    <span>{selectedClubDetails?.clubAddress.city}</span>
+                    <span>{details?.clubAddress.city}</span>
                   </div>
                   <div className="flex items-center text-gray-600">
                     <Clock className="w-4 h-4 mr-2" />
-                    <span>{selectedClubDetails?.operatingHours.openTime} - {selectedClubDetails?.operatingHours.closeTime}</span>
+                    <span>{details?.operatingHours.openTime} - {details?.operatingHours.closeTime}</span>
                   </div>
                 </div>
               </div>
@@ -181,11 +182,13 @@ function ClubDetailsMobile() {
   );
 }
 
-function getFormDataFromClubDetails(clubDetails: ClubDetailsResponse) : ClubFormData {
+function getFormDataFromClubDetails(clubDetails: ClubResponse) : ClubFormData {
   return {
     clubName: clubDetails.clubName,
+    clubDescription: clubDetails.clubDescription,
     address: {
       street: clubDetails.clubAddress.streetAddress,
+      area: clubDetails.clubAddress.area,
       city: clubDetails.clubAddress.city,
       state: clubDetails.clubAddress.state,
       pincode: clubDetails.clubAddress.pinCode,

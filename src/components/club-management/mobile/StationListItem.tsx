@@ -109,6 +109,7 @@ function mapStationDetailsToStationFormData(stationDetails: StationDetailsRespon
   : StationFormData {
     const stationFormData: StationFormData = {
       stationName: stationDetails.stationName,
+      stationDescription: stationDetails.stationDescription,
       stationType: stationDetails.stationType,
       openTime: stationDetails.operatingHours.openTime,
       closeTime: stationDetails.operatingHours.closeTime,
