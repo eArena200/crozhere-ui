@@ -91,7 +91,7 @@ function ClubAdminProfileMobile() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full text-red-500 text-center p-4">
+      <div className="bg-white h-[90vh] w-full flex items-center justify-center text-red-500 text-center p-4">
         Error loading profile.
       </div>
     );

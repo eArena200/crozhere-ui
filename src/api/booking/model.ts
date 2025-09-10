@@ -12,6 +12,11 @@ export interface CreateClubBookingIntentRequest {
     endTime: string;
 }
 
+export interface ClubDiscountRequest {
+    amount: number;
+    description: string;
+}
+
 export interface CreatePlayerBookingIntentRequest {
     clubId: number;
     playerId: number;

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectPaymentState, setSelectedPaymentMode } from '@/redux/slices/booking/bookingSlice';
+import { applyClubDiscount, selectPaymentState, setSelectedPaymentMode } from '@/redux/slices/booking/bookingSlice';
 import { PaymentMode, PaymentStatus } from '@/lib/types/payment';
 import { useDispatchRedux } from '@/redux/store';
 import BookingSummaryCard from '../BookingSummaryCard';
@@ -10,6 +10,9 @@ import AmountSummaryCard from '../AmountSummaryCard';
 import PlayerSummaryCard from '../PlayerSummaryCard';
 import PaymentModeSelector from '../PaymentModeSelector';
 import PaymentTimer from '../PaymentTimer';
+import SelectDiscountCard from '../SelectDiscountCard';
+import { selectAuthUser } from '@/redux/slices/auth/authSlice';
+import { ClubDiscountRequest } from '@/api/booking/model';
 
 function PaymentStep() {
   const dispatchRedux = useDispatchRedux();
@@ -19,6 +22,8 @@ function PaymentStep() {
     paymentError,
     selectedPaymentMode,
   } = useSelector(selectPaymentState);
+
+  const authUser = useSelector(selectAuthUser);
 
   const setPaymentMode = (paymentMode: PaymentMode) => {
     dispatchRedux(setSelectedPaymentMode(paymentMode));
@@ -46,6 +51,20 @@ function PaymentStep() {
           />
           <BookingSummaryCard intentDetails={bookingIntent} />
           <PlayerSummaryCard player={bookingIntent.player} />
+          {
+            authUser && authUser.role === 'CLUB_ADMIN' && 
+            <SelectDiscountCard onApply={
+                (amount, description) => {
+                  const discountRequest: ClubDiscountRequest = {
+                    amount: amount,
+                    description: description
+                  }
+                  const bookingIntentId = bookingIntent.intentId;
+                  dispatchRedux(applyClubDiscount({bookingIntentId, discountRequest}));
+                }
+              } 
+            />
+          }
           <AmountSummaryCard amountDetails={bookingIntent.intent.costDetails} />
           <PaymentModeSelector
             selectedMode={selectedPaymentMode}

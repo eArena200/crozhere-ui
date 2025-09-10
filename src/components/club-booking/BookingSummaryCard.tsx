@@ -44,7 +44,7 @@ const BookingSummaryCard: React.FC<BookingSummaryCardProps> = ({ intentDetails }
               key={s.stationId}
               className="bg-blue-600 text-white text-sm rounded-md px-2 py-1 text-center"
             >
-                {`${s.stationName} (${s.playerCount}`}
+                {`${s.stationName} (${s.playerCount})`}
             </div>
           ))}
         </div>

@@ -86,13 +86,24 @@ function ClubAdminProfileDesktop() {
 
   if (isLoading) {
     return (
-      <div className="p-6 text-gray-600">Loading club admin profile...</div>
+      <div className="bg-white h-screen w-full p-6 text-gray-600">
+        Loading club admin profile...
+      </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6 text-red-600">Error loading club admin data.</div>
+      <div className="bg-white h-screen w-full p-6 text-red-600">
+        Error loading club admin data.
+        <Button
+          variant="primary"
+          className="w-full"
+          onClick={handleLogout}
+        >
+          Logout
+        </Button>
+      </div>
     );
   }
 

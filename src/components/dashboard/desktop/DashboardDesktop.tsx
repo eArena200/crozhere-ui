@@ -7,6 +7,7 @@ import {
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import ClubDashboardDesktopHeader from './ClubDashboardDesktopHeader';
 import ClubDashboardDesktopBody from './ClubDashboardDesktopBody';
+import UnAuthorized from '@/components/ui/UnAuthorized';
 
 export default function AdminDesktop() {
   const dispatchRedux = useDispatchRedux();
@@ -20,7 +21,7 @@ export default function AdminDesktop() {
 
   if (!authAdminId) {
     return (
-      <div>Unauthorized</div>
+      <UnAuthorized />
     );
   }
 

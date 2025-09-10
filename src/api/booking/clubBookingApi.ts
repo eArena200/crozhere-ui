@@ -6,6 +6,7 @@ import {
   BookingDetailsResponse, 
   BookingIntentDetailsResponse, 
   BookingsPagenatedListResponse, 
+  ClubDiscountRequest, 
   CreateClubBookingIntentRequest, 
   DashboardStationBookingStatus 
 } from "@/api/booking/model";
@@ -55,6 +56,29 @@ export async function createClubBookingIntentApi(
         const errBody = await res.json().catch(() => null);
         throw handleApiError(errBody, "CREATE_CLUB_BOOKING_INTENT",
         `Failed to create booking intent for club`);
+    }
+
+    return res.json();
+}
+
+export async function applyClubDiscountApi(
+  bookingIntentId: number,
+  request: ClubDiscountRequest
+): Promise<BookingIntentDetailsResponse> {
+    const jwt = localStorage.getItem("jwt");
+    const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/applyClubDiscount/${bookingIntentId}`, {
+        method: "PUT",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${jwt}`
+        },
+        body: JSON.stringify(request),
+    });
+
+    if (!res.ok) {
+        const errBody = await res.json().catch(() => null);
+        throw handleApiError(errBody, "APPLY_CLUB_DISCOUNT",
+        `Failed to apply discount on booking intent for club`);
     }
 
     return res.json();

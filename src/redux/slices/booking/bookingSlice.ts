@@ -14,9 +14,11 @@ import {
     BookingDetailsResponse, 
     BookingIntentDetailsResponse, 
     BookingServiceException, 
+    ClubDiscountRequest, 
     CreateClubBookingIntentRequest
  } from "@/api/booking/model";
 import { 
+    applyClubDiscountApi,
     cancelBookingIntentForClubApi, 
     createClubBookingIntentApi, 
     getActiveIntentsForClubApi, 
@@ -265,6 +267,47 @@ export const createBookingIntent = createAsyncThunk<
                 error: "CLUB_BOOKING_THUNK_EXCEPTION",
                 type: "CREATE_BOOKING_INTENT",
                 message: "Failed to create booking-intent",
+                timestamp: new Date().toISOString(),
+            });
+        }
+    }
+);
+
+export const applyClubDiscount = createAsyncThunk<
+    void,
+    {
+        bookingIntentId: number,
+        discountRequest: ClubDiscountRequest
+    },
+    {
+        state: RootState;
+        rejectValue: BookingServiceException;
+    }
+>(
+    "clubBooking/applyClubDiscount",
+    async ({ bookingIntentId, discountRequest }, { getState, dispatch, rejectWithValue }) => {
+        const state: RootState = getState();
+        const authState = state.auth;
+
+        if(!authState.loggedIn || !(authState.user.role === 'CLUB_ADMIN')){
+            return rejectWithValue({
+                error: "CLUB_BOOKING_THUNK_EXCEPTION",
+                type: "APPLY_CLUB_DISCOUNT",
+                message: "ClubAdmin login required for club-discount",
+                timestamp: new Date().toISOString(),
+            });
+        }
+        try {
+            const response = await applyClubDiscountApi(bookingIntentId, discountRequest);
+            await dispatch(setActiveIntentAndProceedToPayment(response));
+        } catch (err: any) {
+            if (err.response?.data) {
+                return rejectWithValue(err.response.data);
+            }
+            return rejectWithValue({
+                error: "CLUB_BOOKING_THUNK_EXCEPTION",
+                type: "APPLY_CLUB_DISCOUNT",
+                message: "Failed to apply club-discount to booking-intent",
                 timestamp: new Date().toISOString(),
             });
         }
