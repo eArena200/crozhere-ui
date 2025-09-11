@@ -864,6 +864,7 @@ const clubManagementSlice = createSlice({
     builder
       .addCase(fetchClubIdsForAdminId.pending, (state) => {
         state.clubListLoading = true;
+        state.clubListError = undefined;
       })
       .addCase(fetchClubIdsForAdminId.fulfilled, (state, action) => {
         state.clubListLoading = false;
@@ -876,6 +877,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(fetchClubDetailsById.pending, (state) => {
         state.selectedClubState.detailState.clubDetailsLoading = true;
+        state.selectedClubState.detailState.clubDetailsError = undefined;
       })
       .addCase(fetchClubDetailsById.fulfilled, (state, action) => {
         state.selectedClubState.detailState.clubDetailsLoading = false;
@@ -888,6 +890,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(createNewClub.pending, (state) => {
         state.createClubLoading = true;
+        state.createClubError = undefined;
       })
       .addCase(createNewClub.fulfilled, (state, action) => {
         state.createClubLoading = false;
@@ -900,6 +903,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(updateClubDetails.pending, (state) => {
         state.selectedClubState.detailState.updateClubLoading = true;
+        state.selectedClubState.detailState.updateClubError = undefined;
       })
       .addCase(updateClubDetails.fulfilled, (state, action) => {
         state.selectedClubState.detailState.updateClubLoading = false;
@@ -920,6 +924,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(fetchRateCardsForClub.pending, (state) => {
         state.selectedClubState.rateState.rateCardsLoading = true;
+        state.selectedClubState.rateState.rateCardsError = undefined;
       })
       .addCase(fetchRateCardsForClub.fulfilled, (state, action) => {
         state.selectedClubState.rateState.rateCardsLoading = false;
@@ -932,6 +937,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(createRateCard.pending, (state) => {
         state.selectedClubState.rateState.createRateCardLoading = true;
+        state.selectedClubState.rateState.createRateCardError = undefined;
       })
       .addCase(createRateCard.fulfilled, (state, action) => {
         state.selectedClubState.rateState.createRateCardLoading = false;
@@ -944,6 +950,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(updateRateCard.pending, (state) => {
         state.selectedClubState.rateState.updateRateCardLoading = true;
+        state.selectedClubState.rateState.updateRateCardError = undefined;
       })
       .addCase(updateRateCard.fulfilled, (state, action) => {
         state.selectedClubState.rateState.updateRateCardLoading = false;
@@ -956,6 +963,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(deleteRateCard.pending, (state) => {
         state.selectedClubState.rateState.deleteRateCardLoading = true;
+        state.selectedClubState.rateState.deleteRateCardError = undefined;
       })
       .addCase(deleteRateCard.fulfilled, (state, action) => {
         state.selectedClubState.rateState.deleteRateCardLoading = false;
@@ -968,6 +976,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(addRate.pending, (state) => {
         state.selectedClubState.rateState.addRateLoading = true;
+        state.selectedClubState.rateState.addRateError = undefined;
       })
       .addCase(addRate.fulfilled, (state, action) => {
         state.selectedClubState.rateState.addRateLoading = false;
@@ -982,6 +991,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(updateRate.pending, (state) => {
         state.selectedClubState.rateState.updateRateLoading = true;
+        state.selectedClubState.rateState.updateRateError = undefined;
       })
       .addCase(updateRate.fulfilled, (state, action) => {
         state.selectedClubState.rateState.updateRateLoading = false;
@@ -996,6 +1006,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(deleteRate.pending, (state) => {
         state.selectedClubState.rateState.deleteRateLoading = true;
+        state.selectedClubState.rateState.deleteRateError = undefined;
       })
       .addCase(deleteRate.fulfilled, (state, action) => {
         state.selectedClubState.rateState.deleteRateLoading = false;
@@ -1017,6 +1028,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(addRateCharge.pending, (state) => {
         state.selectedClubState.rateState.addRateChargeLoading = true;
+        state.selectedClubState.rateState.addRateChargeError = undefined;
       })
       .addCase(addRateCharge.fulfilled, (state, action) => {
         state.selectedClubState.rateState.addRateChargeLoading = false;
@@ -1038,6 +1050,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(updateRateCharge.pending, (state) => {
         state.selectedClubState.rateState.updateRateChargeLoading = true;
+        state.selectedClubState.rateState.updateRateChargeError = undefined;
       })
       .addCase(updateRateCharge.fulfilled, (state, action) => {
         state.selectedClubState.rateState.updateRateChargeLoading = false;
@@ -1062,6 +1075,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(deleteRateCharge.pending, (state) => {
         state.selectedClubState.rateState.deleteRateChargeLoading = true;
+        state.selectedClubState.rateState.deleteRateChargeError = undefined;
       })
       .addCase(deleteRateCharge.fulfilled, (state, action) => {
         state.selectedClubState.rateState.deleteRateChargeLoading = false;
@@ -1090,6 +1104,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(fetchStationsByClubId.pending, (state) => {
         state.selectedClubState.stationState.stationsLoading = true;
+        state.selectedClubState.stationState.stationsError = undefined;
       })
       .addCase(fetchStationsByClubId.fulfilled, (state, action) => {
         state.selectedClubState.stationState.stationsLoading = false;
@@ -1102,6 +1117,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(addNewStation.pending, (state) => {
         state.selectedClubState.stationState.addStationLoading = true;
+        state.selectedClubState.stationState.addStationError = undefined;
       })
       .addCase(addNewStation.fulfilled, (state, action) => {
         state.selectedClubState.stationState.addStationLoading = false;
@@ -1114,6 +1130,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(updateStationDetails.pending, (state) => {
         state.selectedClubState.stationState.updateStationLoading = true;
+        state.selectedClubState.stationState.updateStationError = undefined;
       })
       .addCase(updateStationDetails.fulfilled, (state, action) => {
         state.selectedClubState.stationState.updateStationLoading = false;
@@ -1126,6 +1143,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(toggleStation.pending, (state) => {
         state.selectedClubState.stationState.toggleStationLoading = true;
+        state.selectedClubState.stationState.toggleStationError = undefined;
       })
       .addCase(toggleStation.fulfilled, (state, action) => {
         state.selectedClubState.stationState.toggleStationLoading = false;
@@ -1138,6 +1156,7 @@ const clubManagementSlice = createSlice({
 
       .addCase(deleteStation.pending, (state) => {
         state.selectedClubState.stationState.deleteStationLoading = true;
+        state.selectedClubState.stationState.deleteStationError = undefined;
       })
       .addCase(deleteStation.fulfilled, (state, action) => {
         state.selectedClubState.stationState.deleteStationLoading = false;

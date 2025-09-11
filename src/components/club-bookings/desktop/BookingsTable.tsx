@@ -101,8 +101,8 @@ function BookingsTable({ bookings }: BookingsTableProps) {
                         {/* Booking Info */}
                         <div className="border rounded p-3 bg-white">
                           <p><strong>Station Type:</strong> {selectedBooking.booking.stationType}</p>
-                          <p><strong>Start:</strong> {toReadableDateTime(selectedBooking.booking.startTime)}</p>
-                          <p><strong>End:</strong> {toReadableDateTime(selectedBooking.booking.endTime)}</p>
+                          <p><strong>Start:</strong> {toReadableDateTime(selectedBooking.booking.startTime, true)}</p>
+                          <p><strong>End:</strong> {toReadableDateTime(selectedBooking.booking.endTime, true)}</p>
                           <p><strong>Players:</strong> {selectedBooking.booking.totalPlayers}</p>
                           <p><strong>Status:</strong> {selectedBooking.booking.bookingStatus}</p>
                           <p><strong>Stations:</strong> {getFormattedStation(selectedBooking.booking.stations)}</p>

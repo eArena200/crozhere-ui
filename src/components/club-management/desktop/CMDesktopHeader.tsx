@@ -23,7 +23,7 @@ function CMDesktopHeader({ onClickCreateNewClub }: CMDesktopHeaderProps) {
   };
 
   return (
-    <div className="flex-shrink-0 flex items-center justify-between w-full px-8 py-5 bg-white border-b border-gray-200">
+    <div className="flex-shrink-0 flex items-center justify-between w-full px-4 py-2 bg-white border-b border-gray-200">
       <div className="flex items-center space-x-4">
         <div className="p-2.5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-sm">
           <Building2 className="w-6 h-6 text-white" />

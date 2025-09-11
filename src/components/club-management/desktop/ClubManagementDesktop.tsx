@@ -15,6 +15,7 @@ import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import CMDesktopHeader from '@/components/club-management/desktop/CMDesktopHeader';
 import RateCardDetails from '@/components/club-management/desktop/RateCardDetails';
 import { cn } from '@/lib/utils';
+import UnAuthorized from '@/components/ui/UnAuthorized';
 
 enum ActiveSection {
   CLUB,
@@ -36,7 +37,7 @@ function ClubManagementDesktop() {
   }, [dispatchRedux, authAdminId]);
 
   if (!authAdminId) {
-    return <div>Unauthorized</div>;
+    return <UnAuthorized />;
   }
 
   const handleCreateClub = (clubData: ClubFormData) => {
@@ -88,7 +89,7 @@ function ClubManagementDesktop() {
         </div>
 
         {/* Main content */}
-        <div className="flex-1 overflow-y-auto p-2">
+        <div className="flex-1 p-2">
           {activeSection === ActiveSection.CLUB && <ClubDetails />}
           {activeSection === ActiveSection.RATE && <RateCardDetails />}
           {activeSection === ActiveSection.STATION && <StationDetails />}

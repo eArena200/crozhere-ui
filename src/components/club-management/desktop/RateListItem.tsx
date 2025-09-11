@@ -10,8 +10,7 @@ import {
     addRateCharge,
     deleteRate,
     deleteRateCharge,
-    selectSelectedClubId, 
-    selectSelectedClubRateState,
+    selectSelectedClubId,
     updateRate,
     updateRateCharge 
 } from '@/redux/slices/club/clubManagementSlice';
