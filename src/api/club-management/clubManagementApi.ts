@@ -116,7 +116,6 @@ export async function updateClubApi(
     const errBody = await res.json().catch(() => null);
     throw handleApiError(errBody, "UPDATE_CLUB", `Failed to update club with id: ${clubId}`);
   }
-
   return res.json();
 }
 
@@ -203,8 +202,7 @@ export async function deleteRateCardApi(
     throw handleApiError(errBody, "DELETE_RATE_CARD",
        "Failed to delete rate-card");
   }
-
-  return res.json();
+  return;
 }
 
 // RATE MANAGEMENT APIs
@@ -271,8 +269,7 @@ export async function deleteRateApi(
     throw handleApiError(errBody, "DELETE_RATE", 
       "Failed to delete rate");
   }
-
-  return res.json();
+  return;
 }
 
 // RATE-CHARGE MANAGEMENT APIs
@@ -295,7 +292,6 @@ export async function addRateChargeApi(
     throw handleApiError(errBody, "ADD_RATE_CHARGE", 
       "Failed to add rate charge");
   }
-
   return res.json();
 }
 
@@ -318,7 +314,6 @@ export async function updateRateChargeApi(
     throw handleApiError(errBody, "UPDATE_RATE_CHARGE", 
       "Failed to update rate charge");
   }
-
   return res.json();
 }
 
@@ -333,14 +328,11 @@ export async function deleteRateChargeApi(
       "Authorization": `Bearer ${jwt}`
     },
   });
-
   if(!res.ok){
     const errBody = await res.json().catch(() => null);
     throw handleApiError(errBody, "DELETE_RATE_CHARGE", 
       "Failed to delete rate charge");
   }
-
-  return res.json();
 }
 
 // STATION MANAGEMENT APIs
@@ -381,7 +373,6 @@ export async function addStationApi(
     throw handleApiError(errBody, "ADD_STATION",
       "Failed to add station");
   }
-
   return res.json();
 }
 
@@ -404,7 +395,6 @@ export async function updateStationApi(
     throw handleApiError(errBody, "UPDATE_STATION",
       `Failed to update station with id: ${stationId}`);
   }
-
   return res.json();
 }
 
@@ -425,7 +415,6 @@ export async function toggleStationApi(
     throw handleApiError(errBody, "TOGGLE_STATION_STATUS",
       `Failed to toggle station with id: ${stationId}`);
   }
-
   return res.json();
 }
 

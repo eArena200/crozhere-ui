@@ -5,7 +5,9 @@ export default function DesktopLayout({ children }: { children: React.ReactNode 
   return (
     <>
       <DesktopHeader />
-      <main className="w-full h-full pt-16">{children}</main>
+      <main className="w-screen h-[calc(100vh-64px)] mt-16 bg-white">
+        {children}
+      </main>
       <DesktopFooter />
     </>
   );

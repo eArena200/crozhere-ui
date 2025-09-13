@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatchRedux } from '@/redux/store';
-import { Building2, Clock, MapPin, Pencil, CheckCircle2, ChevronDown } from 'lucide-react';
+import { Building2, Clock, MapPin, Pencil, CheckCircle2, TriangleAlert, Phone } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { 
   selectSelectedClubDetailState,
@@ -14,17 +14,27 @@ import { ClubFormData } from '@/components/club-management/ClubForm';
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import { ClubResponse } from '@/api/club/model';
 
-function ClubDetails() {
+export interface ClubDetailsProps {
+  details?: ClubResponse;
+  detailsLoading: boolean;
+  detailsError?: string;
+}
+
+function ClubDetails(props: ClubDetailsProps) {
   const dispatchRedux = useDispatchRedux();
+  const { 
+    details, 
+    detailsLoading, 
+    detailsError 
+  } = props;
+
   const {
-    clubDetailsLoading,
-    details,
-    clubDetailsError,
+    updateClubLoading,
+    updateClubError
   } = useSelector(selectSelectedClubDetailState);
 
   const authClubAdminId = useSelector(selectAuthRoleBasedId);
   const [isEditClubOpen, setIsEditClubOpen] = useState(false);
-
   const initialFormData = useMemo(() => {
     return details ? getFormDataFromClubDetails(details) : null;
   }, [details]);
@@ -34,44 +44,42 @@ function ClubDetails() {
       dispatchRedux(updateClubDetails({
         clubId: details.clubId,
         updatedClubData: updatedClubData
-      }));
+      }))
+      .unwrap()
+      .then(() => {
+        setIsEditClubOpen(false);
+      })
+      .catch((err) => {
+        console.error("Failed to update club:", err);
+      });
     }
   }
 
-  if (!details) {
+  if(detailsLoading){
+    //TODO: Replace it with a good looking loader.
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center p-8 bg-white rounded-lg shadow-md">
-          <Building2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600">Select a club to view details.</p>
-        </div>
+      <div className="flex flex-col items-center justify-center h-full w-full">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <p className="mt-4 text-sm text-gray-500">Loading Club Details</p>
       </div>
     );
   }
 
-  if(clubDetailsLoading){
-    <div className="flex flex-col items-center justify-center h-48">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-      <p className="mt-4 text-sm text-gray-500">Loading Club Details</p>
-    </div>
-  }
-
-  if(clubDetailsError){
+  if(detailsError){
+    // TODO: Replace it with a good design.
     return (
-      <div className="flex flex-col items-center justify-center h-48 text-center p-4">
-          <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-3">
-              <span className="text-red-500 text-xl">!</span>
-          </div>
-          <p className="text-red-600 text-sm font-medium">Error loading club details</p>
-          <p className="text-gray-500 text-xs mt-1">{clubDetailsError}</p>
+      <div className="flex flex-col items-center justify-center h-full text-center">
+        <TriangleAlert className='text-red-400 h-30 w-30 mb-3'/>
+        <p className="text-red-600 font-medium text-xl">Error loading club details</p>
+        <p className="text-gray-500 text-sm mt-1">{detailsError}</p>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-b shadow-md overflow-hidden">
+    <div className="bg-white rounded shadow-md overflow-y-auto h-full">
         {/* Cover Image */}
-        <div className="relative h-48 bg-gray-100">
+        <div className="relative h-64 bg-gray-100">
           {details?.coverImage ? (
             <img
               src={details?.coverImage}
@@ -126,7 +134,7 @@ function ClubDetails() {
               className="flex items-center"
             >
               <Pencil className="w-4 h-4 mr-2" />
-              Edit
+              Edit details
             </Button>
           </div>
 
@@ -135,11 +143,11 @@ function ClubDetails() {
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-gray-200">
               <MapPin className="w-5 h-5 text-gray-500" />
               <div>
-                <p className="text-sm text-gray-500">Location</p>
-                <p className="font-medium text-gray-700">
+                <p className="text-xs md:text-md lg:text-md text-gray-500">Location</p>
+                <p className="text-md md:text-md lg:text-md font-medium text-gray-700">
                   {`${details?.clubAddress?.streetAddress}, ${details?.clubAddress?.area}`}
                 </p>
-                <p className="font-medium text-gray-700">
+                <p className="text-md md:text-md lg:text-md font-medium text-gray-700">
                   {`${details?.clubAddress?.city}, ${details?.clubAddress?.state}`}
                 </p>
               </div>
@@ -147,9 +155,18 @@ function ClubDetails() {
             <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-gray-200">
               <Clock className="w-5 h-5 text-gray-500" />
               <div>
-                <p className="text-sm text-gray-500">Operating Hours</p>
-                <p className="font-medium text-gray-700">
+                <p className="text-xs md:text-md lg:text-md text-gray-500">Operating Hours</p>
+                <p className="text-md md:text-md lg:text-md font-medium text-gray-700">
                   {`${details?.operatingHours.openTime} - ${details?.operatingHours.closeTime}`}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg border-2 border-gray-200">
+              <Phone className="w-5 h-5 text-gray-500" />
+              <div>
+                <p className="text-xs md:text-md lg:text-md text-gray-500">Contact</p>
+                <p className="text-md md:text-md lg:text-md font-mono text-gray-700">
+                  {`${details?.primaryContact}, ${details?.secondaryContact}`}
                 </p>
               </div>
             </div>
@@ -160,7 +177,9 @@ function ClubDetails() {
           isOpen={isEditClubOpen}
           onClose={() => setIsEditClubOpen(false)} 
           onSubmit={handleUpdateClub} 
-          initialData={initialFormData}      
+          initialData={initialFormData}
+          loading={updateClubLoading}
+          error={updateClubError}
         />
       )}
     </div>

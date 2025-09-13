@@ -3,41 +3,27 @@
 import React, { useState, useEffect } from 'react';
 import Tabs, { Tab } from '@/components/ui/Tabs';
 import { StationType } from '@/lib/types/station';
-import StationDetailsCard from '@/components/club-management/desktop/StationDetailsCard';
-import { Plus } from 'lucide-react';
-import AddStationDialog from '@/components/club-management/AddStationDialog';
-import { StationFormData } from '@/components/club-management/StationForm';
+import StationDetailsCard from '@/components/club-management/desktop/station/StationDetailsCard';
 import { useSelector } from 'react-redux';
 import { 
-  addNewStation,
-  selectClubManagementState,
-  selectSelectedClubId,
   selectSelectedClubStationState
 } from '@/redux/slices/club/clubManagementSlice';
-import { useDispatchRedux } from '@/redux/store';
-import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import { StationDetailsResponse } from '@/api/club/model';
+import { Gamepad } from 'lucide-react';
 
-function StationDetails() {
-  const dispatchRedux = useDispatchRedux();
-
+function StationDetailsBody() {
   const {
     stations,
     stationsLoading,
-    stationsError,
-    addStationLoading,
-    addStationError
+    stationsError
   } = useSelector(selectSelectedClubStationState);
 
-  const authAdminId = useSelector(selectAuthRoleBasedId);
-  const clubId = useSelector(selectSelectedClubId);
-
+  const stationList = Object.values(stations);
   const [selectedTab, setSelectedTab] = useState<string | null>(null);
-  const [isAddStationOpen, setIsAddStationOpen] = useState(false);
 
   const uniqueStationTypes: StationType[] = Array.from(
     new Set(
-      Object.values(stations)
+      stationList
         .map((station: StationDetailsResponse) => station.stationType)
         .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
       )
@@ -48,24 +34,7 @@ function StationDetails() {
       setSelectedTab(uniqueStationTypes[0]);
     }
   }, [uniqueStationTypes, selectedTab]);
-
-  const handleAddStation = (stationData: StationFormData) => {
-    if(authAdminId && clubId){
-      dispatchRedux(
-        addNewStation({
-          clubId: clubId,
-          stationFormData: stationData
-        }))
-        .unwrap()
-        .then(() => {
-          setIsAddStationOpen(false);
-        })
-        .catch((err) => {
-          console.error('Add Station failed: ', err);
-        })
-    }
-  };
-
+  
   if (stationsLoading) {
     return (
       <div className="flex flex-col items-center justify-center h-48">
@@ -83,33 +52,33 @@ function StationDetails() {
     );
   }
 
+  if(stationList.length <= 0){
+    return (
+        <div className='w-full h-full flex flex-col items-center justify-center gap-1 bg-white'>
+            <Gamepad size={100} color='gray'/>
+            <span className='text-xl text-gray-700'> 
+                Add station to get started.
+            </span>
+            <span className='text-xs text-gray-600'> 
+                Rate is required to add station
+            </span>
+        </div>
+    );
+  }
+
   return (
     <div className="bg-white rounded shadow-md h-full flex flex-col">
-      <div className="flex items-center justify-between p-4 border-b border-gray-200">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900">Stations</h2>
-          <p className="text-sm text-gray-500 mt-0.5">Manage your club's stations</p>
-        </div>
-        <button
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm transition-colors duration-200"
-          onClick={() => setIsAddStationOpen(true)}
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Station</span>
-        </button>
-      </div>
-
       {selectedTab && (
         <div className="flex-1 overflow-y-auto">
-          <div className="px-4 pt-4">
+          <div className="p-2">
             <Tabs selected={selectedTab} onChange={setSelectedTab}>
               {uniqueStationTypes.map((type) => (
                 <Tab key={type} label={type} value={type}>
                   <div className="h-[calc(100vh-16rem)] overflow-y-auto">
-                    <div className="p-4">
+                    <div className="">
                       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         { 
-                          Object.values(stations)
+                          stationList
                             .filter((station: StationDetailsResponse) => station.stationType === type)
                             .sort((a, b) =>
                               a.stationName.toLowerCase().localeCompare(b.stationName.toLowerCase())
@@ -130,16 +99,8 @@ function StationDetails() {
           </div>
         </div>
       )}
-
-      <AddStationDialog 
-        isOpen={isAddStationOpen} 
-        onClose={() => setIsAddStationOpen(false)} 
-        onSubmit={handleAddStation}  
-        loading={addStationLoading}
-        error={addStationError}      
-      />
     </div>
   );
 }
 
-export default StationDetails; 
+export default StationDetailsBody; 

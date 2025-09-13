@@ -10,7 +10,7 @@ import LocationSelector from "@/components/ui/LocationSelector";
 import Button from "@/components/ui/Button";
 import { useSelector } from "react-redux";
 import CrozhereLabel from "../../ui/CrozhereLabel";
-import { selectAuthState, selectAuthUser } from "@/redux/slices/auth/authSlice";
+import { selectAuthState } from "@/redux/slices/auth/authSlice";
 
 const LoginDialog = dynamic(() => import('@/components/ui/LoginDialog'), { ssr: false });
 
@@ -46,7 +46,7 @@ export default function DesktopHeader() {
   const roleBasedId = authState.user.roleBasedId;
 
   const renderNavLinks = () => (
-  <div className="flex justify-between gap-4">
+  <div className="flex justify-between gap-4 p-4">
     {getNavTabsForRole(userRole, roleBasedId).map((item) => (
       <Link
         key={item.name}
@@ -73,7 +73,10 @@ export default function DesktopHeader() {
   );
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-70 bg-white border-b px-4 py-2 shadow-sm flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-70 w-screen h-16 
+          bg-white border-b px-4 py-2 shadow-md flex items-center 
+          justify-between"
+    >
       <Link href="/">
         <CrozhereLabel size="md" />
       </Link>

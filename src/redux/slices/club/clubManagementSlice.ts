@@ -69,7 +69,7 @@ export interface ClubManagementState {
   selectedClubError?: string;
   selectedClubState: {
     detailState: {
-      details: ClubResponse;
+      details?: ClubResponse;
 
       clubDetailsLoading: boolean;
       clubDetailsError?: string;
@@ -137,29 +137,6 @@ const initialState: ClubManagementState = {
   selectedClubLoading: false,
   selectedClubState: {
     detailState: {
-      details: {
-        clubId: 0,
-        clubAdminId: 0,
-        clubName: "",
-        clubDescription: "",
-        clubAddress: {
-          streetAddress: "",
-          area: "",
-          city: "",
-          state: "",
-          pinCode: "",
-          geoLocation: {
-            
-          }
-        },
-        operatingHours: {
-          openTime: "",
-          closeTime: ""
-        },
-        primaryContact: "",
-        logo: undefined,
-        coverImage: undefined
-      },
       clubDetailsLoading: false,
       updateClubLoading: false,
     },
@@ -301,7 +278,7 @@ export const createNewClub = createAsyncThunk<
         secondaryContact: clubFormData.secondaryContact
       }
       const response = await createClubApi(createClubRequest);
-      // dispatch(setSelectedClubAndFetchDetails(response.clubId));
+      dispatch(setSelectedClubAndFetchDetails(response.clubId));
       return response;
     } catch (err: any) {
       if (err.response?.data) {
@@ -682,14 +659,14 @@ export const deleteRateCharge = createAsyncThunk<
     try {
       await deleteRateChargeApi(rateChargeId);
     } catch (err: any) {
-      if (err.response?.data) {
-        return rejectWithValue(err.response.data);
-      }
-      return rejectWithValue({
-        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
-        type: "DELETE_RATE",
-        message: "Failed to delete rate",
-        timestamp: new Date().toISOString()
+        if (err.response?.data) {
+          return rejectWithValue(err.response.data);
+        }
+        return rejectWithValue({
+          error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+          type: "DELETE_RATE",
+          message: "Failed to delete rate",
+          timestamp: new Date().toISOString()
       });
     }
   }
@@ -774,7 +751,7 @@ export const updateStationDetails = createAsyncThunk<
   "clubManagement/updateStationDetails",
   async({stationId, stationFormData}, { rejectWithValue }) => {
     try {
-      const UpdateStationRequest: UpdateStationRequest = {
+      const updateStationRequest: UpdateStationRequest = {
         stationName: stationFormData.stationName,
         stationDescription: stationFormData.stationDescription,
         operatingHours: {
@@ -784,8 +761,7 @@ export const updateStationDetails = createAsyncThunk<
         rateId: stationFormData.rateId,
         capacity:stationFormData.capacity
       }
-      
-      const response = await updateStationApi(stationId, UpdateStationRequest);
+      const response = await updateStationApi(stationId, updateStationRequest);
       return response;
     } catch (err: any){
       if (err.response?.data) {

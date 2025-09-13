@@ -1,24 +1,25 @@
 'use client';
 
-import React from "react";
-import { Dialog } from "@headlessui/react";
-import { X } from "lucide-react";
-import Button from "@/components/ui/Button";
-import RateForm, { RateFormData } from "@/components/club-management/RateForm";
-import DialogLoader from "@/components/club-management/DialogLoader";
+import React from 'react';
+import { Dialog } from '@headlessui/react';
+import { X, Trash2 } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import DialogLoader from '@/components/club-management/DialogLoader';
 
-interface CreateRateDialogProps {
+interface DeleteRateDialogProps {
+  rateId: number;
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: RateFormData) => void;
+  onDelete: (rateId: number) => void;
   loading: boolean;
   error?: string;
 }
 
-const CreateRateDialog: React.FC<CreateRateDialogProps> = ({
+const DeleteRateDialog: React.FC<DeleteRateDialogProps> = ({
+  rateId,
   isOpen,
   onClose,
-  onSubmit,
+  onDelete,
   loading,
   error,
 }) => {
@@ -26,14 +27,12 @@ const CreateRateDialog: React.FC<CreateRateDialogProps> = ({
     if (!loading) onClose();
   };
 
-  const handleSubmit = (data: RateFormData) => {
-    if (!loading) {
-      onSubmit(data);
-    }
+  const handleDelete = () => {
+    if (!loading) onDelete(rateId);
   };
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} className="relative z-70">
+    <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
       {/* Overlay */}
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
@@ -43,22 +42,27 @@ const CreateRateDialog: React.FC<CreateRateDialogProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between border-b p-6">
             <Dialog.Title className="text-xl font-semibold text-gray-900">
-              Create New Rate
+              Delete Rate
             </Dialog.Title>
             <button
               onClick={handleClose}
               disabled={loading}
               className={`text-gray-400 hover:text-gray-500 ${
-                loading ? "cursor-not-allowed opacity-50" : ""
+                loading ? 'cursor-not-allowed opacity-50' : ''
               }`}
             >
               <X className="h-5 w-5" />
             </button>
           </div>
 
-          {/* Scrollable form content */}
-          <div className="overflow-y-auto p-6 flex-1 relative">
-            <RateForm onSubmit={handleSubmit} />
+          {/* Content */}
+          <div className="p-6 flex-1 relative">
+            <p className="text-black text-md">
+              Are you sure you want to delete this rate?
+            </p>
+            <p className="text-gray-600 text-xs mb-4">
+              Note: This action cannot be undone.
+            </p>
 
             {error && (
               <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
@@ -66,7 +70,7 @@ const CreateRateDialog: React.FC<CreateRateDialogProps> = ({
 
             {/* Loading Overlay */}
             {loading && (
-              <DialogLoader message="Creating rate..." />
+              <DialogLoader message="Deleting rate..." />
             )}
           </div>
 
@@ -81,12 +85,14 @@ const CreateRateDialog: React.FC<CreateRateDialogProps> = ({
               Cancel
             </Button>
             <Button
-              type="submit"
-              form="rate-form"
-              variant="primary"
+              type="button"
+              variant="danger"
+              onClick={handleDelete}
               disabled={loading}
+              className="flex items-center"
             >
-              {loading ? "Creating..." : "Create Rate"}
+              <Trash2 className="h-4 w-4 mr-2" />
+              {loading ? 'Deleting...' : 'Delete'}
             </Button>
           </div>
         </Dialog.Panel>
@@ -95,4 +101,4 @@ const CreateRateDialog: React.FC<CreateRateDialogProps> = ({
   );
 };
 
-export default React.memo(CreateRateDialog);
+export default React.memo(DeleteRateDialog);
