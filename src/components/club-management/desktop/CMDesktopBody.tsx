@@ -6,7 +6,7 @@ import ClubDetails from '@/components/club-management/desktop/club/ClubDetails';
 import StationDetails from '@/components/club-management/desktop/station/StationDetails';
 import { useSelector } from 'react-redux';
 import { selectClubManagementState } from '@/redux/slices/club/clubManagementSlice';
-import { Building, Building2 } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 
 enum ActiveSection {
   CLUB,
@@ -20,7 +20,6 @@ function CMDesktopBody() {
 
     const clubList = cms.clubList;
     const selectedClubDetailsState = cms.selectedClubState.detailState;
-    const selectedClubStationState = cms.selectedClubState.stationState;
     {/* No club present */}
     if(clubList.length <= 0){
         return (

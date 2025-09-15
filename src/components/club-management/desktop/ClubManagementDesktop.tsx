@@ -25,7 +25,7 @@ function ClubManagementDesktop() {
     createClubError
   } = useSelector(selectClubManagementState)
 
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCreateClubDialogOpen, setIsCreateClubDialogOpen] = useState(false);
 
   useEffect(() => {
     if (authAdminId) {
@@ -41,7 +41,7 @@ function ClubManagementDesktop() {
     dispatchRedux(createNewClub({ clubFormData: clubData }))
       .unwrap()
       .then(() => {
-        setIsDialogOpen(false);
+        setIsCreateClubDialogOpen(false);
       })
       .catch((err) => {
         console.error("Failed to create club:", err);
@@ -51,11 +51,11 @@ function ClubManagementDesktop() {
 
   return (
     <div className="flex flex-col h-full bg-white w-full">
-      <CMDesktopHeader onClickCreateNewClub={() => setIsDialogOpen(true)} />
+      <CMDesktopHeader onClickCreateNewClub={() => setIsCreateClubDialogOpen(true)} />
       <CMDesktopBody />
       <CreateClubDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
+        isOpen={isCreateClubDialogOpen}
+        onClose={() => setIsCreateClubDialogOpen(false)}
         onSubmit={handleCreateClub}
         loading={createClubLoading}
         error={createClubError}

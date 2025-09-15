@@ -6,8 +6,8 @@ export default function MobileLayout({ children }: { children: React.ReactNode }
   return (
     <>
       <MobileHeader />
-      <main className="pt-16">{children}</main>
-      <MobileFooter />
+      <main className="min-h-screen w-full bg-white pt-16 pb-16">{children}</main>
+      {/* <MobileFooter /> */}
       <BottomNavBar />
     </>
   );

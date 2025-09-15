@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Plus } from 'lucide-react';
 import AddStationDialog from '@/components/club-management/AddStationDialog';
 import { StationFormData } from '@/components/club-management/StationForm';
 import { 
@@ -64,7 +63,7 @@ function StationDetailsHeader() {
                 error={addStationError}      
             />
         </div>
-    )
+    );
 }
 
 export default StationDetailsHeader;
