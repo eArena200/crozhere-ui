@@ -31,7 +31,7 @@ function CMMobileHeader({onClickCreateNewClub}: CMMobileHeaderProps) {
               <select
                 value={selectedClubId || ''}
                 onChange={(e) => handleClubSelect(Number(e.target.value))}
-                className="appearance-none bg-white border border-gray-300 rounded-sm px-4 py-1.5 text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="appearance-none bg-white border border-gray-300 rounded-sm px-4 py-1.5 pr-8 text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {clubList.map((club) => (
                   <option key={club.clubId} value={club.clubId}>

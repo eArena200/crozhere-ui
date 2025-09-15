@@ -133,7 +133,7 @@ function TimeBasedSelection() {
       {Object.keys(timeBasedSelectionState.availableStations).length > 0 && (
         <div className="mt-4 rounded-md p-2">
           <h3 className="text-md font-semibold mb-2">Available Stations</h3>
-          <div className="grid grid-cols-5 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
             {Object.values(timeBasedSelectionState.availableStations).map((s) => (
               <BookingStation
                 key={s.stationId}

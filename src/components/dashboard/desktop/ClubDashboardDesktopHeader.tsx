@@ -68,8 +68,8 @@ function ClubDashboardDesktopHeader() {
           selectedClubId && (
             <Dialog open={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} className="relative z-70">
               <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-              <div className="fixed inset-0 flex items-center justify-center p-4">
-                <Dialog.Panel className="w-full max-w-[50vw] max-h-[100vh] overflow-y-auto rounded-md bg-white shadow-xl">
+              <div className="fixed inset-0 flex items-center justify-center p-2">
+                <Dialog.Panel className="w-full max-w-[50vw] max-h-[90vh] overflow-y-auto rounded-md bg-white shadow-xl">
                   <ClubBookingFlow clubId={selectedClubId} closeFlowHandler={() => {setIsBookingModalOpen(false)}}/>
                 </Dialog.Panel>
               </div>

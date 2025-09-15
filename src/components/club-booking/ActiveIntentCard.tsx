@@ -1,7 +1,8 @@
 import React from 'react';
-import { X } from 'lucide-react'; // Optional: Lucide icon for better UI
+import { X } from 'lucide-react';
 import { BookingIntentDetailsResponse } from '@/api/booking/model';
 import PaymentTimer from './PaymentTimer';
+import { toReadableDateTime } from '@/lib/date-time-util';
 
 type Props = {
   intent: BookingIntentDetailsResponse;
@@ -27,9 +28,9 @@ const ActiveIntentCard: React.FC<Props> = ({ intent, onClick, onCancel }) => {
               e.stopPropagation();
               onCancel?.();
             }}
-            className="text-gray-600 hover:text-blue-600 border rounded-sm"
+            className="text-gray-600 hover:text-blue-600 rounded-sm"
           >
-            <X size={16} />
+            <X size={20} />
           </button>
         </div>
       </div>
@@ -37,16 +38,15 @@ const ActiveIntentCard: React.FC<Props> = ({ intent, onClick, onCancel }) => {
       {/* Card Content */}
       <div className='px-2 py-1'>
         <div className="font-semibold text-blue-700">{intent.club.clubName}</div>
-        <div className='flex items-center justify-between'>
-          <div className="font-semibold text-gray-700">
-            {intent.intent.stationType}
-          </div>
-          <div>
-            {`${intent.intent.totalPlayerCount ?? 0} Players`}
-          </div>
+        <div> {intent.player.name} - {intent.player.playerPhoneNumber} </div>
+        <div>
+          {toReadableDateTime(intent.intent.startTime, true)} - {toReadableDateTime(intent.intent.endTime, true)}
+        </div>
+        <div className="font-medium text-gray-700">
+          {intent.intent.stationType} - {intent.intent.stations.map(s => s.stationName).join(', ')}
         </div>
         <div>
-          {new Date(intent.intent.startTime).toDateString()}
+          {`${intent.intent.totalPlayerCount ?? 0} Players`}
         </div>
       </div>
     </div>
