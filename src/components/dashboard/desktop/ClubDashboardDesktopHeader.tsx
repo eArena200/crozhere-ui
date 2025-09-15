@@ -1,11 +1,17 @@
+'use client';
+
 import Button from '@/components/ui/Button';
-import { selectClubDashboardState, setSelectedClubAndFetchDetails } from '@/redux/slices/club/dashboard/clubDashboardSlice';
+
 import { useDispatchRedux } from '@/redux/store';
 import { ChevronDown } from 'lucide-react';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Dialog } from '@headlessui/react';
 import ClubBookingFlow from '@/components/club-booking/ClubBookingFlow';
+import { 
+  selectClubDashboardState, 
+  setSelectedClubAndFetchDetails 
+} from '@/redux/slices/club/dashboard/clubDashboardSlice';
 
 function ClubDashboardDesktopHeader() {
   const dispatchRedux = useDispatchRedux();

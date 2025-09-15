@@ -1,6 +1,6 @@
 import React from 'react'
-import StationsStatusContent from './StationsStatusContent'
-import UpcomingBookings from './UpcomingBookings'
+import StationsStatusContent from '@/components/dashboard/desktop/activity/StationsStatusContent'
+import UpcomingBookings from '@/components/dashboard/desktop/upcoming/UpcomingBookings'
 import { useSelector } from 'react-redux'
 import { selectClubDashboardState } from '@/redux/slices/club/dashboard/clubDashboardSlice'
 import { Info } from 'lucide-react'

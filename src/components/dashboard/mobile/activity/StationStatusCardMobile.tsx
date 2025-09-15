@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { BookingDetailsResponse } from '@/api/booking/model';
 import { Clock, Info, Phone, User } from 'lucide-react';
-import CountdownTimer from '../CountdownTimer';
+import CountdownTimer from '@/components/dashboard/CountdownTimer';
 import { StationDetailsResponse } from '@/api/club/model';
 
 export enum StationAvailableStatus {
@@ -12,17 +12,17 @@ export enum StationAvailableStatus {
   INACTIVE
 }
 
-export interface StationStatusCardProps {
+export interface StationStatusCardMobileProps {
   stationDetails: StationDetailsResponse;
   currentBooking: BookingDetailsResponse | null;
   nextBooking: BookingDetailsResponse | null;
 }
 
-export default function StationStatusCard({
+export default function StationStatusCardMobile({
   stationDetails,
   currentBooking,
   nextBooking,
-}: StationStatusCardProps) {
+}: StationStatusCardMobileProps) {
   const [timeRemaining, setTimeRemaining] = useState<string | null>(null);
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function StationStatusCard({
   };
 
   return (
-    <div className="rounded shadow-md border-1 border-gray-400 text-sm overflow-hidden h-full min-h-40 w-full flex flex-1 p-1 space-x-1">
+    <div className="rounded shadow-md border-1 border-gray-400 text-sm overflow-hidden min-h-40 w-full flex flex-1 p-1 space-x-1">
       {/* Status bar and name */}
       <div className={`flex w-1/6 rounded-sm h-full text-white items-center justify-center font-semibold ${statusColor}`}>
           {stationDetails.stationName}

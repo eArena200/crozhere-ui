@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import BookingListItem from './UpcomingBookingListItem';
+import BookingListItem from '@/components/dashboard/desktop/upcoming/UpcomingBookingListItem';
 import { useDispatchRedux } from '@/redux/store';
 import { useSelector } from 'react-redux';
 import {
@@ -12,6 +12,7 @@ import { Dialog } from '@headlessui/react';
 import { X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { BookingDetailsResponse } from '@/api/booking/model';
+import { toReadableDateTime } from '@/lib/date-time-util';
 
 export default function UpcomingBookings({ clubId }: { clubId: number }) {
   const dispatchRedux = useDispatchRedux();
@@ -112,11 +113,11 @@ export default function UpcomingBookings({ clubId }: { clubId: number }) {
                       </dd>
                       <dt className="font-medium text-gray-600">Start Time</dt>
                       <dd className="text-gray-900">
-                        {selectedBooking.booking.startTime}
+                        {toReadableDateTime(selectedBooking.booking.startTime, true)}
                       </dd>
                       <dt className="font-medium text-gray-600">End Time</dt>
                       <dd className="text-gray-900">
-                        {selectedBooking.booking.endTime}
+                        {toReadableDateTime(selectedBooking.booking.endTime, true)}
                       </dd>
                     </dl>
                   </div>
@@ -144,10 +145,14 @@ export default function UpcomingBookings({ clubId }: { clubId: number }) {
                             <ul className="mt-2 space-y-1 text-sm text-gray-600">
                               {breakup.details.map((item, j) => (
                                 <li key={j} className="flex justify-between">
-                                  <span>
-                                    {item.subCategory} ({item.qty} {item.qtyUnit} × ₹
-                                    {item.rate}/{item.rateUnit})
-                                  </span>
+                                  <div className='flex flex-col justify-start'>
+                                    <span>
+                                      {item.subCategory}
+                                    </span>
+                                    <span className='text-xs'>
+                                      ({item.qty} {item.qtyUnit} × ₹ {item.rate}/{item.rateUnit})
+                                    </span>
+                                  </div>
                                   <span className="font-medium text-gray-900">
                                     ₹{item.amount}
                                   </span>

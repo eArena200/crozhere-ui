@@ -92,7 +92,7 @@ function CMMobileBody() {
                 }
             </div>
         </div>
-  )
+    );
 }
 
 export default CMMobileBody;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StationType } from '@/lib/types/station';
-import StationStatusCard, { StationAvailableStatus } from './StationStatusCard';
+import StationStatusCard from '@/components/dashboard/desktop/activity/StationStatusCard';
 import { DashboardStationBookingStatus } from '@/api/booking/model';
 import { StationDetailsResponse } from '@/api/club/model';
 
