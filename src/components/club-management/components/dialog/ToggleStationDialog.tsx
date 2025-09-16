@@ -4,7 +4,7 @@ import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { X, Power } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import DialogLoader from './DialogLoader';
+import DialogLoader from '@/components/club-management/components/dialog/DialogLoader';
 
 interface ToggleStationDialogProps {
   isOpen: boolean;

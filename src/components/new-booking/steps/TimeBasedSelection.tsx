@@ -11,8 +11,7 @@ import {
   setTimeBasedState,
 } from '@/redux/slices/booking/bookingSlice';
 import { checkAvailByTimeApi, CheckAvailByTimeRequest, StationAvailability } from '@/api/club/clubAvailabilityApi';
-import { StationType } from '@/lib/types/station';
-import BookingStation from '../BookingStation';
+import BookingStation from '@/components/new-booking/BookingStation';
 import { localToUTCISOString, utcToLocalISOString } from '@/lib/date-time-util';
 
 function TimeBasedSelection() {

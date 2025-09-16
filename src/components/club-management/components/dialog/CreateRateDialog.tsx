@@ -4,23 +4,21 @@ import React from "react";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
 import Button from "@/components/ui/Button";
-import RateChargeForm, { RateChargeFormData } from "@/components/club-management/RateChargeForm";
-import DialogLoader from "@/components/club-management/DialogLoader";
+import RateForm, { RateFormData } from "@/components/club-management/components/forms/RateForm";
+import DialogLoader from "@/components/club-management/components/dialog/DialogLoader";
 
-interface EditRateChargeDialogProps {
+interface CreateRateDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: RateChargeFormData) => void;
-  initialData: RateChargeFormData;
+  onSubmit: (data: RateFormData) => void;
   loading: boolean;
   error?: string;
 }
 
-const EditRateChargeDialog: React.FC<EditRateChargeDialogProps> = ({
+const CreateRateDialog: React.FC<CreateRateDialogProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  initialData,
   loading,
   error,
 }) => {
@@ -28,7 +26,7 @@ const EditRateChargeDialog: React.FC<EditRateChargeDialogProps> = ({
     if (!loading) onClose();
   };
 
-  const handleSubmit = (data: RateChargeFormData) => {
+  const handleSubmit = (data: RateFormData) => {
     if (!loading) {
       onSubmit(data);
     }
@@ -39,13 +37,13 @@ const EditRateChargeDialog: React.FC<EditRateChargeDialogProps> = ({
       {/* Overlay */}
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
-      {/* Dialog Panel */}
+      {/* Panel */}
       <div className="fixed inset-0 flex items-center justify-center p-4">
         <Dialog.Panel className="mx-auto w-full max-w-md rounded-2xl bg-white shadow-xl max-h-[90vh] flex flex-col relative">
           {/* Header */}
           <div className="flex items-center justify-between border-b p-6">
             <Dialog.Title className="text-xl font-semibold text-gray-900">
-              Edit Charge
+              Create New Rate
             </Dialog.Title>
             <button
               onClick={handleClose}
@@ -58,19 +56,17 @@ const EditRateChargeDialog: React.FC<EditRateChargeDialogProps> = ({
             </button>
           </div>
 
-          {/* Scrollable Content */}
+          {/* Scrollable form content */}
           <div className="overflow-y-auto p-6 flex-1 relative">
-            <RateChargeForm
-              initialData={initialData}
-              onSubmit={handleSubmit}
-            />
+            <RateForm onSubmit={handleSubmit} />
 
             {error && (
               <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
             )}
 
+            {/* Loading Overlay */}
             {loading && (
-              <DialogLoader message="Updating charge..." />
+              <DialogLoader message="Creating rate..." />
             )}
           </div>
 
@@ -86,11 +82,11 @@ const EditRateChargeDialog: React.FC<EditRateChargeDialogProps> = ({
             </Button>
             <Button
               type="submit"
-              form="rate-charge-form"
+              form="rate-form"
               variant="primary"
               disabled={loading}
             >
-              {loading ? "Updating..." : "Update Charge"}
+              {loading ? "Creating..." : "Create Rate"}
             </Button>
           </div>
         </Dialog.Panel>
@@ -99,4 +95,4 @@ const EditRateChargeDialog: React.FC<EditRateChargeDialogProps> = ({
   );
 };
 
-export default React.memo(EditRateChargeDialog);
+export default React.memo(CreateRateDialog);

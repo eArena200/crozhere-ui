@@ -5,7 +5,7 @@ import { Calendar, ChevronDown } from 'lucide-react';
 
 import { Dialog } from '@headlessui/react';
 import Button from '@/components/ui/Button';
-import ClubBookingFlow from '@/components/club-booking/ClubBookingFlow';
+import ClubBookingFlow from '@/components/new-booking/ClubBookingFlow';
 import { ClubResponse } from '@/api/club/model';
 
 interface CBDesktopHeaderProps {

@@ -11,7 +11,7 @@ import {
   checkAvailByStationsApi,
 } from '@/api/club/clubAvailabilityApi';
 import { StationType } from '@/lib/types/station';
-import BookingStation from '../BookingStation';
+import BookingStation from '@/components/new-booking/BookingStation';
 import { localToUTCISOString, toReadableDateTime, utcToLocalISOString } from '@/lib/date-time-util';
 
 function StationBasedSelection() {

@@ -4,19 +4,19 @@ import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { X, Trash2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import DialogLoader from '@/components/club-management/DialogLoader';
+import DialogLoader from '@/components/club-management/components/dialog/DialogLoader';
 
-interface DeleteRateChargeDialogProps {
-  rateChargeId: number;
+interface DeleteRateDialogProps {
+  rateId: number;
   isOpen: boolean;
   onClose: () => void;
-  onDelete: (chargeId: number) => void;
+  onDelete: (rateId: number) => void;
   loading: boolean;
   error?: string;
 }
 
-const DeleteRateChargeDialog: React.FC<DeleteRateChargeDialogProps> = ({
-  rateChargeId,
+const DeleteRateDialog: React.FC<DeleteRateDialogProps> = ({
+  rateId,
   isOpen,
   onClose,
   onDelete,
@@ -28,7 +28,7 @@ const DeleteRateChargeDialog: React.FC<DeleteRateChargeDialogProps> = ({
   };
 
   const handleDelete = () => {
-    if (!loading) onDelete(rateChargeId);
+    if (!loading) onDelete(rateId);
   };
 
   return (
@@ -42,7 +42,7 @@ const DeleteRateChargeDialog: React.FC<DeleteRateChargeDialogProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between border-b p-6">
             <Dialog.Title className="text-xl font-semibold text-gray-900">
-              Delete Rate Charge
+              Delete Rate
             </Dialog.Title>
             <button
               onClick={handleClose}
@@ -58,7 +58,7 @@ const DeleteRateChargeDialog: React.FC<DeleteRateChargeDialogProps> = ({
           {/* Content */}
           <div className="p-6 flex-1 relative">
             <p className="text-black text-md">
-              Are you sure you want to delete this charge?
+              Are you sure you want to delete this rate?
             </p>
             <p className="text-gray-600 text-xs mb-4">
               Note: This action cannot be undone.
@@ -70,7 +70,7 @@ const DeleteRateChargeDialog: React.FC<DeleteRateChargeDialogProps> = ({
 
             {/* Loading Overlay */}
             {loading && (
-              <DialogLoader message="Deleting charge..." /> 
+              <DialogLoader message="Deleting rate..." />
             )}
           </div>
 
@@ -101,4 +101,4 @@ const DeleteRateChargeDialog: React.FC<DeleteRateChargeDialogProps> = ({
   );
 };
 
-export default React.memo(DeleteRateChargeDialog);
+export default React.memo(DeleteRateDialog);

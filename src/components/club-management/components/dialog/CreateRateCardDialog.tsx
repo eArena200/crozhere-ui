@@ -4,18 +4,20 @@ import React from "react";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
 import Button from "@/components/ui/Button";
-import RateChargeForm, { RateChargeFormData } from "@/components/club-management/RateChargeForm";
-import DialogLoader from "@/components/club-management/DialogLoader";
+import RateCardForm, {
+  RateCardFormData,
+} from "@/components/club-management/components/forms/RateCardForm";
+import DialogLoader from "@/components/club-management/components/dialog/DialogLoader";
 
-interface CreateRateChargeDialogProps {
+interface CreateRateCardDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: RateChargeFormData) => void;
+  onSubmit: (data: RateCardFormData) => void;
   loading: boolean;
   error?: string;
 }
 
-const CreateRateChargeDialog: React.FC<CreateRateChargeDialogProps> = ({
+const CreateRateCardDialog: React.FC<CreateRateCardDialogProps> = ({
   isOpen,
   onClose,
   onSubmit,
@@ -26,10 +28,8 @@ const CreateRateChargeDialog: React.FC<CreateRateChargeDialogProps> = ({
     if (!loading) onClose();
   };
 
-  const handleSubmit = (data: RateChargeFormData) => {
-    if (!loading) {
-      onSubmit(data);
-    }
+  const handleSubmit = (data: RateCardFormData) => {
+    if (!loading) onSubmit(data);
   };
 
   return (
@@ -43,7 +43,7 @@ const CreateRateChargeDialog: React.FC<CreateRateChargeDialogProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between border-b p-6">
             <Dialog.Title className="text-xl font-semibold text-gray-900">
-              Create New Charge
+              Create New Rate-Card
             </Dialog.Title>
             <button
               onClick={handleClose}
@@ -56,9 +56,9 @@ const CreateRateChargeDialog: React.FC<CreateRateChargeDialogProps> = ({
             </button>
           </div>
 
-          {/* Scrollable Form Content */}
+          {/* Scrollable form content */}
           <div className="overflow-y-auto p-6 flex-1 relative">
-            <RateChargeForm onSubmit={handleSubmit} />
+            <RateCardForm onSubmit={handleSubmit} />
 
             {error && (
               <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
@@ -66,7 +66,7 @@ const CreateRateChargeDialog: React.FC<CreateRateChargeDialogProps> = ({
 
             {/* Loading Overlay */}
             {loading && (
-              <DialogLoader message="Creating charge..." />
+              <DialogLoader message="Creating rate card..." />
             )}
           </div>
 
@@ -82,11 +82,11 @@ const CreateRateChargeDialog: React.FC<CreateRateChargeDialogProps> = ({
             </Button>
             <Button
               type="submit"
-              form="rate-charge-form"
+              form="rate-card-form"
               variant="primary"
               disabled={loading}
             >
-              {loading ? "Creating..." : "Create Charge"}
+              {loading ? "Creating..." : "Create RateCard"}
             </Button>
           </div>
         </Dialog.Panel>
@@ -95,4 +95,4 @@ const CreateRateChargeDialog: React.FC<CreateRateChargeDialogProps> = ({
   );
 };
 
-export default React.memo(CreateRateChargeDialog);
+export default React.memo(CreateRateCardDialog);

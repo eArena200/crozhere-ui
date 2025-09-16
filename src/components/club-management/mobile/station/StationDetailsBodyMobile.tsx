@@ -6,7 +6,7 @@ import { StationType } from '@/lib/types/station';
 import { useSelector } from 'react-redux';
 import { 
   selectSelectedClubStationState
-} from '@/redux/slices/club/clubManagementSlice';
+} from '@/redux/slices/club/management/clubManagementSlice';
 import { StationDetailsResponse } from '@/api/club/model';
 import { Gamepad } from 'lucide-react';
 import StationDetailsCardMobile from '@/components/club-management/mobile/station/StationDetailsCardMobile';

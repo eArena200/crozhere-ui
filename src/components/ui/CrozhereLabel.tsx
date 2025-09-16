@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import Logo from './Logo';
+import Logo from '@/components/ui/Logo';
 
 interface CrozhereLabelProps {
     showLogo?: boolean;

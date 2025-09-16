@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ClubDashboardState } from "./state";
+import { ClubDashboardState } from "@/redux/slices/club/dashboard/state";
 import { BookingDetailsResponse, DashboardStationBookingStatus } from "@/api/booking/model";
 import { RootState } from "@/redux/store";
 import { getDashboardStationStatusApi, getUpcomingBookingsForClubApi } from "@/api/booking/clubBookingApi";

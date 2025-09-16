@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Star, MapPin, Clock, Phone, Gamepad2 } from 'lucide-react';
 import { cn } from "@/lib/utils";
 import { Club } from "@/lib/types/club";
-import Button from './Button';
+import Button from '@/components/ui/Button';
 
 interface ClubCardProps {
   club: Club;

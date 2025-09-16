@@ -3,21 +3,21 @@
 import React, { useState } from 'react';
 import { Pencil, Plus, Trash2 } from 'lucide-react';
 import { useSelector } from 'react-redux';
-import EditRateDialog from '@/components/club-management/EditRateDialog';
-import { RateFormData } from '@/components/club-management/RateForm';
+import EditRateDialog from '@/components/club-management/components/dialog/EditRateDialog';
+import { RateFormData } from '@/components/club-management/components/forms/RateForm';
 import { useDispatchRedux } from '@/redux/store';
 import { 
     addRateCharge,
     deleteRate,
     selectSelectedClubRateState,
     updateRate,
-} from '@/redux/slices/club/clubManagementSlice';
+} from '@/redux/slices/club/management/clubManagementSlice';
 import { 
     RateResponse
 } from '@/api/club/model';
-import { RateChargeFormData } from '@/components/club-management/RateChargeForm';
-import CreateRateChargeDialog from '@/components/club-management/CreateRateChargeDialog';
-import DeleteRateDialog from '@/components/club-management/DeleteRateDialog';
+import { RateChargeFormData } from '@/components/club-management/components/forms/RateChargeForm';
+import CreateRateChargeDialog from '@/components/club-management/components/dialog/CreateRateChargeDialog';
+import DeleteRateDialog from '@/components/club-management/components/dialog/DeleteRateDialog';
 
 interface RateHeaderMobileProps {
   rateDetails: RateResponse;

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectSelectedClubRateState } from '@/redux/slices/club/clubManagementSlice';
+import { selectSelectedClubRateState } from '@/redux/slices/club/management/clubManagementSlice';
 import { Info } from 'lucide-react';
 import RateCard from '@/components/club-management/desktop/rate/RateCard';
 

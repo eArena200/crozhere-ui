@@ -9,9 +9,9 @@ import {
   verifyOtpApi, 
   sendOtpApi
 } from '@/api/auth/authApi';
-import { loadClubAdminById } from "../user/club-admin/clubAdminSlice";
+import { loadClubAdminById } from "@/redux/slices/user/club-admin/clubAdminSlice";
 import { RootState, persistor } from "@/redux/store";
-import { loadPlayerById } from "../user/player/playerSlice";
+import { loadPlayerById } from "@/redux/slices/user/player/playerSlice";
 import { AuthState } from "@/redux/slices/auth/state";
 
 // THUNKS

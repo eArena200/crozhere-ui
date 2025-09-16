@@ -7,8 +7,8 @@ import {
   selectStationBookingStatusMap 
 } from '@/redux/slices/club/dashboard/clubDashboardSlice';
 import { StationType } from '@/lib/types/station';
-import StationsStatusHeaderMobile from './StationsStatusHeaderMobile';
-import StationsStatusBodyMobile from './StationsStatusBodyMobile';
+import StationsStatusHeaderMobile from '@/components/dashboard/mobile/activity/StationsStatusHeaderMobile';
+import StationsStatusBodyMobile from '@/components/dashboard/mobile/activity/StationsStatusBodyMobile';
 import { Gamepad } from 'lucide-react';
 
 function StationsStatusContentMobile() {

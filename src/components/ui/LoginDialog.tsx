@@ -2,7 +2,7 @@
 import { useReducer } from "react";
 import { useDispatchRedux } from "@/redux/store";
 import { useRouter } from "next/navigation";
-import Button from "./Button";
+import Button from "@/components/ui/Button";
 import { loginWithOtpAction, selectAuthIsLoading, sendOtpAction } from "@/redux/slices/auth/authSlice";
 import { useSelector } from "react-redux";
 import { VerifyAuthRequest } from "@/api/auth/model";

@@ -3,8 +3,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { StationType } from '@/lib/types/station';
-import TimeBasedSelection from '@/components/club-booking/steps/TimeBasedSelection';
-import StationBasedSelection from '@/components/club-booking/steps/StationBasedSelection';
+import TimeBasedSelection from '@/components/new-booking/steps/TimeBasedSelection';
+import StationBasedSelection from '@/components/new-booking/steps/StationBasedSelection';
 import {
   setBookingMode,
   setSelectedStationType,
@@ -20,7 +20,7 @@ import {
   selectBookingPlayerState
 } from '@/redux/slices/booking/bookingSlice';
 import { useDispatchRedux } from '@/redux/store';
-import ActiveIntentCard from '@/components/club-booking/ActiveIntentCard';
+import ActiveIntentCard from '@/components/new-booking/ActiveIntentCard';
 import { BookingSelectionMode } from '@/redux/slices/booking/state';
 import { selectAuthState } from '@/redux/slices/auth/authSlice';
 import { DeviceTypes, useDeviceType } from '@/lib/hooks/useDeviceType';

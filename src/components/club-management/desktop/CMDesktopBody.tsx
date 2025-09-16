@@ -5,7 +5,7 @@ import RateCardDetails from '@/components/club-management/desktop/rate/RateCardD
 import ClubDetails from '@/components/club-management/desktop/club/ClubDetails';
 import StationDetails from '@/components/club-management/desktop/station/StationDetails';
 import { useSelector } from 'react-redux';
-import { selectClubManagementState } from '@/redux/slices/club/clubManagementSlice';
+import { selectClubManagementState } from '@/redux/slices/club/management/clubManagementSlice';
 import { Building2 } from 'lucide-react';
 
 enum ActiveSection {

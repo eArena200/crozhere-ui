@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import BookingListItem from '@/components/dashboard/desktop/upcoming/UpcomingBookingListItem';
 import { useDispatchRedux } from '@/redux/store';
 import { useSelector } from 'react-redux';
 import {
@@ -13,7 +12,7 @@ import { Ticket, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { BookingDetailsResponse } from '@/api/booking/model';
 import BookingSummaryMobile from '@/components/dashboard/mobile/upcoming/BookingSummaryMobile';
-import UpcomingBookingListItemMobile from './UpcomingBookingsListItemMobile';
+import UpcomingBookingListItemMobile from '@/components/dashboard/mobile/upcoming/UpcomingBookingsListItemMobile';
 
 export default function UpcomingBookingsMobile({ clubId }: { clubId: number }) {
   const dispatchRedux = useDispatchRedux();

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import {
   selectSelectedClubDetailState,
   updateClubDetails,
-} from "@/redux/slices/club/clubManagementSlice";
+} from "@/redux/slices/club/management/clubManagementSlice";
 import { useDispatchRedux } from "@/redux/store";
 import { 
   Building2, MapPin, Clock, 
@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { selectAuthRoleBasedId } from "@/redux/slices/auth/authSlice";
-import { ClubFormData } from "@/components/club-management/ClubForm";
-import EditClubDialog from "@/components/club-management/EditClubDialog";
+import { ClubFormData } from "@/components/club-management/components/forms/ClubForm";
+import EditClubDialog from "@/components/club-management/components/dialog/EditClubDialog";
 import { ClubResponse } from "@/api/club/model";
 
 interface ClubDetailsMobileProps {

@@ -2,13 +2,13 @@
 
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import AddStationDialog from '@/components/club-management/AddStationDialog';
-import { StationFormData } from '@/components/club-management/StationForm';
+import AddStationDialog from '@/components/club-management/components/dialog/AddStationDialog';
+import { StationFormData } from '@/components/club-management/components/forms/StationForm';
 import { 
   addNewStation,
   selectSelectedClubId,
   selectSelectedClubStationState
-} from '@/redux/slices/club/clubManagementSlice';
+} from '@/redux/slices/club/management/clubManagementSlice';
 import { useDispatchRedux } from '@/redux/store';
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import Button from '@/components/ui/Button';

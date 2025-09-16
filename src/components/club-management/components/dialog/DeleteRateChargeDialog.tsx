@@ -4,22 +4,22 @@ import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { X, Trash2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import DialogLoader from '@/components/club-management/DialogLoader';
+import DialogLoader from '@/components/club-management/components/dialog/DialogLoader';
 
-interface DeleteStationDialogProps {
+interface DeleteRateChargeDialogProps {
+  rateChargeId: number;
   isOpen: boolean;
   onClose: () => void;
-  onDelete: (stationId: number) => void;
-  stationId: number;
+  onDelete: (chargeId: number) => void;
   loading: boolean;
   error?: string;
 }
 
-const DeleteStationDialog: React.FC<DeleteStationDialogProps> = ({
+const DeleteRateChargeDialog: React.FC<DeleteRateChargeDialogProps> = ({
+  rateChargeId,
   isOpen,
   onClose,
   onDelete,
-  stationId,
   loading,
   error,
 }) => {
@@ -28,23 +28,21 @@ const DeleteStationDialog: React.FC<DeleteStationDialogProps> = ({
   };
 
   const handleDelete = () => {
-    if (!loading) {
-      onDelete(stationId);
-    }
+    if (!loading) onDelete(rateChargeId);
   };
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} className="relative z-70">
+    <Dialog open={isOpen} onClose={handleClose} className="relative z-50">
       {/* Overlay */}
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
       {/* Panel */}
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="mx-auto w-full max-w-md rounded-lg bg-white shadow-xl max-h-[90vh] flex flex-col relative">
+        <Dialog.Panel className="mx-auto w-full max-w-md rounded-2xl bg-white shadow-xl max-h-[90vh] flex flex-col relative">
           {/* Header */}
-          <div className="flex items-center justify-between border-b p-4">
-            <Dialog.Title className="text-md font-semibold text-gray-900">
-              Delete Station
+          <div className="flex items-center justify-between border-b p-6">
+            <Dialog.Title className="text-xl font-semibold text-gray-900">
+              Delete Rate Charge
             </Dialog.Title>
             <button
               onClick={handleClose}
@@ -60,7 +58,7 @@ const DeleteStationDialog: React.FC<DeleteStationDialogProps> = ({
           {/* Content */}
           <div className="p-6 flex-1 relative">
             <p className="text-black text-md">
-              Are you sure you want to delete this station?
+              Are you sure you want to delete this charge?
             </p>
             <p className="text-gray-600 text-xs mb-4">
               Note: This action cannot be undone.
@@ -72,7 +70,7 @@ const DeleteStationDialog: React.FC<DeleteStationDialogProps> = ({
 
             {/* Loading Overlay */}
             {loading && (
-              <DialogLoader message="Deleting station..." />
+              <DialogLoader message="Deleting charge..." /> 
             )}
           </div>
 
@@ -94,7 +92,7 @@ const DeleteStationDialog: React.FC<DeleteStationDialogProps> = ({
               className="flex items-center"
             >
               <Trash2 className="h-4 w-4 mr-2" />
-              {loading ? 'Deleting...' : 'Delete Station'}
+              {loading ? 'Deleting...' : 'Delete'}
             </Button>
           </div>
         </Dialog.Panel>
@@ -103,4 +101,4 @@ const DeleteStationDialog: React.FC<DeleteStationDialogProps> = ({
   );
 };
 
-export default React.memo(DeleteStationDialog);
+export default React.memo(DeleteRateChargeDialog);

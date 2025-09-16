@@ -1,7 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
 import { BookingIntentDetailsResponse } from '@/api/booking/model';
-import PaymentTimer from './PaymentTimer';
+import PaymentTimer from '@/components/new-booking/PaymentTimer';
 import { toReadableDateTime } from '@/lib/date-time-util';
 
 type Props = {

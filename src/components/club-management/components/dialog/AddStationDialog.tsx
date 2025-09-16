@@ -3,24 +3,22 @@
 import React from 'react';
 import { Dialog } from '@headlessui/react';
 import { X } from 'lucide-react';
-import StationForm, { StationFormData } from '@/components/club-management/StationForm';
+import StationForm, { StationFormData } from '@/components/club-management/components/forms/StationForm';
 import Button from '@/components/ui/Button';
-import DialogLoader from '@/components/club-management/DialogLoader';
+import DialogLoader from '@/components/club-management/components/dialog/DialogLoader';
 
-interface EditStationDialogProps {
+interface AddStationDialogProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: StationFormData) => void;
-  initialData: StationFormData;
   loading: boolean;
   error?: string;
 }
 
-const EditStationDialog: React.FC<EditStationDialogProps> = ({
+const AddStationDialog: React.FC<AddStationDialogProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  initialData,
   loading,
   error,
 }) => {
@@ -43,7 +41,7 @@ const EditStationDialog: React.FC<EditStationDialogProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between border-b p-6">
             <Dialog.Title className="text-xl font-semibold text-gray-900">
-              Edit Station
+              Add New Station
             </Dialog.Title>
             <button
               onClick={handleClose}
@@ -59,8 +57,6 @@ const EditStationDialog: React.FC<EditStationDialogProps> = ({
           {/* Scrollable Form Content */}
           <div className="overflow-y-auto p-6 flex-1 relative">
             <StationForm
-              isEditMode
-              initialData={initialData}
               onSubmit={handleSubmit}
               onCancel={handleClose}
             />
@@ -71,7 +67,7 @@ const EditStationDialog: React.FC<EditStationDialogProps> = ({
 
             {/* Loading Overlay */}
             {loading && (
-              <DialogLoader message="Updating station..." />
+              <DialogLoader message="Adding station..." />
             )}
           </div>
 
@@ -91,7 +87,7 @@ const EditStationDialog: React.FC<EditStationDialogProps> = ({
               variant="primary"
               disabled={loading}
             >
-              {loading ? 'Updating...' : 'Update Station'}
+              {loading ? 'Adding...' : 'Add Station'}
             </Button>
           </div>
         </Dialog.Panel>
@@ -100,4 +96,4 @@ const EditStationDialog: React.FC<EditStationDialogProps> = ({
   );
 };
 
-export default React.memo(EditStationDialog);
+export default React.memo(AddStationDialog);

@@ -1,4 +1,4 @@
-import { StationType } from "./station";
+import { StationType } from "@/lib/types/station";
 
 export enum BookingStep {
     SELECTION = "SELECTION",

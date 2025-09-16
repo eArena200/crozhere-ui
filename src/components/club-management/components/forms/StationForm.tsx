@@ -6,7 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { StationType, StationTypeOptions } from '@/lib/types/station';
 import { useSelector } from 'react-redux';
-import { RateCardState, selectSelectedClubRateState } from '@/redux/slices/club/clubManagementSlice';
+import { selectSelectedClubRateState } from '@/redux/slices/club/management/clubManagementSlice';
+import { RateCardState } from '@/redux/slices/club/management/state';
 
 export const stationSchema = z.object({
     stationName: z.string().min(1, 'Station name is required'),

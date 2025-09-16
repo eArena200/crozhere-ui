@@ -7,13 +7,13 @@ import {
     deleteRateCharge,
     selectSelectedClubRateState,
     updateRateCharge 
-} from '@/redux/slices/club/clubManagementSlice';
+} from '@/redux/slices/club/management/clubManagementSlice';
 import { 
     RateChargeResponse
 } from '@/api/club/model';
-import { RateChargeFormData } from '@/components/club-management/RateChargeForm';
-import EditRateChargeDialog from '@/components/club-management/EditRateChargeDialog';
-import DeleteRateChargeDialog from '@/components/club-management/DeleteRateChargeDialog';
+import { RateChargeFormData } from '@/components/club-management/components/forms/RateChargeForm';
+import EditRateChargeDialog from '@/components/club-management/components/dialog/EditRateChargeDialog';
+import DeleteRateChargeDialog from '@/components/club-management/components/dialog/DeleteRateChargeDialog';
 import { useSelector } from 'react-redux';
 import { ChargeUnit } from '@/lib/types/rate';
 

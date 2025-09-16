@@ -7,7 +7,7 @@ import StationDetailsCard from '@/components/club-management/desktop/station/Sta
 import { useSelector } from 'react-redux';
 import { 
   selectSelectedClubStationState
-} from '@/redux/slices/club/clubManagementSlice';
+} from '@/redux/slices/club/management/clubManagementSlice';
 import { StationDetailsResponse } from '@/api/club/model';
 import { Gamepad } from 'lucide-react';
 

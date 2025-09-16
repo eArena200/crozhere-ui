@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import StationsStatusHeader from './StationsStatusHeader';
-import StationsStatusBody from './StationsStatusBody';
+import StationsStatusHeader from '@/components/dashboard/desktop/activity/StationsStatusHeader';
+import StationsStatusBody from '@/components/dashboard/desktop/activity/StationsStatusBody';
 import { useSelector } from 'react-redux';
 import { selectClubSupportedStations, selectStationBookingStatusMap } from '@/redux/slices/club/dashboard/clubDashboardSlice';
 import { StationType } from '@/lib/types/station';

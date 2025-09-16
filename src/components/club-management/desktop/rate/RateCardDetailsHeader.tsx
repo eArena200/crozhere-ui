@@ -8,10 +8,10 @@ import {
   selectSelectedClubId, 
   selectSelectedClubRateState,
   setSelectedRateCardId,
-} from '@/redux/slices/club/clubManagementSlice';
-import CreateRateCardDialog from '@/components/club-management/CreateRateCardDialog';
+} from '@/redux/slices/club/management/clubManagementSlice';
+import CreateRateCardDialog from '@/components/club-management/components/dialog/CreateRateCardDialog';
 import { useDispatchRedux } from '@/redux/store';
-import { RateCardFormData } from '@/components/club-management/RateCardForm';
+import { RateCardFormData } from '@/components/club-management/components/forms/RateCardForm';
 
 function RateCardDetailsHeader() {
   const dispatchRedux = useDispatchRedux();

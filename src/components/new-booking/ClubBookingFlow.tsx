@@ -12,10 +12,10 @@ import {
   fetchAndSetActiveIntents,
   cancelBookingIntent,
 } from '@/redux/slices/booking/bookingSlice';
-import SelectTimeOrStationStep from './steps/SelectTimeOrStationStep';
-import Button from '../ui/Button';
-import PaymentStep from './steps/PaymentStep';
-import BookingConfirmationStep from './steps/BookingConfirmationStep';
+import SelectTimeOrStationStep from '@/components/new-booking/steps/SelectTimeOrStationStep';
+import Button from '@/components/ui/Button';
+import PaymentStep from '@/components/new-booking/steps/PaymentStep';
+import BookingConfirmationStep from '@/components/new-booking/steps/BookingConfirmationStep';
 import { BookingStep } from '@/lib/types/bookings';
 import { BookingSelectionMode, ClubBookingFlowState } from '@/redux/slices/booking/state';
 import { selectAuthUser } from '@/redux/slices/auth/authSlice';

@@ -1,8 +1,8 @@
 'use client';
 
 import { Game } from "@/lib/types/games";
-import GameCard from "./GameCard";
-import Button from "./Button";
+import GameCard from "@/components/ui/GameCard";
+import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { useRouter } from 'next/navigation';
 import { StationType } from "@/lib/types/station";

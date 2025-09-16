@@ -4,32 +4,35 @@ import React from "react";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
 import Button from "@/components/ui/Button";
-import RateCardForm, {
-  RateCardFormData,
-} from "@/components/club-management/RateCardForm";
-import DialogLoader from "@/components/club-management/DialogLoader";
+import RateForm, { RateFormData } from "@/components/club-management/components/forms/RateForm";
+import DialogLoader from "@/components/club-management/components/dialog/DialogLoader";
 
-interface CreateRateCardDialogProps {
+interface EditRateDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: RateCardFormData) => void;
+  onSubmit: (data: RateFormData) => void;
+  initialData: RateFormData;
   loading: boolean;
   error?: string;
 }
 
-const CreateRateCardDialog: React.FC<CreateRateCardDialogProps> = ({
+const EditRateDialog: React.FC<EditRateDialogProps> = ({
   isOpen,
   onClose,
   onSubmit,
+  initialData,
   loading,
   error,
 }) => {
+
   const handleClose = () => {
     if (!loading) onClose();
   };
 
-  const handleSubmit = (data: RateCardFormData) => {
-    if (!loading) onSubmit(data);
+  const handleSubmit = (data: RateFormData) => {
+    if (!loading) {
+      onSubmit(data);
+    }
   };
 
   return (
@@ -43,7 +46,7 @@ const CreateRateCardDialog: React.FC<CreateRateCardDialogProps> = ({
           {/* Header */}
           <div className="flex items-center justify-between border-b p-6">
             <Dialog.Title className="text-xl font-semibold text-gray-900">
-              Create New Rate-Card
+              Edit Rate
             </Dialog.Title>
             <button
               onClick={handleClose}
@@ -56,9 +59,9 @@ const CreateRateCardDialog: React.FC<CreateRateCardDialogProps> = ({
             </button>
           </div>
 
-          {/* Scrollable form content */}
+          {/* Scrollable Content */}
           <div className="overflow-y-auto p-6 flex-1 relative">
-            <RateCardForm onSubmit={handleSubmit} />
+            <RateForm initialData={initialData} onSubmit={handleSubmit} />
 
             {error && (
               <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
@@ -66,7 +69,7 @@ const CreateRateCardDialog: React.FC<CreateRateCardDialogProps> = ({
 
             {/* Loading Overlay */}
             {loading && (
-              <DialogLoader message="Creating rate card..." />
+              <DialogLoader message="Updating rate..." />
             )}
           </div>
 
@@ -82,11 +85,11 @@ const CreateRateCardDialog: React.FC<CreateRateCardDialogProps> = ({
             </Button>
             <Button
               type="submit"
-              form="rate-card-form"
+              form="rate-form"
               variant="primary"
               disabled={loading}
             >
-              {loading ? "Creating..." : "Create RateCard"}
+              {loading ? "Updating..." : "Update Rate"}
             </Button>
           </div>
         </Dialog.Panel>
@@ -95,4 +98,4 @@ const CreateRateCardDialog: React.FC<CreateRateCardDialogProps> = ({
   );
 };
 
-export default React.memo(CreateRateCardDialog);
+export default React.memo(EditRateDialog);

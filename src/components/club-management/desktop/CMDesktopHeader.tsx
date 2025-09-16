@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { 
   selectClubManagementState,
   setSelectedClubAndFetchDetails
-} from '@/redux/slices/club/clubManagementSlice';
+} from '@/redux/slices/club/management/clubManagementSlice';
 import { useDispatchRedux } from '@/redux/store';
 
 interface CMDesktopHeaderProps {

@@ -7,7 +7,7 @@ import { ChevronDown } from 'lucide-react';
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Dialog } from '@headlessui/react';
-import ClubBookingFlow from '@/components/club-booking/ClubBookingFlow';
+import ClubBookingFlow from '@/components/new-booking/ClubBookingFlow';
 import { 
   selectClubDashboardState, 
   setSelectedClubAndFetchDetails 

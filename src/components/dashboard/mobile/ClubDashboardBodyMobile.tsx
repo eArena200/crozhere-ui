@@ -2,10 +2,8 @@
 
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
-import UpcomingBookingsMobile from './upcoming/UpcomingBookingsMobile';
-import { selectClubDashboardState } from '@/redux/slices/club/dashboard/clubDashboardSlice';
-import { useSelector } from 'react-redux';
-import StationsStatusContentMobile from './activity/StationsStatusContentMobile';
+import UpcomingBookingsMobile from '@/components/dashboard/mobile/upcoming/UpcomingBookingsMobile';
+import StationsStatusContentMobile from '@/components/dashboard/mobile/activity/StationsStatusContentMobile';
 
 enum ActiveTab {
   ACTIVITY,

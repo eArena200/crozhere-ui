@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import CBDesktopHeader from './CBDesktopHeader';
+import CBDesktopHeader from '@/components/club-bookings/desktop/CBDesktopHeader';
 import FilterSection from '@/components/club-bookings/desktop/FilterSection';
 import BookingsTable from '@/components/club-bookings/desktop/BookingsTable';
 import PaginationFooter from '@/components/club-bookings/PaginationFooter';

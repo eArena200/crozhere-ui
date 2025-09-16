@@ -4,11 +4,11 @@ import {
   PayloadAction
 } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
-import { ClubFormData } from "@/components/club-management/ClubForm";
-import { StationFormData } from "@/components/club-management/StationForm";
-import { RateCardFormData } from "@/components/club-management/RateCardForm";
-import { RateFormData } from "@/components/club-management/RateForm";
-import { RateChargeFormData } from "@/components/club-management/RateChargeForm";
+import { ClubFormData } from "@/components/club-management/components/forms/ClubForm";
+import { StationFormData } from "@/components/club-management/components/forms/StationForm";
+import { RateCardFormData } from "@/components/club-management/components/forms/RateCardForm";
+import { RateFormData } from "@/components/club-management/components/forms/RateForm";
+import { RateChargeFormData } from "@/components/club-management/components/forms/RateChargeForm";
 import { 
   createRateCardApi, 
   updateRateCardApi, 
@@ -50,85 +50,9 @@ import {
   ClubResponse,
   RateChargeResponse,
 } from "@/api/club/model";
+import { ClubManagementState, RateCardState } from "@/redux/slices/club/management/state";
 
-export interface RateCardState {
-  details: RateCardResponse;
-  rates: Record<number, RateResponse>;
-}
 
-export interface ClubManagementState {
-  clubList: ClubResponse[];
-  clubListLoading: boolean;
-  clubListError?: string;
-
-  createClubLoading: boolean;
-  createClubError?: string;
-
-  selectedClubId?: number;
-  selectedClubLoading: boolean;
-  selectedClubError?: string;
-  selectedClubState: {
-    detailState: {
-      details?: ClubResponse;
-
-      clubDetailsLoading: boolean;
-      clubDetailsError?: string;
-
-      updateClubLoading: boolean;
-      updateClubError?: string;
-    };
-    rateState: {
-      rateCards: Record<number, RateCardState>;
-      selectedRateCardId?: number;
-      rateCardsLoading: boolean;
-      rateCardsError?: string;
-
-      createRateCardLoading: boolean;
-      createRateCardError?: string;
-
-      updateRateCardLoading: boolean;
-      updateRateCardError?: string;
-
-      deleteRateCardLoading: boolean;
-      deleteRateCardError?: string;
-
-      addRateLoading: boolean;
-      addRateError?: string;
-
-      updateRateLoading: boolean;
-      updateRateError?: string;
-
-      deleteRateLoading: boolean;
-      deleteRateError?: string;
-
-      addRateChargeLoading: boolean;
-      addRateChargeError?: string;
-
-      updateRateChargeLoading: boolean;
-      updateRateChargeError?: string;
-
-      deleteRateChargeLoading: boolean;
-      deleteRateChargeError?: string;
-    };
-    stationState: {
-      stations: Record<number, StationDetailsResponse>;
-      stationsLoading: boolean;
-      stationsError?: string;
-
-      addStationLoading: boolean;
-      addStationError?: string;
-
-      updateStationLoading: boolean;
-      updateStationError?: string;
-
-      toggleStationLoading: boolean;
-      toggleStationError?: string;
-
-      deleteStationLoading: boolean;
-      deleteStationError?: string;
-    };
-  }
-}
 
 const initialState: ClubManagementState = {
   clubList: [],

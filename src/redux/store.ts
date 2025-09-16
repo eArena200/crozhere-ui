@@ -5,7 +5,7 @@ import storage from 'redux-persist/lib/storage';
 import authReducer from "@/redux/slices/auth/authSlice";
 import clubAdminReducer from "@/redux/slices/user/club-admin/clubAdminSlice";
 import playerReducer from "@/redux/slices/user/player/playerSlice";
-import clubManagementReducer from "@/redux/slices/club/clubManagementSlice";
+import clubManagementReducer from "@/redux/slices/club/management/clubManagementSlice";
 import clubBookingReducer from "@/redux/slices/booking/bookingSlice";
 import clubDashboardReducer from "@/redux/slices/club/dashboard/clubDashboardSlice";
 

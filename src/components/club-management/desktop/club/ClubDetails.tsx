@@ -8,9 +8,9 @@ import Button from '@/components/ui/Button';
 import { 
   selectSelectedClubDetailState,
   updateClubDetails
-} from '@/redux/slices/club/clubManagementSlice';
-import EditClubDialog from '@/components/club-management/EditClubDialog';
-import { ClubFormData } from '@/components/club-management/ClubForm';
+} from '@/redux/slices/club/management/clubManagementSlice';
+import EditClubDialog from '@/components/club-management/components/dialog/EditClubDialog';
+import { ClubFormData } from '@/components/club-management/components/forms/ClubForm';
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import { ClubResponse } from '@/api/club/model';
 

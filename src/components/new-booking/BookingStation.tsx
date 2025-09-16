@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { stationLogos, StationType } from '@/lib/types/station';
-import Logo from '../ui/Logo';
+import { StationType } from '@/lib/types/station';
 import { User, Users } from 'lucide-react';
 
 interface BookingStationProps {

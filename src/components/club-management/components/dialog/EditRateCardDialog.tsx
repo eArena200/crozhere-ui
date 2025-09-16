@@ -4,8 +4,8 @@ import React from "react";
 import { Dialog } from "@headlessui/react";
 import { X } from "lucide-react";
 import Button from "@/components/ui/Button";
-import RateCardForm, { RateCardFormData } from "@/components/club-management/RateCardForm";
-import DialogLoader from "@/components/club-management/DialogLoader";
+import RateCardForm, { RateCardFormData } from "@/components/club-management/components/forms/RateCardForm";
+import DialogLoader from "@/components/club-management/components/dialog/DialogLoader";
 
 interface EditRateCardDialogProps {
   isOpen: boolean;

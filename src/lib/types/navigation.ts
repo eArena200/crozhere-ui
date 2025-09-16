@@ -1,4 +1,4 @@
-import { UserRole } from "./auth";
+import { UserRole } from "@/lib/types/auth";
 
 export interface NavItem {
   name: string;

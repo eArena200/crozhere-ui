@@ -5,17 +5,14 @@ import { useSelector } from 'react-redux';
 import {
   fetchClubIdsForAdminId,
   createNewClub,
-} from '@/redux/slices/club/clubManagementSlice';
+} from '@/redux/slices/club/management/clubManagementSlice';
 import { useDispatchRedux } from '@/redux/store';
 import CMMobileHeader from '@/components/club-management/mobile/CMMobileHeader';
-import ClubDetailsMobile from '@/components/club-management/mobile/club/ClubDetailsMobile';
-import { ClubFormData } from '@/components/club-management/ClubForm';
-import { useParams } from 'next/navigation';
+import { ClubFormData } from '@/components/club-management/components/forms/ClubForm';
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
-import CreateClubDialog from '@/components/club-management/CreateClubDialog';
-import StationDetails from '@/components/club-management/mobile/station/StationDetailsMobile';
+import CreateClubDialog from '@/components/club-management/components/dialog/CreateClubDialog';
 import UnAuthorized from '@/components/ui/UnAuthorized';
-import CMMobileBody from './CMMobileBody';
+import CMMobileBody from '@/components/club-management/mobile/CMMobileBody';
 
 function ClubManagementMobile() {
   const dispatchRedux = useDispatchRedux();

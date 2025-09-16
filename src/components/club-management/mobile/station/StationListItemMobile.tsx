@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { Pencil, Trash2, Power, Clock, Users } from 'lucide-react';
-import EditStationDialog from '@/components/club-management/EditStationDialog';
-import { StationFormData } from '@/components/club-management/StationForm';
+import EditStationDialog from '@/components/club-management/components/dialog/EditStationDialog';
+import { StationFormData } from '@/components/club-management/components/forms/StationForm';
 import { StationDetailsResponse } from '@/api/club/model';
 
 interface StationListItemProps {

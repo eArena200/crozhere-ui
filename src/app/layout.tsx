@@ -1,10 +1,10 @@
 'use client';
 
 import { Inter } from "next/font/google";
-import "./globals.css";
+import "@/app/globals.css";
 
 import { Providers } from "@/redux/provider";
-import { DeviceTypes, useDeviceType } from "../lib/hooks/useDeviceType";
+import { DeviceTypes, useDeviceType } from "@/lib/hooks/useDeviceType";
 import MobileLayout from "@/components/layout/MobileLayout";
 import DesktopLayout from "@/components/layout/DesktopLayout";
 

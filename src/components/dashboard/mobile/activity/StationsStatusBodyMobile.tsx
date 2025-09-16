@@ -1,8 +1,10 @@
+'use client';
+
 import React from 'react';
 import { StationType } from '@/lib/types/station';
 import { DashboardStationBookingStatus } from '@/api/booking/model';
 import { StationDetailsResponse } from '@/api/club/model';
-import StationStatusCardMobile from './StationStatusCardMobile';
+import StationStatusCardMobile from '@/components/dashboard/mobile/activity/StationStatusCardMobile';
 
 type StationsStatusBodyProps = {
   stationType: StationType;

@@ -2,10 +2,10 @@
 
 import React from "react";
 import { Dialog } from '@headlessui/react';
-import ClubForm, { ClubFormData } from "@/components/club-management/ClubForm";
+import ClubForm, { ClubFormData } from "@/components/club-management/components/forms/ClubForm";
 import { X } from "lucide-react";
 import Button from "@/components/ui/Button";
-import DialogLoader from "@/components/club-management/DialogLoader";
+import DialogLoader from "@/components/club-management/components/dialog/DialogLoader";
 
 interface CreateClubDialogProps {
   isOpen: boolean;

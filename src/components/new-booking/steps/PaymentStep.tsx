@@ -5,12 +5,12 @@ import { useSelector } from 'react-redux';
 import { applyClubDiscount, selectPaymentState, setSelectedPaymentMode } from '@/redux/slices/booking/bookingSlice';
 import { PaymentMode, PaymentStatus } from '@/lib/types/payment';
 import { useDispatchRedux } from '@/redux/store';
-import BookingSummaryCard from '../BookingSummaryCard';
-import AmountSummaryCard from '../AmountSummaryCard';
-import PlayerSummaryCard from '../PlayerSummaryCard';
-import PaymentModeSelector from '../PaymentModeSelector';
-import PaymentTimer from '../PaymentTimer';
-import SelectDiscountCard from '../SelectDiscountCard';
+import BookingSummaryCard from '@/components/new-booking/BookingSummaryCard';
+import AmountSummaryCard from '@/components/new-booking/AmountSummaryCard';
+import PlayerSummaryCard from '@/components/new-booking/PlayerSummaryCard';
+import PaymentModeSelector from '@/components/new-booking/PaymentModeSelector';
+import PaymentTimer from '@/components/new-booking/PaymentTimer';
+import SelectDiscountCard from '@/components/new-booking/SelectDiscountCard';
 import { selectAuthUser } from '@/redux/slices/auth/authSlice';
 import { ClubDiscountRequest } from '@/api/booking/model';
 

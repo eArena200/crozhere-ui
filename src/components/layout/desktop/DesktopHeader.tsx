@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import LocationSelector from "@/components/ui/LocationSelector";
 import Button from "@/components/ui/Button";
 import { useSelector } from "react-redux";
-import CrozhereLabel from "../../ui/CrozhereLabel";
+import CrozhereLabel from "@/components/ui/CrozhereLabel";
 import { selectAuthState } from "@/redux/slices/auth/authSlice";
 
 const LoginDialog = dynamic(() => import('@/components/ui/LoginDialog'), { ssr: false });

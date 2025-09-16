@@ -6,20 +6,20 @@ import {
   Power,Clock,
   Users, IndianRupee 
 } from 'lucide-react';
-import EditStationDialog from '@/components/club-management/EditStationDialog';
-import { StationFormData } from '@/components/club-management/StationForm';
+import EditStationDialog from '@/components/club-management/components/dialog/EditStationDialog';
+import { StationFormData } from '@/components/club-management/components/forms/StationForm';
 import { useSelector } from 'react-redux';
 import { 
   deleteStation,
   selectSelectedClubStationState,
   toggleStation,
   updateStationDetails
-} from '@/redux/slices/club/clubManagementSlice';
+} from '@/redux/slices/club/management/clubManagementSlice';
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
 import { useDispatchRedux } from '@/redux/store';
 import { StationDetailsResponse } from '@/api/club/model';
-import DeleteStationDialog from '@/components/club-management/DeleteStationDialog';
-import ToggleStationDialog from '@/components/club-management/ToggleStationDialog';
+import DeleteStationDialog from '@/components/club-management/components/dialog/DeleteStationDialog';
+import ToggleStationDialog from '@/components/club-management/components/dialog/ToggleStationDialog';
 
 interface StationCardProps {
   stationDetails: StationDetailsResponse;

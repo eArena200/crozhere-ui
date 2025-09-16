@@ -4,7 +4,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import {
   selectSelectedClubRateState,
-} from '@/redux/slices/club/clubManagementSlice';
+} from '@/redux/slices/club/management/clubManagementSlice';
 import RateCardHeader from '@/components/club-management/desktop/rate/RateCardHeader';
 import RateCardBody from '@/components/club-management/desktop/rate/RateCardBody';
 import { SquareMenu } from 'lucide-react';

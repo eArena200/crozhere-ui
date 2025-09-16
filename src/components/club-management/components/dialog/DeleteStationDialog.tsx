@@ -2,23 +2,24 @@
 
 import React from 'react';
 import { Dialog } from '@headlessui/react';
-import { X } from 'lucide-react';
-import StationForm, { StationFormData } from '@/components/club-management/StationForm';
+import { X, Trash2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import DialogLoader from '@/components/club-management/DialogLoader';
+import DialogLoader from '@/components/club-management/components/dialog/DialogLoader';
 
-interface AddStationDialogProps {
+interface DeleteStationDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: StationFormData) => void;
+  onDelete: (stationId: number) => void;
+  stationId: number;
   loading: boolean;
   error?: string;
 }
 
-const AddStationDialog: React.FC<AddStationDialogProps> = ({
+const DeleteStationDialog: React.FC<DeleteStationDialogProps> = ({
   isOpen,
   onClose,
-  onSubmit,
+  onDelete,
+  stationId,
   loading,
   error,
 }) => {
@@ -26,8 +27,10 @@ const AddStationDialog: React.FC<AddStationDialogProps> = ({
     if (!loading) onClose();
   };
 
-  const handleSubmit = (data: StationFormData) => {
-    if (!loading) onSubmit(data);
+  const handleDelete = () => {
+    if (!loading) {
+      onDelete(stationId);
+    }
   };
 
   return (
@@ -37,11 +40,11 @@ const AddStationDialog: React.FC<AddStationDialogProps> = ({
 
       {/* Panel */}
       <div className="fixed inset-0 flex items-center justify-center p-4">
-        <Dialog.Panel className="mx-auto w-full max-w-md rounded-2xl bg-white shadow-xl max-h-[90vh] flex flex-col relative">
+        <Dialog.Panel className="mx-auto w-full max-w-md rounded-lg bg-white shadow-xl max-h-[90vh] flex flex-col relative">
           {/* Header */}
-          <div className="flex items-center justify-between border-b p-6">
-            <Dialog.Title className="text-xl font-semibold text-gray-900">
-              Add New Station
+          <div className="flex items-center justify-between border-b p-4">
+            <Dialog.Title className="text-md font-semibold text-gray-900">
+              Delete Station
             </Dialog.Title>
             <button
               onClick={handleClose}
@@ -54,12 +57,14 @@ const AddStationDialog: React.FC<AddStationDialogProps> = ({
             </button>
           </div>
 
-          {/* Scrollable Form Content */}
-          <div className="overflow-y-auto p-6 flex-1 relative">
-            <StationForm
-              onSubmit={handleSubmit}
-              onCancel={handleClose}
-            />
+          {/* Content */}
+          <div className="p-6 flex-1 relative">
+            <p className="text-black text-md">
+              Are you sure you want to delete this station?
+            </p>
+            <p className="text-gray-600 text-xs mb-4">
+              Note: This action cannot be undone.
+            </p>
 
             {error && (
               <p className="mt-2 text-sm text-red-600 text-center">{error}</p>
@@ -67,7 +72,7 @@ const AddStationDialog: React.FC<AddStationDialogProps> = ({
 
             {/* Loading Overlay */}
             {loading && (
-              <DialogLoader message="Adding station..." />
+              <DialogLoader message="Deleting station..." />
             )}
           </div>
 
@@ -82,12 +87,14 @@ const AddStationDialog: React.FC<AddStationDialogProps> = ({
               Cancel
             </Button>
             <Button
-              type="submit"
-              form="station-form"
-              variant="primary"
+              type="button"
+              variant="danger"
+              onClick={handleDelete}
               disabled={loading}
+              className="flex items-center"
             >
-              {loading ? 'Adding...' : 'Add Station'}
+              <Trash2 className="h-4 w-4 mr-2" />
+              {loading ? 'Deleting...' : 'Delete Station'}
             </Button>
           </div>
         </Dialog.Panel>
@@ -96,4 +103,4 @@ const AddStationDialog: React.FC<AddStationDialogProps> = ({
   );
 };
 
-export default React.memo(AddStationDialog);
+export default React.memo(DeleteStationDialog);

@@ -31,7 +31,7 @@ import {
     BookingTimeBasedSelectionState, 
     BookingStationBasedSelectionState, 
     BookingPlayerState
-} from "./state";
+} from "@/redux/slices/booking/state";
 import { getUTCDateTimeWithStepMins } from "@/lib/date-time-util";
 import { StationDetailsResponse, ClubServiceException } from "@/api/club/model";
 import { getStationsInClubApi } from "@/api/club/clubDetailsApi";

@@ -7,10 +7,10 @@ import {
   createNewClub,
   fetchClubIdsForAdminId,
   selectClubManagementState
-} from '@/redux/slices/club/clubManagementSlice';
+} from '@/redux/slices/club/management/clubManagementSlice';
 import { selectAuthRoleBasedId } from '@/redux/slices/auth/authSlice';
-import CreateClubDialog from '@/components/club-management/CreateClubDialog';
-import { ClubFormData } from '@/components/club-management/ClubForm';
+import CreateClubDialog from '@/components/club-management/components/dialog/CreateClubDialog';
+import { ClubFormData } from '@/components/club-management/components/forms/ClubForm';
 import CMDesktopHeader from '@/components/club-management/desktop/CMDesktopHeader';
 import CMDesktopBody from '@/components/club-management/desktop/CMDesktopBody';
 import UnAuthorized from '@/components/ui/UnAuthorized';

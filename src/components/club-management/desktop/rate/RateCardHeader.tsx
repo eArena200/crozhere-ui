@@ -8,12 +8,12 @@ import {
   updateRateCard,
   selectSelectedClubId,
   selectSelectedClubRateState,
-} from '@/redux/slices/club/clubManagementSlice';
-import CreateRateDialog from '@/components/club-management/CreateRateDialog';
+} from '@/redux/slices/club/management/clubManagementSlice';
+import CreateRateDialog from '@/components/club-management/components/dialog/CreateRateDialog';
 import { useDispatchRedux } from '@/redux/store';
-import { RateFormData } from '@/components/club-management/RateForm';
-import { RateCardFormData } from '@/components/club-management/RateCardForm';
-import EditRateCardDialog from '@/components/club-management/EditRateCardDialog';
+import { RateFormData } from '@/components/club-management/components/forms/RateForm';
+import { RateCardFormData } from '@/components/club-management/components/forms/RateCardForm';
+import EditRateCardDialog from '@/components/club-management/components/dialog/EditRateCardDialog';
 import { RateCardResponse } from '@/api/club/model';
 
 
