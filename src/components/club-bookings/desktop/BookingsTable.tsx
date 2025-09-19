@@ -1,39 +1,83 @@
 'use client';
 
-import { BookingDetailsResponse, BookingStationDetails } from '@/api/booking/model';
-import { toReadableDateTime } from '@/lib/date-time-util';
-import React, { useState, Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
+import React, { useState, Fragment } from "react";
+import { useDispatchRedux } from "@/redux/store";
+import { Dialog, Transition } from "@headlessui/react";
+import { toReadableDateTime } from "@/lib/date-time-util";
+import { BookingsColumn, BookingsPagination } from "@/lib/types/bookings";
+import { goToPage, setPageSize } from "@/redux/slices/club/booking/clubBookingsListSlice";
+import BookingDetailsCard from "@/components/club-bookings/desktop/BookingDetailsCard";
+import PaginationFooter from "@/components/club-bookings/PaginationFooter";
+import { BookingDetailsResponse, BookingStationDetails } from "@/api/booking/model";
+
 
 interface BookingsTableProps {
+  viewColumns: BookingsColumn[];
+  paginationState: BookingsPagination;
   bookings: BookingDetailsResponse[];
 }
 
-function BookingsTable({ bookings }: BookingsTableProps) {
+function BookingsTable({ bookings, paginationState,  viewColumns }: BookingsTableProps) {
+  const dispatch = useDispatchRedux();
+
   const [selectedBooking, setSelectedBooking] = useState<BookingDetailsResponse | null>(null);
 
-  if (bookings.length === 0) {
-    return (
-      <div className="text-center py-8 text-gray-500">
-        No bookings found for the selected filters.
-      </div>
-    );
+  const handlePageChange = (page: number) => {
+    dispatch(goToPage(page));
   }
 
+  const handlePageSizeChange = (size: number) => {
+    dispatch(setPageSize(size));
+  }
+
+  const renderCell = (booking: BookingDetailsResponse, column: BookingsColumn) => {
+    switch (column) {
+      case BookingsColumn.PLAYER_ID:
+        return booking.player.playerId;
+      case BookingsColumn.PLAYER_NAME:
+        return booking.player.name;
+      case BookingsColumn.PLAYER_PHONE_NUMBER:
+        return booking.player.playerPhoneNumber;
+      case BookingsColumn.STATION_TYPE:
+        return booking.booking.stationType;
+      case BookingsColumn.STATIONS:
+        return getFormattedStation(booking.booking.stations);
+      case BookingsColumn.START_TIME:
+        return toReadableDateTime(booking.booking.startTime, true);
+      case BookingsColumn.END_TIME:
+        return toReadableDateTime(booking.booking.endTime, true);
+      case BookingsColumn.PLAYER_COUNT:
+        return booking.booking.totalPlayers;
+      case BookingsColumn.BOOKING_AMOUNT:
+        return `₹ ${booking.booking.costDetails.totalCost}`;
+      default:
+        return null;
+    }
+  };
+
+  const columnLabels: Record<BookingsColumn, string> = {
+    [BookingsColumn.PLAYER_ID]: "Player ID",
+    [BookingsColumn.PLAYER_NAME]: "Player",
+    [BookingsColumn.PLAYER_PHONE_NUMBER]: "Phone Number",
+    [BookingsColumn.STATION_TYPE]: "Station Type",
+    [BookingsColumn.STATIONS]: "Stations",
+    [BookingsColumn.START_TIME]: "Start",
+    [BookingsColumn.END_TIME]: "End",
+    [BookingsColumn.PLAYER_COUNT]: "Players",
+    [BookingsColumn.BOOKING_AMOUNT]: "Amount",
+  };
+
   return (
-    <>
-      {/* Bookings Table */}
-      <div className="overflow-auto border rounded shadow-sm">
-        <table className="min-w-full text-sm text-left text-gray-700">
-          <thead className="bg-blue-600 text-xs uppercase tracking-wider text-white">
+    <div>
+      <div className="overflow-auto border rounded shadow-sm max-w-screen max-h-screen mx-2 my-2">
+        <table className="text-sm text-left text-gray-700">
+          <thead className="bg-blue-600 text-xs uppercase tracking-normal text-white">
             <tr>
-              <th className="px-4 py-3">Station Type</th>
-              <th className="px-4 py-3">Player</th>
-              <th className="px-4 py-3">Stations</th>
-              <th className="px-4 py-3">Start</th>
-              <th className="px-4 py-3">End</th>
-              <th className="px-4 py-3">Players</th>
-              <th className="px-4 py-3">Amount</th>
+              {viewColumns.map((col) => (
+                <th key={col} className="px-4 py-3">
+                  {columnLabels[col]}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -43,22 +87,30 @@ function BookingsTable({ bookings }: BookingsTableProps) {
                 className="hover:bg-blue-200 cursor-pointer"
                 onClick={() => setSelectedBooking(bookingDetails)}
               >
-                <td className="px-4 py-2">{bookingDetails.booking.stationType}</td>
-                <td className="px-4 py-2">{bookingDetails.player.name}</td>
-                <td className="px-4 py-2">{getFormattedStation(bookingDetails.booking.stations)}</td>
-                <td className="px-4 py-2">{toReadableDateTime(bookingDetails.booking.startTime, true)}</td>
-                <td className="px-4 py-2">{toReadableDateTime(bookingDetails.booking.endTime, true)}</td>
-                <td className="px-4 py-2">{bookingDetails.booking.totalPlayers}</td>
-                <td className="px-4 py-2">{`₹ ${bookingDetails.booking.costDetails.totalCost}`}</td>
+                {viewColumns.map((col) => (
+                  <td key={col} className="px-4 py-2">
+                    {renderCell(bookingDetails, col)}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-
+            
+      <div className="px-2 py-1">
+        <PaginationFooter 
+          currentPage={paginationState.page} 
+          pageSize={paginationState.pageSize} 
+          totalPages={paginationState.totalPages} 
+          onPageChange={handlePageChange} 
+          onPageSizeChange={handlePageSizeChange} 
+        />
+      </div>
+   
       {/* Booking Details Dialog */}
       <Transition appear show={!!selectedBooking} as={Fragment}>
-        <Dialog as="div" className="relative z-50" onClose={() => setSelectedBooking(null)}>
+        <Dialog as="div" className="relative z-70" onClose={() => setSelectedBooking(null)}>
           {/* Overlay */}
           <Transition.Child
             as={Fragment}
@@ -72,7 +124,7 @@ function BookingsTable({ bookings }: BookingsTableProps) {
             <div className="fixed inset-0 bg-black/30" />
           </Transition.Child>
 
-          {/* Dialog Panel */}
+          {/* Panel */}
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4">
               <Transition.Child
@@ -87,43 +139,21 @@ function BookingsTable({ bookings }: BookingsTableProps) {
                 <Dialog.Panel className="w-full max-w-2xl transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
                   {selectedBooking && (
                     <>
-                      <Dialog.Title className="text-lg font-semibold mb-4 text-black">
-                        Booking Details
-                      </Dialog.Title>
-
-                      <div className="space-y-4 text-sm text-gray-700">
-                        {/* Club */}
-                        <div className="border rounded p-3 bg-gray-50">
-                          <p><strong>Club:</strong> {selectedBooking.club.clubName}</p>
-                          <p><strong>Player:</strong> {selectedBooking.player.name} ({selectedBooking.player.playerPhoneNumber})</p>
-                        </div>
-
-                        {/* Booking Info */}
-                        <div className="border rounded p-3 bg-white">
-                          <p><strong>Station Type:</strong> {selectedBooking.booking.stationType}</p>
-                          <p><strong>Start:</strong> {toReadableDateTime(selectedBooking.booking.startTime, true)}</p>
-                          <p><strong>End:</strong> {toReadableDateTime(selectedBooking.booking.endTime, true)}</p>
-                          <p><strong>Players:</strong> {selectedBooking.booking.totalPlayers}</p>
-                          <p><strong>Status:</strong> {selectedBooking.booking.bookingStatus}</p>
-                          <p><strong>Stations:</strong> {getFormattedStation(selectedBooking.booking.stations)}</p>
-                        </div>
-
-                        {/* Cost Breakdown */}
-                        <div className="border rounded p-3 bg-gray-50">
-                          <p className="font-semibold mb-2">Cost Breakdown</p>
-                          {selectedBooking.booking.costDetails.costBreakup.map((c, idx) => (
-                            <div key={idx} className="mb-2">
-                              {c.details.map((d, i) => (
-                                <div key={i} className="flex justify-between">
-                                  <span>{d.subCategory} ({d.qty} {d.qtyUnit})</span>
-                                  <span>₹ {d.amount}</span>
-                                </div>
-                              ))}
-                            </div>
-                          ))}
-                          <p className="mt-2 font-bold text-right">Total: ₹ {selectedBooking.booking.costDetails.totalCost}</p>
-                        </div>
+                      {/* Title + Close Button */}
+                      <div className="flex justify-between items-center mb-4">
+                        <Dialog.Title className="text-lg font-semibold text-gray-900">
+                          Booking Details
+                        </Dialog.Title>
+                        <button
+                          onClick={() => setSelectedBooking(null)}
+                          className="text-gray-400 hover:text-gray-600"
+                        >
+                          ✕
+                        </button>
                       </div>
+
+                      {/* Booking Details Card */}
+                      <BookingDetailsCard booking={selectedBooking} />
                     </>
                   )}
                 </Dialog.Panel>
@@ -132,14 +162,14 @@ function BookingsTable({ bookings }: BookingsTableProps) {
           </div>
         </Dialog>
       </Transition>
-    </>
+    </div>
   );
 }
 
 function getFormattedStation(stations: BookingStationDetails[]): string {
   return stations
-    .map(stn => `${stn.stationName}${stn.playerCount > 1 ? ` (${stn.playerCount})` : ''}`)
-    .join(', ');
+    .map((stn) => `${stn.stationName}${stn.playerCount > 1 ? ` (${stn.playerCount})` : ""}`)
+    .join(", ");
 }
 
 export default BookingsTable;

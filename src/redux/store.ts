@@ -8,6 +8,7 @@ import playerReducer from "@/redux/slices/user/player/playerSlice";
 import clubManagementReducer from "@/redux/slices/club/management/clubManagementSlice";
 import clubBookingReducer from "@/redux/slices/booking/bookingSlice";
 import clubDashboardReducer from "@/redux/slices/club/dashboard/clubDashboardSlice";
+import clubBookingsReducer from "@/redux/slices/club/booking/clubBookingsListSlice";
 
 import {
   FLUSH,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   player: playerReducer,
   clubManagement: clubManagementReducer,
   clubBooking: clubBookingReducer,
+  clubBookings: clubBookingsReducer,
   clubDashboard: clubDashboardReducer
 });
 

@@ -1,5 +1,7 @@
-import { StationType } from '@/lib/types/station';
+'use client';
+
 import React from 'react';
+import { StationType } from '@/lib/types/station';
 
 type StationsStatusHeaderProps = {
   stationTypes: StationType[];

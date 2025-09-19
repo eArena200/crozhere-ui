@@ -28,7 +28,7 @@ export default function AdminDesktop() {
   }
 
   return (
-    <div className='bg-white px-2'>
+    <div className='bg-white px-2 w-full h-full min-h-screen'>
       <ClubDashboardDesktopHeader/>
       <ClubDashboardDesktopBody />
     </div>

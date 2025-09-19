@@ -1,4 +1,5 @@
-import { Info, MessageCircleWarning, ShieldBan, TriangleAlert } from 'lucide-react';
+'use client';
+
 import React from 'react'
 
 function UnAuthorized() {

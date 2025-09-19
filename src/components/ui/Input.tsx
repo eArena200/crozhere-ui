@@ -1,3 +1,5 @@
+'use client';
+
 import React, { ChangeEvent, FC, ReactNode } from 'react';
 
 interface InputProps {

@@ -50,7 +50,7 @@ function ClubManagementDesktop() {
 
 
   return (
-    <div className="flex flex-col h-full bg-white w-full">
+    <div className="flex flex-col h-full min-h-screen bg-white w-full">
       <CMDesktopHeader onClickCreateNewClub={() => setIsCreateClubDialogOpen(true)} />
       <CMDesktopBody />
       <CreateClubDialog

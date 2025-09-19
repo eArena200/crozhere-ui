@@ -55,35 +55,35 @@ export const fetchClubsForAdminId = createAsyncThunk<
   }
 );
 
-export const setSelectedClubAndFetchDetails = createAsyncThunk<
-  void,
-  number,
-  { rejectValue: ClubServiceException }
->(
-  "clubDashboard/setSelectedClubAndFetchDetails",
-  async (clubId, { dispatch, rejectWithValue }) => {
-    try {
-      dispatch(setSelectedClubId(clubId));
-      await Promise.all([
-        dispatch(fetchClubDetails(clubId)).unwrap(),
-        dispatch(fetchStationsByClubId(clubId)).unwrap(),
-        dispatch(fetchUpcomingBookings({clubId})).unwrap(),
-        dispatch(fetchStationBookingStatus(clubId)).unwrap()
-      ]);
-    } catch (err: any) {
-      if (err?.response?.data) {
-        return rejectWithValue(err.response.data);
-      }
+  export const setSelectedClubAndFetchDetails = createAsyncThunk<
+    void,
+    number,
+    { rejectValue: ClubServiceException }
+  >(
+    "clubDashboard/setSelectedClubAndFetchDetails",
+    async (clubId, { dispatch, rejectWithValue }) => {
+      try {
+        dispatch(setSelectedClubId(clubId));
+        await Promise.all([
+          dispatch(fetchClubDetails(clubId)).unwrap(),
+          dispatch(fetchStationsByClubId(clubId)).unwrap(),
+          dispatch(fetchUpcomingBookings({clubId})).unwrap(),
+          dispatch(fetchStationBookingStatus(clubId)).unwrap()
+        ]);
+      } catch (err: any) {
+        if (err?.response?.data) {
+          return rejectWithValue(err.response.data);
+        }
 
-      return rejectWithValue({
-        error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
-        type: "SET_SELECTED_CLUB_AND_FETCH_DETAILS",
-        message: "Failed to fetch club details or stations",
-        timestamp: new Date().toISOString()
-      });
+        return rejectWithValue({
+          error: "CLUB_MANAGEMENT_THUNK_EXCEPTION",
+          type: "SET_SELECTED_CLUB_AND_FETCH_DETAILS",
+          message: "Failed to fetch club details or stations",
+          timestamp: new Date().toISOString()
+        });
+      }
     }
-  }
-);
+  );
 
 export const fetchClubDetails = createAsyncThunk<
   ClubDetailsResponse,

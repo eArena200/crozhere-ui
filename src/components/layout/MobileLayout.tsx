@@ -1,3 +1,5 @@
+'use client';
+
 import BottomNavBar from "@/components/layout/mobile/BottomNavBar";
 import MobileHeader from "@/components/layout/mobile/MobileHeader";
 

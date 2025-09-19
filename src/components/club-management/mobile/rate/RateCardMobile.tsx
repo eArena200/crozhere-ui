@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react'
 import RateHeaderMobile from '@/components/club-management/mobile/rate/RateHeaderMobile';
 import RateBodyMobile from '@/components/club-management/mobile/rate/RateBodyMobile';

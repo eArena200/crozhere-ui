@@ -1,9 +1,11 @@
+'use client';
+
 import React from 'react';
 
 export interface PaginationFooterProps {
   currentPage: number;
   pageSize: number;
-  totalCount: number;
+  totalPages: number;
   onPageChange: (page: number) => void;
   onPageSizeChange: (size: number) => void;
 }
@@ -11,11 +13,10 @@ export interface PaginationFooterProps {
 function PaginationFooter({
   currentPage,
   pageSize,
-  totalCount,
+  totalPages,
   onPageChange,
   onPageSizeChange,
 }: PaginationFooterProps) {
-  const totalPages = Math.ceil(totalCount / pageSize);
 
   return (
     <div className="flex justify-between items-center text-black">
@@ -28,7 +29,7 @@ function PaginationFooter({
           onChange={(e) => onPageSizeChange(Number(e.target.value))}
           className="border rounded px-2 py-1"
         >
-          {[10, 20, 50].map((size) => (
+          {[5, 10, 20, 50].map((size) => (
             <option key={size} value={size}>
               {size} per page
             </option>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { BookingDetailsResponse } from '@/api/booking/model';
-import { Clock, Info, Phone, User } from 'lucide-react';
+import { Clock, Info, User } from 'lucide-react';
 import CountdownTimer from '@/components/dashboard/CountdownTimer';
 import { StationDetailsResponse } from '@/api/club/model';
 

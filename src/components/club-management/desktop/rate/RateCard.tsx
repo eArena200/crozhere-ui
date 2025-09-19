@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react'
 import RateHeader from '@/components/club-management/desktop/rate/RateHeader';
 import RateBody from '@/components/club-management/desktop/rate/RateBody';

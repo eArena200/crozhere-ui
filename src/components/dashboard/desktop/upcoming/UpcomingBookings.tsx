@@ -12,7 +12,7 @@ import { Dialog } from '@headlessui/react';
 import { X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { BookingDetailsResponse } from '@/api/booking/model';
-import { toReadableDateTime } from '@/lib/date-time-util';
+import BookingDetailsCard from '@/components/club-bookings/desktop/BookingDetailsCard';
 
 export default function UpcomingBookings({ clubId }: { clubId: number }) {
   const dispatchRedux = useDispatchRedux();
@@ -27,7 +27,7 @@ export default function UpcomingBookings({ clubId }: { clubId: number }) {
   }, [dispatchRedux, clubId]);
 
   return (
-    <div className="bg-white border-2 border-gray-300 rounded shadow h-full w-full flex flex-col">
+    <div className="bg-white border-2 border-gray-300 rounded shadow h-full w-full min-h-screen flex flex-col">
       {/* Header */}
       <div className="bg-blue-600 rounded-t p-2 flex items-center justify-center">
         <h2 className="text-md font-bold text-white">Upcoming Bookings</h2>
@@ -81,90 +81,7 @@ export default function UpcomingBookings({ clubId }: { clubId: number }) {
             {/* Content */}
             <div className="overflow-y-auto p-6 flex-1">
               {selectedBooking && (
-                <div className="space-y-6">
-                  {/* Player Info */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">
-                      Player Details
-                    </h3>
-                    <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                      <dt className="font-medium text-gray-600">Name</dt>
-                      <dd className="text-gray-900">{selectedBooking.player.name}</dd>
-                      <dt className="font-medium text-gray-600">Contact</dt>
-                      <dd className="text-gray-900">
-                        {selectedBooking.player.playerPhoneNumber}
-                      </dd>
-                    </dl>
-                  </div>
-
-                  {/* Booking Info */}
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">
-                      Booking Details
-                    </h3>
-                    <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                      <dt className="font-medium text-gray-600">Station Type</dt>
-                      <dd className="text-gray-900">
-                        {selectedBooking.booking.stationType}
-                      </dd>
-                      <dt className="font-medium text-gray-600">Players</dt>
-                      <dd className="text-gray-900">
-                        {selectedBooking.booking.totalPlayers}
-                      </dd>
-                      <dt className="font-medium text-gray-600">Start Time</dt>
-                      <dd className="text-gray-900">
-                        {toReadableDateTime(selectedBooking.booking.startTime, true)}
-                      </dd>
-                      <dt className="font-medium text-gray-600">End Time</dt>
-                      <dd className="text-gray-900">
-                        {toReadableDateTime(selectedBooking.booking.endTime, true)}
-                      </dd>
-                    </dl>
-                  </div>
-
-                  {/* Cost Details */}
-                  {selectedBooking.booking.costDetails && (
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">
-                        Cost Details
-                      </h3>
-                      <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                        <dt className="font-medium text-gray-600">Total Cost</dt>
-                        <dd className="text-gray-900 font-bold">
-                          ₹{selectedBooking.booking.costDetails.totalCost}
-                        </dd>
-                      </dl>
-
-                      {/* Cost Breakup */}
-                      <div className="mt-4 space-y-4">
-                        {selectedBooking.booking.costDetails.costBreakup.map((breakup, idx) => (
-                          <div key={idx} className="border rounded-lg p-3 bg-gray-50">
-                            <h4 className="font-semibold text-gray-700">
-                              {breakup.category} — ₹{breakup.cost}
-                            </h4>
-                            <ul className="mt-2 space-y-1 text-sm text-gray-600">
-                              {breakup.details.map((item, j) => (
-                                <li key={j} className="flex justify-between">
-                                  <div className='flex flex-col justify-start'>
-                                    <span>
-                                      {item.subCategory}
-                                    </span>
-                                    <span className='text-xs'>
-                                      ({item.qty} {item.qtyUnit} × ₹ {item.rate}/{item.rateUnit})
-                                    </span>
-                                  </div>
-                                  <span className="font-medium text-gray-900">
-                                    ₹{item.amount}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <BookingDetailsCard booking={selectedBooking}/>
               )}
             </div>
 

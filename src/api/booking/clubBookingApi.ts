@@ -170,8 +170,12 @@ export async function getBookingsForClubApi(
   pagination?: BookingsPagination
 ): Promise<BookingsPagenatedListResponse> {
   const params = new URLSearchParams();
-
-  const requestBody = bookingsFilter ?? {};
+  
+  const requestBody = {
+    ...bookingsFilter,
+    fromDateTime: convertLocalToUTCTime(bookingsFilter?.fromDateTime),
+    toDateTime: convertLocalToUTCTime(bookingsFilter?.toDateTime)
+  };
 
   if (pagination?.page)
     params.append('page', pagination.page.toString());
@@ -253,4 +257,11 @@ export async function getDashboardStationStatusApi(
   }
 
   return res.json();
+}
+
+function convertLocalToUTCTime(localDateTime?: string): string{
+  if (!localDateTime) return "";
+
+  const date = new Date(localDateTime);
+  return date.toISOString();
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { User, Phone } from 'lucide-react';
 import Logo from '@/components/ui/Logo';

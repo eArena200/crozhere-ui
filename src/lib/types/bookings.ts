@@ -30,7 +30,29 @@ export interface BookingsFilters {
     bookingTypes: BookingType[];
 }
 
+export interface BookingsSort {
+    sortBy: string;
+    sortOrder: "ASC" | "DESC";
+}
+
+export interface BookingsSearch {
+    searchText: string;
+}
+
 export interface BookingsPagination {
     page: number;
     pageSize: number;
+    totalPages: number;
+}
+
+export enum BookingsColumn {
+    PLAYER_ID,
+    PLAYER_NAME,
+    PLAYER_PHONE_NUMBER,
+    START_TIME,
+    END_TIME,
+    PLAYER_COUNT,
+    STATIONS,
+    STATION_TYPE,
+    BOOKING_AMOUNT 
 }

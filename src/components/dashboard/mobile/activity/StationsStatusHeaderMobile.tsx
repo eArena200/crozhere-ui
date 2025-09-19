@@ -1,3 +1,5 @@
+'use client';
+
 import { StationType } from '@/lib/types/station';
 import React from 'react';
 

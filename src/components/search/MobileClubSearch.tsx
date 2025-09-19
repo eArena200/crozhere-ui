@@ -13,7 +13,6 @@ interface MobileClubSearchProps {
   onClubSelect?: (club: Club) => void;
 }
 
-// Static club data - later will come from API
 const mockClubs: Club[] = [
   {
     id: "1",

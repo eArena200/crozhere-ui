@@ -1,20 +1,18 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, Filter, MapPin, Star, Clock, Gamepad2, X, SlidersHorizontal } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { Club, SearchFilters } from '@/lib/types/club';
 import { StationType } from '@/lib/types/station';
 import ClubCard from '@/components/ui/ClubCard';
 import DesktopClubDetailsDialog from '@/components/search/dialog/DesktopClubDetailsDialog';
 import Button from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
 
 interface DesktopClubSearchProps {
   clubs?: Club[];
   onClubSelect?: (club: Club) => void;
 }
 
-// Using the same static data as mobile for consistency
 const mockClubs: Club[] = [
   {
     id: "1",

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react'
 import StationsStatusContent from '@/components/dashboard/desktop/activity/StationsStatusContent'
 import UpcomingBookings from '@/components/dashboard/desktop/upcoming/UpcomingBookings'
@@ -9,11 +11,11 @@ function ClubDashboardDesktopBody() {
   const { selectedClubId } = useSelector(selectClubDashboardState);
   return (
     selectedClubId ? (
-      <div className='w-full min-h-[85vh] flex flex-1 bg-white text-black'>
-        <div className="w-4/5 h-[80vh] px-1">
+      <div className='w-full min-h-screen flex flex-1 bg-white text-black'>
+        <div className="w-4/5 px-1">
           <StationsStatusContent />
         </div>
-        <div className="w-1/5 h-[80vh] px-1">
+        <div className="w-1/5 px-1">
           <UpcomingBookings clubId={selectedClubId} />
         </div>
       </div>

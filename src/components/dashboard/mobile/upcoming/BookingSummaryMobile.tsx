@@ -1,7 +1,7 @@
 'use client';
 
 import { BookingDetailsResponse } from '@/api/booking/model';
-import { toReadableDateTime, utcToLocalISOString } from '@/lib/date-time-util';
+import { toReadableDateTime } from '@/lib/date-time-util';
 import React from 'react';
 
 interface BookingSummaryMobileProps {

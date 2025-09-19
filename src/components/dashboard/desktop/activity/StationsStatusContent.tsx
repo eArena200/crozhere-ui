@@ -4,7 +4,10 @@ import React, { useEffect, useState } from 'react';
 import StationsStatusHeader from '@/components/dashboard/desktop/activity/StationsStatusHeader';
 import StationsStatusBody from '@/components/dashboard/desktop/activity/StationsStatusBody';
 import { useSelector } from 'react-redux';
-import { selectClubSupportedStations, selectStationBookingStatusMap } from '@/redux/slices/club/dashboard/clubDashboardSlice';
+import { 
+  selectClubSupportedStations,
+  selectStationBookingStatusMap
+} from '@/redux/slices/club/dashboard/clubDashboardSlice';
 import { StationType } from '@/lib/types/station';
 
 function StationsStatusContent() {
@@ -23,7 +26,7 @@ function StationsStatusContent() {
 
 
   return (
-    <div className="border-2 border-gray-300 w-full h-full bg-white rounded flex flex-col">
+    <div className="border-2 border-gray-300 w-full h-full min-h-screen bg-white rounded flex flex-col">
       <StationsStatusHeader 
         stationTypes={stationTypes} 
         activeStationType={activeStationType} 
