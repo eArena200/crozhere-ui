@@ -91,7 +91,7 @@ function FilterPanelMobile({filters, supportedStationTypes, onClose}: FilterPane
                             name="fromDateTime"
                             value={localFilters.fromDateTime}
                             onChange={handleInputChange}
-                            className="w-full border px-2 py-1 rounded text-xs"
+                            className="w-full min-w-40 border px-2 py-1 rounded text-xs"
                         />
                     </div>
 
@@ -103,7 +103,7 @@ function FilterPanelMobile({filters, supportedStationTypes, onClose}: FilterPane
                             name="toDateTime"
                             value={localFilters.toDateTime}
                             onChange={handleInputChange}
-                            className="w-full border px-2 py-1 rounded text-xs"
+                            className="w-full min-w-40 border px-2 py-1 rounded text-xs"
                         />
                     </div>
                 </div>
