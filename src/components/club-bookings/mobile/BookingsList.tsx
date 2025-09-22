@@ -6,7 +6,7 @@ import { BookingDetailsResponse, BookingStationDetails } from '@/api/booking/mod
 import { BookingsColumn, BookingsPagination } from '@/lib/types/bookings';
 import { toReadableDateTime } from '@/lib/date-time-util';
 import PaginationFooter from '@/components/club-bookings/PaginationFooter';
-import BookingDetailsCard from '@/components/club-bookings/desktop/BookingDetailsCard';
+import BookingDetailsCard from '@/components/club-bookings/BookingDetailsCard';
 import { Dialog, Transition } from '@headlessui/react';
 import { useDispatchRedux } from '@/redux/store';
 import { goToPage, setPageSize } from '@/redux/slices/club/booking/clubBookingsListSlice';
@@ -38,7 +38,7 @@ export default function BookingsList({ bookings, paginationState, viewColumns }:
       {bookings.map((booking) => (
         <div
           key={booking.bookingId}
-          className="px-2 py-1 rounded-md border shadow-sm bg-white flex flex-col gap-1 cursor-pointer hover:bg-blue-50 transition"
+          className="w-full min-w-[90vw] px-2 py-1 rounded-md border shadow-sm bg-white flex flex-col gap-1 cursor-pointer hover:bg-blue-50 transition"
           onClick={() => setSelectedBooking(booking)}
         >
           {viewColumns.map((col) => {
@@ -124,13 +124,15 @@ function renderCell(booking: BookingDetailsResponse, column: BookingsColumn) {
     case BookingsColumn.STATIONS:
       return getFormattedStation(booking.booking.stations);
     case BookingsColumn.START_TIME:
-      return toReadableDateTime(booking.booking.startTime, false);
+      return toReadableDateTime(booking.booking.startTime, true);
     case BookingsColumn.END_TIME:
-      return toReadableDateTime(booking.booking.endTime, false);
+      return toReadableDateTime(booking.booking.endTime, true);
     case BookingsColumn.PLAYER_COUNT:
       return booking.booking.totalPlayers;
     case BookingsColumn.BOOKING_AMOUNT:
       return `₹ ${booking.booking.costDetails.totalCost}`;
+    case BookingsColumn.BOOKING_STATUS:
+      return booking.booking.bookingStatus;
     default:
       return null;
   }
@@ -146,6 +148,7 @@ const columnLabels: Record<BookingsColumn, string> = {
   [BookingsColumn.END_TIME]: "End",
   [BookingsColumn.PLAYER_COUNT]: "Players",
   [BookingsColumn.BOOKING_AMOUNT]: "Amount",
+  [BookingsColumn.BOOKING_STATUS]: "Status"
 };
 
 function getFormattedStation(stations: BookingStationDetails[]): string {

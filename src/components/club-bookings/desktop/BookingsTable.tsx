@@ -4,9 +4,9 @@ import React, { useState, Fragment } from "react";
 import { useDispatchRedux } from "@/redux/store";
 import { Dialog, Transition } from "@headlessui/react";
 import { toReadableDateTime } from "@/lib/date-time-util";
-import { BookingsColumn, BookingsPagination } from "@/lib/types/bookings";
+import { BookingsColumn, BookingsPagination, BookingStatus } from "@/lib/types/bookings";
 import { goToPage, setPageSize } from "@/redux/slices/club/booking/clubBookingsListSlice";
-import BookingDetailsCard from "@/components/club-bookings/desktop/BookingDetailsCard";
+import BookingDetailsCard from "@/components/club-bookings/BookingDetailsCard";
 import PaginationFooter from "@/components/club-bookings/PaginationFooter";
 import { BookingDetailsResponse, BookingStationDetails } from "@/api/booking/model";
 
@@ -50,6 +50,8 @@ function BookingsTable({ bookings, paginationState,  viewColumns }: BookingsTabl
         return booking.booking.totalPlayers;
       case BookingsColumn.BOOKING_AMOUNT:
         return `₹ ${booking.booking.costDetails.totalCost}`;
+      case BookingsColumn.BOOKING_STATUS:
+        return booking.booking.bookingStatus;
       default:
         return null;
     }
@@ -65,6 +67,7 @@ function BookingsTable({ bookings, paginationState,  viewColumns }: BookingsTabl
     [BookingsColumn.END_TIME]: "End",
     [BookingsColumn.PLAYER_COUNT]: "Players",
     [BookingsColumn.BOOKING_AMOUNT]: "Amount",
+    [BookingsColumn.BOOKING_STATUS]: "Status"
   };
 
   return (

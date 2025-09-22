@@ -54,5 +54,6 @@ export enum BookingsColumn {
     PLAYER_COUNT,
     STATIONS,
     STATION_TYPE,
-    BOOKING_AMOUNT 
+    BOOKING_AMOUNT,
+    BOOKING_STATUS
 }

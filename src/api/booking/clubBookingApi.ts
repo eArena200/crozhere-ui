@@ -164,6 +164,26 @@ export async function getClubBookingDetailsApi(
   return res.json();
 }
 
+export async function cancelBookingForClubApi(
+  clubId:number, 
+  bookingId: number
+) : Promise<void>{
+  const jwt = localStorage.getItem("jwt");
+  const res = await fetch(`${CLUB_BOOKING_ENDPOINT}/cancelBooking/${clubId}/${bookingId}`, {
+      method: "PUT",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${jwt}`
+      }
+  });
+
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => null);
+    throw handleApiError(errBody, "CANCEL_CLUB_BOOKING",
+        `Failed to cancel club booking with bookingId: ${bookingId}`);
+  }
+}
+
 export async function getBookingsForClubApi(
   clubId: number,
   bookingsFilter?: BookingsFilters,

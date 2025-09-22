@@ -12,7 +12,7 @@ import { Dialog } from '@headlessui/react';
 import { X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { BookingDetailsResponse } from '@/api/booking/model';
-import BookingDetailsCard from '@/components/club-bookings/desktop/BookingDetailsCard';
+import BookingDetailsCard from '@/components/club-bookings/BookingDetailsCard';
 
 export default function UpcomingBookings({ clubId }: { clubId: number }) {
   const dispatchRedux = useDispatchRedux();

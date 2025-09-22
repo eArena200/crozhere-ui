@@ -59,6 +59,7 @@ const initialState: ClubBookingsState = {
             BookingsColumn.END_TIME,
             BookingsColumn.PLAYER_COUNT,
             BookingsColumn.BOOKING_AMOUNT,
+            BookingsColumn.BOOKING_STATUS
         ]
     }
 };

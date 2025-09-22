@@ -40,6 +40,7 @@ function ManageColumnPanel({ viewColumns, onClose }: ManageColumnPanelProps) {
         { label: "Start Time", value: BookingsColumn.START_TIME },
         { label: "End Time", value: BookingsColumn.END_TIME },
         { label: "Player Count", value: BookingsColumn.PLAYER_COUNT },
+        { label: "Status", value: BookingsColumn.BOOKING_STATUS },
       ],
     },
     {
@@ -65,6 +66,7 @@ function ManageColumnPanel({ viewColumns, onClose }: ManageColumnPanelProps) {
       BookingsColumn.END_TIME,
       BookingsColumn.PLAYER_COUNT,
       BookingsColumn.BOOKING_AMOUNT,
+      BookingsColumn.BOOKING_STATUS
     ]));
     onClose();
   };

@@ -24,7 +24,6 @@ function StationBasedSelection() {
   if (!stationBasedState) return null;
 
   const selectedStationsRecord = stationBasedState.selectedStations;
-  const selectedStationIds = Object.keys(selectedStationsRecord).map(Number);
   const stationOptionsArray = Object.values(stationBasedState.stationOptions);
 
   const handleInputChange = (partialUpdate: Partial<typeof stationBasedState>) => {
@@ -106,7 +105,7 @@ function StationBasedSelection() {
       {/* Stations */}
       <div>
         <label className="font-semibold text-gray-700 mb-2 block">Select Stations</label>
-        <div className="grid grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-2">
           {stationOptionsArray.map((station) => {
             const isSelected = station.stationId in selectedStationsRecord;
             const playerCount = isSelected ? selectedStationsRecord[station.stationId].playerCount : 1;
@@ -194,15 +193,20 @@ function StationBasedSelection() {
       {stationBasedState.availableSlots.length > 0 && (
         <div className="mt-4">
           <h3 className="text-sm font-semibold mb-2">Available Slots</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-2">
             {stationBasedState.availableSlots.map((slot) => (
               <div
                 key={slot}
                 onClick={() => handleSelection({ selectedSlot: slot })}
-                className={`p-3 border rounded-lg cursor-pointer text-center transition
+                className={`flex flex-col p-3 border rounded-lg cursor-pointer text-center transition
                   ${stationBasedState.selectedSlot === slot ? 'bg-blue-100 border-blue-600' : 'hover:bg-gray-50'}`}
               >
-                {`${toReadableDateTime(slot)} — ${toReadableDateTime(getEndTimeForSlot(slot, stationBasedState.bookingDuration))}`}
+                <span>
+                  {`Start Time: ${toReadableDateTime(slot, true)}`}
+                </span>
+                <span>
+                  {`End Time: ${toReadableDateTime(getEndTimeForSlot(slot, stationBasedState.bookingDuration), true)}`}
+                </span>
               </div>
             ))}
           </div>
